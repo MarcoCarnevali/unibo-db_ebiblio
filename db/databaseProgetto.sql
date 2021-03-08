@@ -51,7 +51,7 @@ FOREIGN KEY (Codice) REFERENCES LIBRO(Codice)
 create table EBOOK(
 Codice int PRIMARY KEY ,
 Dimensione varchar(10),
-NumeroAccessi int,
+NumeroAccessi int DEFAULT 0,
 Link varchar(2100),
 FOREIGN KEY (Codice) REFERENCES LIBRO(Codice)
 						ON DELETE CASCADE
@@ -393,7 +393,54 @@ BEGIN
 END $$
 DELIMITER ;
 
-##solo utilizzatori
+
+/*NON FUNZIONA
+# Visualizzazione propri eventi di consegna
+CREATE VIEW CONSEGNE_UT(Prestito,Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito)
+AS SELECT  CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito
+	FROM PRESTITO JOIN CARTACEO ON (PRESTITO.CodLibro=CARTACEO.Codice)
+					JOIN CONSEGNA ON (PRESTITO.Cod=CONSEGNA.CodPrestito)
+						JOIN LIBRO ON (PRESTITO.CodLibro=LIBRO.Codice);
+
+DELIMITER $$
+CREATE PROCEDURE VisualConsegne(IN EmailUt varchar(30))
+BEGIN
+	DECLARE CodPrestito int;
+    DECLARE Titolo varchar(50);
+    DECLARE Tipo varchar(12);
+    DECLARE Note varchar(200);
+    DECLARE Giorno date;
+    DECLARE EmailVol varchar(30);
+    DECLARE DataAvvio date;
+    DECLARE DataFine date;
+    DECLARE CodLibro int;
+    DECLARE EmailUtilizzatore varchar(30);
+    DECLARE StatoPrestito varchar(11);
+    DECLARE stopCur INT DEFAULT 0;
+    DECLARE MaxReturn INT DEFAULT ( SELECT Count(*) 
+									FROM PRESTITI_UT
+                                    WHERE EmailUtilizzatore = EmailUt);
+    DECLARE cur CURSOR FOR (SELECT *
+							FROM CONSEGNE_UT
+                            WHERE EmailUtilizzatore = EmailUt);
+    SET stopCur=0;
+    OPEN cur;
+    WHILE (stopCur<MaxReturn) DO
+		FETCH cur INTO CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito;
+        SELECT CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito;
+        SET stopCUr=stopCur+1;
+    END WHILE;
+    CLOSE cur;
+END $$
+DELIMITER ;
+*/
+
+
+
+
+
+
+##SOLO UTILIZZATORI
 # Registrazione alla piattaforma
 DELIMITER $$
 CREATE PROCEDURE Registrazione( IN mail varchar(30), IN psw varchar(20), IN NomeUt varchar(20), IN CognomeUt varchar(30), IN TelUt varchar(15), IN DataNascitaUt date, IN LuogoNascitaUt varchar(20), IN ProfessioneUt varchar(20))
@@ -461,11 +508,11 @@ DELIMITER ;
 
 
 
-##solo volontari
+##SOLO VOLONTARI
 # Visualizzazione di tutte le prenotazioni inserite sulla piattaforma
 CREATE VIEW PRESTITI_VOL(Prestito, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito, Biblioteca)
 AS SELECT  Cod, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito, Biblioteca
-		FROM PRESTITO JOIN CARTACEO ON (PRESTITO.Cod=CARTACEO.Codice)
+		FROM PRESTITO JOIN CARTACEO ON (PRESTITO.CodLibro=CARTACEO.Codice)
 						JOIN LIBRO ON (PRESTITO.Cod=LIBRO.Codice);
         
 
@@ -518,12 +565,53 @@ DELIMITER ;
 
 
 
+#SOLO AMMINISTRATORI
+# Inserimento di un libro presso la biblioteca gestita
+/*  NELLA CALL DI QUESTA PROCUDERE, QUANDO INSERIAMO UN EBOOK,
+	BISOGNA IMMETTERE IL VALORE "0" PER I CAMPI Pagine e Scafale,
+    PER GLI ALTRI CAMPI INERENTI A CARTACEO POSSIAMO LASCIARE UN 
+    CAMPO VUOTO -> "". LO STESSO VALE SE INSERIAMO UN CARTACEO,
+    POSSIAMO INSERIRE I CAMPI Dimensione e Link VUOTI.*/
+DELIMITER $$
+CREATE PROCEDURE InsertLibro(IN Titolo varchar(50), IN Anno smallint, IN Edizione varchar(30), IN Biblioteca varchar(40), 
+IN Tipo Bool,
+IN StatoPrestito varchar(11), IN Pagine smallint, IN Scaffale smallint, IN StatoConservazione varchar(9),
+IN Dimensione varchar(10), IN Link varchar(2100) )
+# se Tipo=true allora è un cartaceo, se Tipo=false allora è un ebook
+BEGIN
+		INSERT INTO LIBRO(Titolo, Anno, Edizione, Biblioteca)
+        VALUES(Titolo, Anno, Edizione, Biblioteca);
+        SET @UltimoCodice = LAST_INSERT_ID();
+	IF Tipo="1" THEN
+        INSERT INTO CARTACEO(Codice, StatoPrestito, Pagine, Scaffale, StatoConservazione)
+        VALUES (@UltimoCodice,  StatoPrestito, Pagine, Scaffale, StatoConservazione);
+    ELSE
+		INSERT INTO EBOOK(Codice, Dimensione, Link)
+        VALUES(@UltimoCodice, Dimensione, Link);
+    END IF;
+END $$
+DELIMITER ;
+
+#Cancellazione di un libro presso la biblioteca gestita
+DELIMITER $$
+CREATE PROCEDURE DeleteLibro(IN CodiceLibro int)
+BEGIN
+	DELETE FROM LIBRO
+    WHERE Codice=CodiceLibro;
+END $$
+DELIMITER ;
+
+
+#Aggiornamento di un libro presso la biblioteca gestita
+
+
+
 
 /* ANCORA DA IMPLEMENTARE
 
 ##tutti gli utenti
 # Visualizzazione di un E-BOOK		(PENSO INTENDA GRAFICAMENTE??)
-# Visualizzazione propri eventi di consegna
+
 
 
 
