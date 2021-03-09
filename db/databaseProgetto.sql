@@ -228,7 +228,11 @@ VALUES  ("Biblioteca Universitaria","0512088300"),
         ("Biblioteca di discipline umanistiche","0512098310");
 
 INSERT INTO UTILIZZATORE (Email, Pass, StatoAccount)
-VALUES ("gino@gmail.com","1234","Attivo");
+VALUES  ("gino@gmail.com","1234","Attivo"),
+		("marco@gmail.com","pass1234","Attivo"),
+        ("franco@gmail.com","0001234","Attivo"),
+        ("tiziano@gmail.com","passwordsupersicura","Attivo"),
+        ("mauro@gmail.com","1234","Attivo");
 
 INSERT INTO POSTI_LETTURA(Num, NomeBiblioteca, Presa, Ethernet) 
 VALUES	("1","Biblioteca Universitaria",true, false),
@@ -312,21 +316,31 @@ VALUES  ("tiziano@me.it","aaaaa","Tiziano","Bruno","32323342","1998-01-01","Pale
 
 INSERT INTO PRESTITO(DataAvvio, DataFine, CodLibro, EmailUtilizzatore)
 VALUES  ("2021-01-01","2021-05-01","2","gino@gmail.com"),
-		("2021-01-01","2021-03-01","6","gino@gmail.com"),
-        ("2021-01-02","2021-04-01","1","gino@gmail.com");
+		("2021-01-01","2021-03-01","6","marco@gmail.com"),
+        ("2021-01-02","2021-04-01","1","gino@gmail.com"),
+        ("2021-01-02","2021-04-01","10","franco@gmail.com"),
+        ("2021-01-02","2021-04-01","13","tiziano@gmail.com")
+        ;
 
 INSERT INTO CONSEGNA(CodPrestito, Tipo, Note, Giorno, EmailVol)
 VALUES  ("1","Restituzione","werervrev","2021-01-01","tiziano@me.it"),
 		("2","Restituzione","verervre","2021-02-01","fabio@me.it");
         
 
-/*INSERT INTO PRENOTAZIONE(Giorno, OraInizio, OraFine, NumPosto, Biblioteca, EmailUtilizzatore) 
-VALUES  ("","","","","",""),
-		("","","","","",""),
-		("","","","","",""),
-		("","","","","",""),
-		("","","","","","");*/
-        
+INSERT INTO PRENOTAZIONE(Giorno, OraInizio, OraFine, NumPosto, Biblioteca, EmailUtilizzatore) 
+VALUES  ("2021-03-09","09:00","11:00","1","Biblioteca Universitaria","gino@gmail.com"),
+		("2021-03-09","11:00","12:00","1","Biblioteca Universitaria","marco@gmail.com"),
+		("2021-03-08","12:00","15:00","2","Biblioteca Universitaria","franco@gmail.com"),
+		("2021-03-08","17:00","19:00","2","Biblioteca Universitaria","tiziano@gmail.com"),
+		("2021-02-20","09:00","13:00","1","Biblioteca Nicola Matteucci","marco@gmail.com"),
+        ("2021-02-21","09:00","13:00","2","Biblioteca Nicola Matteucci","gino@gmail.com"),
+        ("2021-02-21","10:00","14:00","1","Biblioteca Giurica Antonio Cicu","franco@gmail.com"),
+        ("2021-01-05","10:00","15:00","2","Biblioteca Giurica Antonio Cicu","tiziano@gmail.com"),
+        ("2021-01-08","13:00","16:00","1","Biblioteca economica Walter Bigiavi","mauro@gmail.com"),
+        ("2021-01-26","13:00","20:00","2","Biblioteca economica Walter Bigiavi","gino@gmail.com"),
+        ("2021-01-08","13:00","20:00","1","Biblioteca di discipline umanistiche","marco@gmail.com"),
+        ("2021-01-18","15:00","19:00","2","Biblioteca di discipline umanistiche","tiziano@gmail.com");
+
 
 #OPERAZIONI SUI DATI (da implementare attraverso stored procedure)
 ##tutti gli utenti
@@ -689,6 +703,71 @@ END $$
 DELIMITER ; 
 
 
+# Visualizzazione di tutte le prenotazioni presso la biblioteca gestita
+CREATE VIEW PRENOTAZIONI_AMM(Prenotazione, Giorno, OraInizio, OraFine, NumPosto, Biblioteca, EmailUtilizzatore, Presa, Ethernet)
+AS SELECT IdPren, Giorno, OraInizio, OraFine, NumPosto, Biblioteca, EmailUtilizzatore, Presa, Ethernet
+	FROM PRENOTAZIONE JOIN POSTI_LETTURA ON (NumPosto=Num AND Biblioteca=NomeBiblioteca);
+
+DELIMITER $$
+CREATE PROCEDURE VisualPrenotazioniPosti(IN BibliotecaG varchar(40))
+BEGIN 
+	DECLARE Prenotazione int;
+	DECLARE Giorno date;
+	DECLARE OraInizio time;
+	DECLARE OraFine time;
+	DECLARE NumPosto int;
+	DECLARE BibliotecaGestita varchar(40);
+	DECLARE EmailUtilizzatore varchar(30);
+    DECLARE Presa boolean;
+    DECLARE Ethernet boolean;
+    
+    DECLARE stopCur INT DEFAULT 0;
+    DECLARE MaxReturn INT DEFAULT(	SELECT Count(*)
+									FROM PRENOTAZIONI_AMM
+									WHERE Biblioteca=BibliotecaG
+                                    );
+	DECLARE cur CURSOR FOR( SELECT *
+							FROM PRENOTAZIONI_AMM
+							WHERE Biblioteca=BibliotecaG
+                            );
+	SET stopCur=0;
+    OPEN cur;
+    WHILE (stopCur<MaxReturn) DO
+		FETCH cur INTO Prenotazione, Giorno, OraInizio, OraFine, NumPosto, BibliotecaGestita, EmailUtilizzatore, Presa, Ethernet;
+        SELECT Prenotazione, Giorno, OraInizio, OraFine, NumPosto, BibliotecaGestita, EmailUtilizzatore, Presa, Ethernet;
+        SET stopCur=stopCur+1;
+    END WHILE;
+    CLOSE cur;
+/*	
+	BEGIN
+	DECLARE CodPrestito int ;
+	DECLARE DataAvvio date;
+	DECLARE DataFine date;
+	DECLARE CodLibro int;
+	DECLARE Email varchar(30);
+	DECLARE Titolo varchar(50);
+    DECLARE stopCur INT DEFAULT 0;
+	DECLARE MaxReturn INT DEFAULT ( SELECT Count(*) 
+									FROM PRESTITI_UT
+                                    WHERE EmailUtilizzatore = EmailUti);
+	DECLARE cur CURSOR FOR (SELECT *
+							FROM PRESTITI_UT
+							WHERE EmailUtilizzatore = EmailUti );
+	
+    SET stopCur = 0;
+    OPEN cur;
+    WHILE (stopCur<MaxReturn) DO
+		FETCH cur INTO CodPrestito, DataAvvio, DataFine, CodLibro, Email, Titolo;
+        SELECT CodPrestito, DataAvvio, DataFine,CodLibro, Email, Titolo;
+		SET stopCur=stopCur+1;
+    END WHILE;
+    CLOSE cur;
+END $$*/
+END $$
+DELIMITER ;
+
+
+
 
 /* ANCORA DA IMPLEMENTARE
 
@@ -711,8 +790,7 @@ DELIMITER ;
 
 
 ##solo amministatori
-# Inserimento/Cancellazione/Aggiornamento di un libro presso la biblioteca gestita
-# Visualizzazione di tutte le prenotazioni presso la biblioteca gestita
+
 # Inserimento di un messaggio rivolto ad un utente utilizzatore
 # Inserimento di una segnalazione di comportamento non corretto
 # Rimuovere tutte le segnalazioni di un utente, riportandone lo stato ad Attivo
