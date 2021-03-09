@@ -208,15 +208,15 @@ FOREIGN KEY (EmailUti) REFERENCES UTILIZZATORE(Email)
 
 #POPOLAMENTO DB
 INSERT INTO BIBLIOTECA(Nome, Indirizzo, Email, Sito, NoteStoriche, Lat, Lon)
-VALUES  ("Biblioteca Univeristaria","Via Zamboni 33","bub.info@unibo.it","www.bub.unibo.it","Nel 1742 questo primo nucleo della Biblioteca si arricchì di manoscritti e opere a stampa","44.496952311102845","11.352406741622467"),
+VALUES  ("Biblioteca Universitaria","Via Zamboni 33","bub.info@unibo.it","www.bub.unibo.it","Nel 1742 questo primo nucleo della Biblioteca si arricchì di manoscritti e opere a stampa","44.496952311102845","11.352406741622467"),
 		("Biblioteca Nicola Matteucci","Strada Maggiore 45","sps.bibliotecamatteucci@unibo.it","https://dsps.unibo.it/it/biblioteca","Il primissimo nucleo bibliografico dell’attuale biblioteca viene costituito con la nascita nel 1964 della Facoltà di Scienze Politiche che vede tra i suoi fondatori il politologo Nicola Matteucci.","44.49152049033292","11.354048728911785"),
 		("Biblioteca Giurica Antonio Cicu","Via Zamboni 27","abis.bibliotecacicu@unibo.it","http://giuridica.sba.unibo.it/","La biblioteca della SP.I.S.A. fu voluta dal Professor Fabio Roversi Monaco (Rettore dell’Università di Bologna dal 1985 al 2000 e attualmente Rettore Emerito).","44.49676694031628","11.351733584733914"),
         ("Biblioteca economica Walter Bigiavi","Via delle Belle Arti 33","info.bigiavi@unibo.it","http://bigiavi.sba.unibo.it/","La Biblioteca di Discipline economico-aziendali “Walter Bigiavi” nasce dall’unione della Biblioteca di Discipline economiche “Walter Bigiavi” con le biblioteche dei dipartimenti di Scienze aziendali e di Scienze economiche,","44.49790902645268","11.35191257124072"),
         ("Biblioteca di discipline umanistiche","Via Zamboni 36","bdu.lettere@unibo.it","http://bdu.sba.unibo.it/","La Biblioteca di Discipline Umanistiche nasce nel 1926 come biblioteca di Facoltà di Lettere e Filosofia da un primo nucleo di pubblicazioni donate da Giovanni Pascoli nel 1909 e contenente anche opere di Giosuè Carducci.","44.496876287221966","11.351636955898286");
         
 INSERT INTO TELEFONO (NomeBiblioteca, NumTel)
-VALUES  ("Biblioteca Univeristaria","0512088300"),
-        ("Biblioteca Univeristaria","0512088385"),
+VALUES  ("Biblioteca Universitaria","0512088300"),
+        ("Biblioteca Universitaria","0512088385"),
         ("Biblioteca Nicola Matteucci","0512092532"),
         ("Biblioteca Nicola Matteucci","0512092533"),
         ("Biblioteca Nicola Matteucci","0512092534"),
@@ -231,9 +231,9 @@ INSERT INTO UTILIZZATORE (Email, Pass, StatoAccount)
 VALUES ("gino@gmail.com","1234","Attivo");
 
 INSERT INTO POSTI_LETTURA(Num, NomeBiblioteca, Presa, Ethernet) 
-VALUES	("1","Biblioteca Univeristaria",true, false),
-		("2","Biblioteca Univeristaria",true, false),
-        ("3","Biblioteca Univeristaria",true, false),
+VALUES	("1","Biblioteca Universitaria",true, false),
+		("2","Biblioteca Universitaria",true, false),
+        ("3","Biblioteca Universitaria",true, false),
         ("1","Biblioteca Nicola Matteucci",true, false),
 		("2","Biblioteca Nicola Matteucci",true, false),
         ("3","Biblioteca Nicola Matteucci",true, false),
@@ -248,11 +248,11 @@ VALUES	("1","Biblioteca Univeristaria",true, false),
         ("3","Biblioteca di discipline umanistiche",true, false);
 
 INSERT INTO LIBRO(Titolo, Anno, Edizione, Biblioteca) 
-VALUES	("Divina Commedia-Completo","1814","Originale","Biblioteca Univeristaria"),
-		("Divina Commedia-Paradiso","2015","Petrini","Biblioteca Univeristaria"),
-        ("Divina Commedia-Inferno","2015","Petrini","Biblioteca Univeristaria"),
-        ("Divina Commedia-Purgatorio","2015","Petrini","Biblioteca Univeristaria"),
-        ("Il deserto dei tartari","1940","RCS","Biblioteca Univeristaria"),
+VALUES	("Divina Commedia-Completo","1814","Originale","Biblioteca Universitaria"),
+		("Divina Commedia-Paradiso","2015","Petrini","Biblioteca Universitaria"),
+        ("Divina Commedia-Inferno","2015","Petrini","Biblioteca Universitaria"),
+        ("Divina Commedia-Purgatorio","2015","Petrini","Biblioteca Universitaria"),
+        ("Il deserto dei tartari","1940","RCS","Biblioteca Universitaria"),
         ("Il deserto dei tartari","2012","Feltrinelli","Biblioteca Nicola Matteucci"),
         ("Il nome della Rosa","1980","Bompiani","Biblioteca Nicola Matteucci"),
         ("Il nome della Rosa","2002","Repubblica","Biblioteca Nicola Matteucci"),
@@ -289,8 +289,22 @@ VALUES	("1","Disponibile","1500","15","Non Buono"),
         ("22","Disponibile","1200","7","Ottimo"),
         ("23","Disponibile","300","7","Scadente"),
 		("24","Disponibile","600","7","Ottimo");
-        
 
+INSERT INTO EBOOK(Codice, Dimensione, Link)
+VALUES  ("3","54MB","WWW.GOOGLESCHOLAR.IT"),
+		("4","5MB","www.librionline.it"),
+        ("5","10MB","www.librionline.it"),
+        ("7","300MB","www.librionline.it"),
+        ("11","200MB","www.onlinebooks.com"),
+        ("12","500MB","WWW.GOOGLESCHOLAR.IT"),
+        ("14","50KB","www.onlinebooks.com"),
+        ("17","25MB","www.librionline.it"),
+        ("18","700MB","WWW.GOOGLESCHOLAR.IT"),
+        ("20","100MB","WWW.GOOGLESCHOLAR.IT"),
+        ("21","2MB","www.librionline.it"),
+		("25","540MB","www.onlinebooks.com");
+		
+        
 INSERT INTO VOLONTARIO(Email, Pass, Nome, Cognome, Tel, DataNascita, LuogoNascita, Trasporto)
 VALUES  ("tiziano@me.it","aaaaa","Tiziano","Bruno","32323342","1998-01-01","Palermo","bici"),
 		("fabio@me.it","aaaaa","Fabio","Cigna","31232345","2000-01-01","Ferrara","bus"),
@@ -555,11 +569,23 @@ DELIMITER ;
 
 # Aggiornamento di un evento di consegna
 DELIMITER $$
-CREATE PROCEDURE UpdateConsegna (IN NumPrestito int, IN TipoC varchar(12), IN NoteC varchar(200),IN GiornoC date,IN EmailVolontario varchar(30))
+CREATE PROCEDURE UpdateConsegna (IN NumPrestito int, IN TipoConsegna varchar(12), IN NoteC varchar(200),IN GiornoC date,IN EmailC varchar(30))
 BEGIN
-	UPDATE CONSEGNA
-	SET Note=NoteC, Giorno=GiornoC, EmailVol=EmailVolontario
-	WHERE CodPrestito=NumPrestito AND Tipo=TipoC;
+	IF (NoteC IS NOT NULL AND NoteC <> "" AND NoteC <> " ") THEN
+		UPDATE CONSEGNA
+		SET Note=NoteC
+		WHERE CodPrestito=NumPrestito AND Tipo=TipoConsegna;
+	END IF;
+    IF (GiornoC IS NOT NULL AND GiornoC <> 0000-00-00) THEN
+		UPDATE CONSEGNA
+		SET Giorno=GiornoC
+		WHERE CodPrestito=NumPrestito AND Tipo=TipoConsegna;
+	END IF;
+    IF (EmailC IS NOT NULL AND EmailC <> "" AND EmailC <> " ") THEN
+		UPDATE CONSEGNA
+		SET EmailVol=EmailC
+		WHERE CodPrestito=NumPrestito AND Tipo=TipoConsegna;
+	END IF;
 END $$
 DELIMITER ;
 
@@ -603,7 +629,64 @@ DELIMITER ;
 
 
 #Aggiornamento di un libro presso la biblioteca gestita
-
+DELIMITER $$
+CREATE PROCEDURE UpdateLibro(IN CodiceLibro int, IN BibliotecaGestita varchar(40) , 
+				IN TitoloU varchar(50), IN AnnoU smallint, IN EdizioneU varchar(30),
+				IN StatoPrestitoU varchar(11), IN PagineU smallint, IN ScaffaleU smallint, IN StatoConservazioneU varchar(9),
+                IN DimensioneU varchar(10), IN NumeroAccessiU int, IN LinkU varchar(2100))
+BEGIN
+	IF (TitoloU IS NOT NULL AND TitoloU <> "" AND TitoloU <> " ") THEN
+		UPDATE LIBRO
+		SET Titolo=TitoloU
+		WHERE Codice=CodiceLibro AND Biblioteca=BibliotecaGestita;
+	END IF;
+    IF (AnnoU IS NOT NULL AND AnnoU <> 0) THEN
+		UPDATE LIBRO
+		SET Anno=AnnoU
+		WHERE Codice=CodiceLibro AND Biblioteca=BibliotecaGestita;
+	END IF;
+    IF (EdizioneU IS NOT NULL AND EdizioneU <> "" AND EdizioneU <> " ") THEN
+		UPDATE LIBRO
+		SET Edizione=EdizioneU
+		WHERE Codice=CodiceLibro AND Biblioteca=BibliotecaGestita;
+	END IF;
+    IF (StatoPrestitoU IS NOT NULL AND StatoPrestitoU <> "" AND StatoPrestitoU <> " ") THEN
+		UPDATE CARTACEO
+		SET StatoPrestito=StatoPrestitoU
+		WHERE Codice=CodiceLibro;
+	END IF;
+    IF (PagineU IS NOT NULL AND PagineU <> 0) THEN
+		UPDATE CARTACEO
+		SET Pagine=PagineU
+		WHERE Codice=CodiceLibro;
+	END IF;
+    IF (ScaffaleU IS NOT NULL AND ScaffaleU <> 0) THEN
+		UPDATE CARTACEO
+		SET Scaffale=ScaffaleU
+		WHERE Codice=CodiceLibro;
+	END IF;
+	IF (StatoConservazioneU IS NOT NULL AND StatoConservazioneU <> "" AND StatoConservazioneU <> " ") THEN
+		UPDATE CARTACEO
+		SET StatoConservazione=StatoConservazioneU
+		WHERE Codice=CodiceLibro;
+	END IF;
+    IF (DimensioneU IS NOT NULL AND DimensioneU <> "" AND DimensioneU <> " ") THEN
+		UPDATE EBOOK
+		SET Dimensione=DimensioneU
+		WHERE Codice=CodiceLibro;
+	END IF;
+	IF (NumeroAccessiU IS NOT NULL AND NumeroAccessiU <> 0) THEN
+		UPDATE EBOOK
+		SET NumeroAccessi=NumeroAccessiU
+		WHERE Codice=CodiceLibro;
+	END IF;
+	IF (LinkU IS NOT NULL AND LinkU <> "" AND LinkU <> " ") THEN
+		UPDATE EBOOK
+		SET Link=LinkU
+		WHERE Codice=CodiceLibro;
+	END IF;
+END $$
+DELIMITER ; 
 
 
 
