@@ -324,8 +324,10 @@ VALUES  ("2021-01-01","2021-05-01","2","gino@gmail.com"),
 
 INSERT INTO CONSEGNA(CodPrestito, Tipo, Note, Giorno, EmailVol)
 VALUES  ("1","Restituzione","werervrev","2021-01-01","tiziano@me.it"),
-		("2","Restituzione","verervre","2021-02-01","fabio@me.it");
-        
+		("2","Restituzione","verervre","2021-02-01","fabio@me.it"),
+        ("3","Restituzione","xxxxxxxxxxxxxxxx","2021-02-25","pippo@me.it"),
+        ("4","Affidamento","xxxxxxxxxxxxxxxx","2021-03-08","pippo@me.it"),
+        ("5","Affidamento","xxxxxxxxxxxxxxxx","2020-12-24","pippo@me.it");
 
 INSERT INTO PRENOTAZIONE(Giorno, OraInizio, OraFine, NumPosto, Biblioteca, EmailUtilizzatore) 
 VALUES  ("2021-03-09","09:00","11:00","1","Biblioteca Universitaria","gino@gmail.com"),
@@ -422,7 +424,7 @@ END $$
 DELIMITER ;
 
 
-/*NON FUNZIONA
+/*NON FUNZIONA*/
 # Visualizzazione propri eventi di consegna
 CREATE VIEW CONSEGNE_UT(Prestito,Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito)
 AS SELECT  CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito
@@ -442,7 +444,7 @@ BEGIN
     DECLARE DataAvvio date;
     DECLARE DataFine date;
     DECLARE CodLibro int;
-    DECLARE EmailUtilizzatore varchar(30);
+    DECLARE EmailUtil varchar(30);
     DECLARE StatoPrestito varchar(11);
     DECLARE stopCur INT DEFAULT 0;
     DECLARE MaxReturn INT DEFAULT ( SELECT Count(*) 
@@ -454,14 +456,13 @@ BEGIN
     SET stopCur=0;
     OPEN cur;
     WHILE (stopCur<MaxReturn) DO
-		FETCH cur INTO CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito;
-        SELECT CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito;
+		FETCH cur INTO CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtil, StatoPrestito;
+        SELECT CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtil, StatoPrestito;
         SET stopCUr=stopCur+1;
     END WHILE;
     CLOSE cur;
 END $$
 DELIMITER ;
-*/
 
 
 
