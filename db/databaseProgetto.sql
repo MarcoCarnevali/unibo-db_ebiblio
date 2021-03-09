@@ -68,9 +68,9 @@ Pass varchar(20) NOT NULL,
 Nome varchar(20), 
 Cognome varchar(30),
 Tel varchar(15),
-DataNasciata date,
+DataNascita date,
 LuogoNascita varchar(20),
-Qualifica varchar(10),
+Qualifica varchar(20),
 Responsabile varchar(40),
 FOREIGN KEY (Responsabile) REFERENCES BIBLIOTECA(Nome)
 								ON DELETE CASCADE
@@ -343,9 +343,16 @@ VALUES  ("2021-03-09","09:00","11:00","1","Biblioteca Universitaria","gino@gmail
         ("2021-01-08","13:00","20:00","1","Biblioteca di discipline umanistiche","marco@gmail.com"),
         ("2021-01-18","15:00","19:00","2","Biblioteca di discipline umanistiche","tiziano@gmail.com");
 
+INSERT INTO AMMINISTRATORE(Email, Pass, Nome, Cognome, Tel, DataNascita, LuogoNascita, Qualifica, Responsabile)
+VALUES  ("alice@gmail.com","pass123","Alice","Fumagalli","3334541216","1960-03-02","Milano","Bibliotecario","Biblioteca Universitaria"),
+		("francesca@gmail.com","pswrd","Francesca","Di Bella","328659654","1980-05-23","Napoli","Sistemista","Biblioteca Nicola Matteucci"),
+		("luca@gmail.com","password","Luca","Bruno","3904567589","1995-08-03","Carpi","Bibliotecario","Biblioteca Giurica Antonio Cicu"),
+		("mario@gmail.com","03081998","Mario","Rossi","3293842987","1997-05-30","Roma","Sistemisa","Biblioteca economica Walter Bigiavi"),
+        ("elvira@gmail.com","123456789","Elvira","Morello","1978-10-26","1966-03-05","Palermo","Sistemista","Biblioteca di discipline umanistiche");
+
 
 #OPERAZIONI SUI DATI (da implementare attraverso stored procedure)
-##tutti gli utenti
+##TUTTI GLI UTENTI
 # Autenticazione alla piattaforma
 DELIMITER $$
 CREATE PROCEDURE Autenticazione( IN mail varchar(30), IN psw varchar(20), OUT Stato varchar(7) )
@@ -424,7 +431,6 @@ END $$
 DELIMITER ;
 
 
-/*NON FUNZIONA*/
 # Visualizzazione propri eventi di consegna
 CREATE VIEW CONSEGNE_UT(Prestito,Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito)
 AS SELECT  CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito
@@ -739,33 +745,22 @@ BEGIN
         SET stopCur=stopCur+1;
     END WHILE;
     CLOSE cur;
-/*	
-	BEGIN
-	DECLARE CodPrestito int ;
-	DECLARE DataAvvio date;
-	DECLARE DataFine date;
-	DECLARE CodLibro int;
-	DECLARE Email varchar(30);
-	DECLARE Titolo varchar(50);
-    DECLARE stopCur INT DEFAULT 0;
-	DECLARE MaxReturn INT DEFAULT ( SELECT Count(*) 
-									FROM PRESTITI_UT
-                                    WHERE EmailUtilizzatore = EmailUti);
-	DECLARE cur CURSOR FOR (SELECT *
-							FROM PRESTITI_UT
-							WHERE EmailUtilizzatore = EmailUti );
-	
-    SET stopCur = 0;
-    OPEN cur;
-    WHILE (stopCur<MaxReturn) DO
-		FETCH cur INTO CodPrestito, DataAvvio, DataFine, CodLibro, Email, Titolo;
-        SELECT CodPrestito, DataAvvio, DataFine,CodLibro, Email, Titolo;
-		SET stopCur=stopCur+1;
-    END WHILE;
-    CLOSE cur;
-END $$*/
 END $$
 DELIMITER ;
+
+
+
+
+# Inserimento di un messaggio rivolto ad un utente utilizzatore
+DELIMITER $$
+CREATE PROCEDURE InsertMessaggio(IN Titolo varchar(30), IN Testo varchar(300) , IN EmailAmministratore varchar(30), IN EmailUtente varchar(30))
+BEGIN
+    INSERT INTO MESSAGGIO(Giorno, Testo, Titolo, EmailAmm, EmailUti)
+	VALUES (CURDATE(),Testo,Titolo,EmailAmministratore,EmailUtente);
+END $$
+DELIMITER ;
+
+
 
 
 
@@ -792,7 +787,6 @@ DELIMITER ;
 
 ##solo amministatori
 
-# Inserimento di un messaggio rivolto ad un utente utilizzatore
 # Inserimento di una segnalazione di comportamento non corretto
 # Rimuovere tutte le segnalazioni di un utente, riportandone lo stato ad Attivo
 
