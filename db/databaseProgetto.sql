@@ -149,7 +149,7 @@ create table CONSEGNA(
 CodPrestito int,
 Tipo varchar(12) CHECK(Tipo="Restituzione" OR Tipo="Affidamento"),
 Note varchar(200),
-Giorno date,
+Giorno date NOT NULL,
 EmailVol varchar(30),
 PRIMARY KEY(CodPrestito, Tipo),
 FOREIGN KEY (CodPrestito) REFERENCES PRESTITO(Cod)
@@ -231,7 +231,7 @@ INSERT INTO UTILIZZATORE (Email, Pass, StatoAccount)
 VALUES  ("gino@gmail.com","1234","Attivo"),
 		("marco@gmail.com","pass1234","Attivo"),
         ("franco@gmail.com","0001234","Attivo"),
-        ("tiziano@gmail.com","passwordsupersicura","Attivo"),
+        ("tiziano@gmail.com","passwordsupersicura","Sospeso"),
         ("mauro@gmail.com","1234","Attivo");
 
 INSERT INTO POSTI_LETTURA(Num, NomeBiblioteca, Presa, Ethernet) 
@@ -326,8 +326,7 @@ INSERT INTO CONSEGNA(CodPrestito, Tipo, Note, Giorno, EmailVol)
 VALUES  ("1","Restituzione","werervrev","2021-01-01","tiziano@me.it"),
 		("2","Restituzione","verervre","2021-02-01","fabio@me.it"),
         ("3","Restituzione","xxxxxxxxxxxxxxxx","2021-02-25","pippo@me.it"),
-        ("4","Affidamento","xxxxxxxxxxxxxxxx","2021-03-08","pippo@me.it"),
-        ("5","Affidamento","xxxxxxxxxxxxxxxx","2020-12-24","pippo@me.it");
+        ("4","Affidamento","xxxxxxxxxxxxxxxx","2021-03-08","pippo@me.it");
 
 INSERT INTO PRENOTAZIONE(Giorno, OraInizio, OraFine, NumPosto, Biblioteca, EmailUtilizzatore) 
 VALUES  ("2021-03-09","09:00","11:00","1","Biblioteca Universitaria","gino@gmail.com"),
@@ -588,6 +587,44 @@ BEGIN
 END $$
 DELIMITER ;
 
+
+
+/* TRIGGER NON FUNZIONA NEW.
+#TRIGGER CONSEGNA
+DELIMITER |
+CREATE TRIGGER ConsegnaCartaceo
+AFTER INSERT ON CONSEGNA
+FOR EACH ROW 
+BEGIN
+#INSERISCI DATA INIZIO E FINE SU PRESTITO
+#La data di fine prestito viene calcolata come 15 giorni dalla data di consegna
+UPDATE PRESTITO SET DataAvvio = NEW.Giorno WHERE (Cod=NEW.NumPrestito);
+UPDATE PRESTITO SET DataFine = DATE_ADD(NEW.Giorno, INTERVAL 15 DAY) WHERE (Cod=NEW.NumPrestito);
+
+#CAMBIO LO STATO IN CONSEGNATO O DISPONIBILE
+	SELECT @CodiceLibro=CodLibro
+	FROM PRESTITO
+	WHERE Cod=NumPrestito;
+    IF (Tipo="Affidamento") THEN
+		UPDATE CARTACEO SET StatoPrestito="Consegnato" WHERE (Codice=@CodiceLibro);
+	ELSE 
+		UPDATE CARTACEO SET StatoPrestito="Disponibile" WHERE (Codice=@CodiceLibro);
+    END IF;
+END |
+DELIMITER ;
+
+CREATE TRIGGER PrestitoCartaceo
+AFTER INSERT ON PRESTITO
+FOR EACH ROW 
+UPDATE CARTACEO SET StatoPrestito="Prenotato" WHERE (Codice=NEW.CodLibro);
+
+*/
+
+
+
+
+
+
 # Aggiornamento di un evento di consegna
 DELIMITER $$
 CREATE PROCEDURE UpdateConsegna (IN NumPrestito int, IN TipoConsegna varchar(12), IN NoteC varchar(200),IN GiornoC date,IN EmailC varchar(30))
@@ -753,24 +790,37 @@ DELIMITER ;
 
 # Inserimento di un messaggio rivolto ad un utente utilizzatore
 DELIMITER $$
-CREATE PROCEDURE InsertMessaggio(IN Titolo varchar(30), IN Testo varchar(300) , IN EmailAmministratore varchar(30), IN EmailUtente varchar(30))
+CREATE PROCEDURE InsertMessaggio(IN Titolo varchar(30), IN Testo varchar(300) , IN EmailAmministratore varchar(30), IN EmailUtilizzatore varchar(30))
 BEGIN
     INSERT INTO MESSAGGIO(Giorno, Testo, Titolo, EmailAmm, EmailUti)
-	VALUES (CURDATE(),Testo,Titolo,EmailAmministratore,EmailUtente);
+	VALUES (CURDATE(),Testo,Titolo,EmailAmministratore,EmailUtilizzatore);
 END $$
 DELIMITER ;
 
+# Inserimento di una segnalazione di comportamento non corretto
+DELIMITER $$
+CREATE PROCEDURE InsertSegnalazione(IN Testo varchar(300), IN EmailAmministratore varchar(30), IN EmailUtilizzatore varchar(30))
+BEGIN
+    INSERT INTO SEGNALAZIONE(Giorno, Testo, EmailAmm, EmailUti)
+	VALUES (CURDATE(),Testo,EmailAmministratore,EmailUtilizzatore);
+END $$
+DELIMITER ;
 
-
-
-
+# Rimuovere tutte le segnalazioni di un utente, riportandone lo stato ad Attivo
+DELIMITER $$
+CREATE PROCEDURE AssoluzioneUtente(IN EmailUtilizzatore varchar(30))
+BEGIN
+	DELETE FROM SEGNALAZIONE WHERE EmailUti=EmailUtilizzatore;
+    UPDATE UTILIZZATORE 
+	SET StatoAccount="Attivo"
+	WHERE Email=EmailUtilizzatore;
+END $$
+DELIMITER ; 
 
 /* ANCORA DA IMPLEMENTARE
 
 ##tutti gli utenti
 # Visualizzazione di un E-BOOK		(PENSO INTENDA GRAFICAMENTE??)
-
-
 
 
 # Visualizzazione delle statistiche
@@ -779,28 +829,6 @@ DELIMITER ;
 # Visualizzare la classifica dei volontari che hanno effettuato piÃ¹ consegne
 # Visualizzare la classifica dei libri cartacei piÃ¹ prenotati
 # Visualizzare la classifica degli e-book piÃ¹ acceduti
-
-
-
-
-
-
-##solo amministatori
-
-# Inserimento di una segnalazione di comportamento non corretto
-# Rimuovere tutte le segnalazioni di un utente, riportandone lo stato ad Attivo
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #TRIGGER
@@ -812,7 +840,6 @@ SET ALLORA, PROCEDURASQL
 
 
 
-#La data di fine prestito viene calcolata come 15 giorni dalla data di consegna
 
 #Quando un utilizzatore riceve più di 3 segnalazioni il suo account viene settato a "Sospeso"
 CREATE TRIGGER Sospensione
