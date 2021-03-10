@@ -505,8 +505,15 @@ BEGIN
 END $$
 DELIMITER ;
 
-# Visualizzazione delle proprie prenotazioni
+#TRIGGER PRESTITO CARTACEO
+CREATE TRIGGER PrestitoCartaceo
+AFTER INSERT ON PRESTITO
+FOR EACH ROW 
+UPDATE CARTACEO SET StatoPrestito="Prenotato" WHERE (Codice=NEW.CodLibro);
 
+
+
+# Visualizzazione delle proprie prenotazioni
 CREATE VIEW PRESTITI_UT(Prestito, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, Titolo)
 AS SELECT  Cod, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, Titolo 
 		FROM PRESTITO JOIN LIBRO ON Cod=Codice;
@@ -588,39 +595,33 @@ END $$
 DELIMITER ;
 
 
-
-/* TRIGGER NON FUNZIONA NEW.
 #TRIGGER CONSEGNA
 DELIMITER |
 CREATE TRIGGER ConsegnaCartaceo
 AFTER INSERT ON CONSEGNA
 FOR EACH ROW 
 BEGIN
-#INSERISCI DATA INIZIO E FINE SU PRESTITO
-#La data di fine prestito viene calcolata come 15 giorni dalla data di consegna
-UPDATE PRESTITO SET DataAvvio = NEW.Giorno WHERE (Cod=NEW.NumPrestito);
-UPDATE PRESTITO SET DataFine = DATE_ADD(NEW.Giorno, INTERVAL 15 DAY) WHERE (Cod=NEW.NumPrestito);
-
-#CAMBIO LO STATO IN CONSEGNATO O DISPONIBILE
-	SELECT @CodiceLibro=CodLibro
+	IF (NEW.Tipo="Affidamento") THEN
+		#INSERISCI DATA INIZIO E FINE SU PRESTITO
+		#La data di fine prestito viene calcolata come 15 giorni dalla data di consegna
+		UPDATE PRESTITO SET DataAvvio = NEW.Giorno WHERE (Cod=NEW.CodPrestito);
+		UPDATE PRESTITO SET DataFine = DATE_ADD(NEW.Giorno, INTERVAL 15 DAY) WHERE (Cod=NEW.CodPrestito);
+	ELSE
+		#se riconsegno prima aggiorno la data
+		UPDATE PRESTITO SET DataFine = NEW.Giorno WHERE (Cod=NEW.CodPrestito);
+	END IF;
+	#CAMBIO LO STATO IN CONSEGNATO O DISPONIBILE
+	SET @CodiceLibro = 0;
+	SELECT CodLibro INTO @CodiceLibro
 	FROM PRESTITO
-	WHERE Cod=NumPrestito;
-    IF (Tipo="Affidamento") THEN
+	WHERE Cod=NEW.CodPrestito;
+    IF (NEW.Tipo="Affidamento") THEN
 		UPDATE CARTACEO SET StatoPrestito="Consegnato" WHERE (Codice=@CodiceLibro);
 	ELSE 
 		UPDATE CARTACEO SET StatoPrestito="Disponibile" WHERE (Codice=@CodiceLibro);
     END IF;
 END |
 DELIMITER ;
-
-CREATE TRIGGER PrestitoCartaceo
-AFTER INSERT ON PRESTITO
-FOR EACH ROW 
-UPDATE CARTACEO SET StatoPrestito="Prenotato" WHERE (Codice=NEW.CodLibro);
-
-*/
-
-
 
 
 
