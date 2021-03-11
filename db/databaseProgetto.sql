@@ -787,8 +787,6 @@ END $$
 DELIMITER ;
 
 
-
-
 # Inserimento di un messaggio rivolto ad un utente utilizzatore
 DELIMITER $$
 CREATE PROCEDURE InsertMessaggio(IN Titolo varchar(30), IN Testo varchar(300) , IN EmailAmministratore varchar(30), IN EmailUtilizzatore varchar(30))
@@ -806,6 +804,26 @@ BEGIN
 	VALUES (CURDATE(),Testo,EmailAmministratore,EmailUtilizzatore);
 END $$
 DELIMITER ;
+
+#TRIGGER SOSPENSIONE
+#Quando un utilizzatore riceve più di 3 segnalazioni il suo account viene settato a "Sospeso"
+DELIMITER |
+CREATE TRIGGER Sospensione
+AFTER INSERT ON SEGNALAZIONE
+FOR EACH ROW
+BEGIN
+SET @CountSegnalazioni = 0;
+SELECT Count(*) INTO @CountSegnalazioni 
+FROM SEGNALAZIONE
+WHERE EmailUti = NEW.EmailUti;
+	IF (3 <= @CountSegnalazioni) THEN
+		UPDATE UTILIZZATORE
+        SET StatoAccount="Sospeso"
+        WHERE Email=NEW.EmailUti;       
+	END IF;
+END |
+DELIMITER ;
+
 
 # Rimuovere tutte le segnalazioni di un utente, riportandone lo stato ad Attivo
 DELIMITER $$
@@ -840,18 +858,6 @@ when CONDIZIONE
 SET ALLORA, PROCEDURASQL
 
 
-
-
-#Quando un utilizzatore riceve più di 3 segnalazioni il suo account viene settato a "Sospeso"
-CREATE TRIGGER Sospensione
-AFTER INSERT ON SEGNALAZIONE
-FOR EACH ROW 
-BEGIN
-	IF (SELECT COUNT(*) FROM SEGNALAZIONE GROUP BY EmailUti ) THEN
-		SET UTILIZZATORE.StatoAccount="Sospeso"
-	END IF
-END;
-
-#altri trigger 
+#da verificare ancora presenza di altri trigger 
 
 */
