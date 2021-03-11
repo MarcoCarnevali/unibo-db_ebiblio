@@ -70,7 +70,7 @@ Cognome varchar(30),
 Tel varchar(15),
 DataNascita date,
 LuogoNascita varchar(20),
-Qualifica varchar(20),
+Qualifica varchar(10),
 Responsabile varchar(40),
 FOREIGN KEY (Responsabile) REFERENCES BIBLIOTECA(Nome)
 								ON DELETE CASCADE
@@ -319,8 +319,10 @@ VALUES  ("2021-01-01","2021-05-01","2","gino@gmail.com"),
 		("2021-01-01","2021-03-01","6","marco@gmail.com"),
         ("2021-01-02","2021-04-01","1","gino@gmail.com"),
         ("2021-01-02","2021-04-01","10","franco@gmail.com"),
-        ("2021-01-02","2021-04-01","13","tiziano@gmail.com")
-        ;
+        ("2021-04-02","2021-04-17","13","tiziano@gmail.com"),
+		("2021-05-02","2021-05-17","13","franco@gmail.com"),
+		("2021-06-02","2021-06-17","13","marco@gmail.com"),
+		("2021-07-02","2021-07-17","13","tiziano@gmail.com");
 
 INSERT INTO CONSEGNA(CodPrestito, Tipo, Note, Giorno, EmailVol)
 VALUES  ("1","Restituzione","werervrev","2021-01-01","tiziano@me.it"),
@@ -343,9 +345,9 @@ VALUES  ("2021-03-09","09:00","11:00","1","Biblioteca Universitaria","gino@gmail
         ("2021-01-18","15:00","19:00","2","Biblioteca di discipline umanistiche","tiziano@gmail.com");
 
 INSERT INTO AMMINISTRATORE(Email, Pass, Nome, Cognome, Tel, DataNascita, LuogoNascita, Qualifica, Responsabile)
-VALUES  ("alice@gmail.com","pass123","Alice","Fumagalli","3334541216","1960-03-02","Milano","Bibliotecario","Biblioteca Universitaria"),
+VALUES  ("alice@gmail.com","pass123","Alice","Fumagalli","3334541216","1960-03-02","Milano","Stagista","Biblioteca Universitaria"),
 		("francesca@gmail.com","pswrd","Francesca","Di Bella","328659654","1980-05-23","Napoli","Sistemista","Biblioteca Nicola Matteucci"),
-		("luca@gmail.com","password","Luca","Bruno","3904567589","1995-08-03","Carpi","Bibliotecario","Biblioteca Giurica Antonio Cicu"),
+		("luca@gmail.com","password","Luca","Bruno","3904567589","1995-08-03","Carpi","Direttore","Biblioteca Giurica Antonio Cicu"),
 		("mario@gmail.com","03081998","Mario","Rossi","3293842987","1997-05-30","Roma","Sistemisa","Biblioteca economica Walter Bigiavi"),
         ("elvira@gmail.com","123456789","Elvira","Morello","1978-10-26","1966-03-05","Palermo","Sistemista","Biblioteca di discipline umanistiche");
 
@@ -836,6 +838,57 @@ BEGIN
 END $$
 DELIMITER ; 
 
+# Visualizzare la classifica dei volontari che hanno effettuato più consegne
+DELIMITER $$
+CREATE PROCEDURE ClassificaVol()
+BEGIN
+	DECLARE NumeroConsegne int;
+    DECLARE Volontario varchar(30);
+	DECLARE stopCur INT DEFAULT 0;
+	DECLARE MaxReturn INT DEFAULT ( SELECT Count(distinct(EmailVol)) 
+									FROM CONSEGNA);
+	DECLARE cur CURSOR FOR 
+		SELECT Count(EmailVol), EmailVol 
+		FROM CONSEGNA 
+		GROUP BY EmailVol
+		ORDER BY Count(EmailVol) DESC;
+	SET stopCur = 0;
+	OPEN cur;
+	WHILE (stopCur<MaxReturn) DO 
+		FETCH cur INTO NumeroConsegne , Volontario;
+		SELECT NumeroConsegne, Volontario;
+        SET stopCur=stopCur+1;
+    END WHILE;
+	CLOSE cur;
+END $$
+DELIMITER ;
+
+# Visualizzare la classifica dei libri cartacei più prenotati
+DELIMITER $$
+CREATE PROCEDURE ClassificaCartacei()
+BEGIN
+	DECLARE NumeroPrenotazioni int;
+    DECLARE CodiceLibro int;
+    DECLARE TitoloLibro varchar(50);
+	DECLARE stopCur INT DEFAULT 0;
+	DECLARE MaxReturn INT DEFAULT ( SELECT Count(distinct(CodLibro)) 
+									FROM PRESTITI_UT);
+	DECLARE cur CURSOR FOR 
+		SELECT Count(CodLibro), CodLibro, Titolo
+		FROM PRESTITI_UT
+		GROUP BY CodLibro DESC
+		ORDER BY Count(CodLibro) DESC;
+	SET stopCur = 0;
+	OPEN cur;
+    WHILE (stopCur<MaxReturn) DO 
+		FETCH cur INTO NumeroPrenotazioni , CodiceLibro, TitoloLibro;
+		SELECT NumeroPrenotazioni , CodiceLibro, TitoloLibro;
+        SET stopCur=stopCur+1;
+    END WHILE;
+	CLOSE cur;
+END $$
+DELIMITER ;
+	
 /* ANCORA DA IMPLEMENTARE
 
 ##tutti gli utenti
@@ -845,18 +898,10 @@ DELIMITER ;
 # Visualizzazione delle statistiche
 ##statistiche
 # Visualizzare la classifica delle biblioteche con postazioni letture meno utilizzate (in percentuale rispetto al numero di posti letture disponibili)
-# Visualizzare la classifica dei volontari che hanno effettuato piÃ¹ consegne
-# Visualizzare la classifica dei libri cartacei piÃ¹ prenotati
 # Visualizzare la classifica degli e-book piÃ¹ acceduti
 
 
 #TRIGGER
-Create trigger Nome
-Before/After on tabella
-for each row/statement
-when CONDIZIONE
-SET ALLORA, PROCEDURASQL
-
 
 #da verificare ancora presenza di altri trigger 
 
