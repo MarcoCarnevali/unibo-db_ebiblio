@@ -294,19 +294,19 @@ VALUES	("1","Disponibile","1500","15","Non Buono"),
         ("23","Disponibile","300","7","Scadente"),
 		("24","Disponibile","600","7","Ottimo");
 
-INSERT INTO EBOOK(Codice, Dimensione, Link)
-VALUES  ("3","54MB","WWW.GOOGLESCHOLAR.IT"),
-		("4","5MB","www.librionline.it"),
-        ("5","10MB","www.librionline.it"),
-        ("7","300MB","www.librionline.it"),
-        ("11","200MB","www.onlinebooks.com"),
-        ("12","500MB","WWW.GOOGLESCHOLAR.IT"),
-        ("14","50KB","www.onlinebooks.com"),
-        ("17","25MB","www.librionline.it"),
-        ("18","700MB","WWW.GOOGLESCHOLAR.IT"),
-        ("20","100MB","WWW.GOOGLESCHOLAR.IT"),
-        ("21","2MB","www.librionline.it"),
-		("25","540MB","www.onlinebooks.com");
+INSERT INTO EBOOK(Codice, Dimensione, NumeroAccessi ,Link)
+VALUES  ("3","54MB","0","WWW.GOOGLESCHOLAR.IT"),
+		("4","5MB","23","www.librionline.it"),
+        ("5","10MB","4","www.librionline.it"),
+        ("7","300MB","4","www.librionline.it"),
+        ("11","200MB","2","www.onlinebooks.com"),
+        ("12","500MB","1","WWW.GOOGLESCHOLAR.IT"),
+        ("14","50KB","0","www.onlinebooks.com"),
+        ("17","25MB","0","www.librionline.it"),
+        ("18","700MB","0","WWW.GOOGLESCHOLAR.IT"),
+        ("20","100MB","43","WWW.GOOGLESCHOLAR.IT"),
+        ("21","2MB","27","www.librionline.it"),
+		("25","540MB","0","www.onlinebooks.com");
 		
         
 INSERT INTO VOLONTARIO(Email, Pass, Nome, Cognome, Tel, DataNascita, LuogoNascita, Trasporto)
@@ -430,6 +430,17 @@ BEGIN
 	CLOSE cur;
 END $$
 DELIMITER ;
+
+# Visualizzazione di un E-BOOK	
+DELIMITER $$
+CREATE PROCEDURE VisualEbook(IN CodiceEbook int)
+BEGIN
+	SELECT EBOOK.Codice, Titolo, Anno, Edizione, Biblioteca, Dimensione, NumeroAccessi, Link
+    FROM EBOOK JOIN LIBRO ON (EBOOK.Codice=LIBRO.Codice)
+    WHERE EBOOK.Codice=CodiceEbook;
+END $$
+DELIMITER ;
+
 
 
 # Visualizzazione propri eventi di consegna
@@ -889,10 +900,38 @@ BEGIN
 END $$
 DELIMITER ;
 	
-/* ANCORA DA IMPLEMENTARE
+    
+# Visualizzare la classifica degli e-book più acceduti   
+DELIMITER $$
+CREATE PROCEDURE ClassificaEbook()
+BEGIN  
+	DECLARE Titolo_Ebook varchar(50);
+	DECLARE Codice_Ebook int;
+	DECLARE Anno_Uscita smallint;
+	DECLARE Edizione_Ebook varchar(30);
+	DECLARE Biblioteca_Ebook varchar(40); 
+	DECLARE Numero_Accessi int;
+	DECLARE stopCur INT DEFAULT 0;
+	DECLARE MaxReturn INT DEFAULT ( SELECT Count(distinct(EBOOK.Codice)) 
+									FROM EBOOK JOIN LIBRO ON (EBOOK.Codice=LIBRO.Codice));
+	DECLARE cur CURSOR FOR 
+			SELECT Titolo, EBOOK.Codice, NumeroAccessi, Anno, Edizione, Biblioteca
+			FROM EBOOK JOIN LIBRO ON (EBOOK.Codice=LIBRO.Codice)
+			ORDER BY NumeroAccessi DESC;
+			
+	SET stopCur = 0;
+	OPEN cur;
+	WHILE (stopCur<MaxReturn) DO 
+		FETCH cur INTO Titolo_Ebook, Codice_Ebook, Numero_Accessi, Anno_Uscita, Edizione_Ebook, Biblioteca_Ebook;
+		SELECT Titolo_Ebook, Codice_Ebook, Numero_Accessi, Anno_Uscita, Edizione_Ebook, Biblioteca_Ebook;
+		SET stopCur=stopCur+1;
+	END WHILE;
+	CLOSE cur;
+END $$
+DELIMITER ;
 
-##tutti gli utenti
-# Visualizzazione di un E-BOOK		(PENSO INTENDA GRAFICAMENTE??)
+	    
+/* ANCORA DA IMPLEMENTARE
 
 
 # Visualizzazione delle statistiche
