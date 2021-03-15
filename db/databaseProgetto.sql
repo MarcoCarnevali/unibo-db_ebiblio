@@ -337,9 +337,11 @@ VALUES  ("2021-03-09","09:00","11:00","1","Biblioteca Universitaria","gino@gmail
 		("2021-03-08","17:00","19:00","2","Biblioteca Universitaria","tiziano@gmail.com"),
 		("2021-02-20","09:00","13:00","1","Biblioteca Nicola Matteucci","marco@gmail.com"),
         ("2021-02-21","09:00","13:00","2","Biblioteca Nicola Matteucci","gino@gmail.com"),
+        ("2021-02-21","14:00","18:00","2","Biblioteca Nicola Matteucci","gino@gmail.com"),
         ("2021-02-21","10:00","14:00","1","Biblioteca Giurica Antonio Cicu","franco@gmail.com"),
         ("2021-01-05","10:00","15:00","2","Biblioteca Giurica Antonio Cicu","tiziano@gmail.com"),
         ("2021-01-08","13:00","16:00","1","Biblioteca economica Walter Bigiavi","mauro@gmail.com"),
+        ("2021-01-08","13:00","16:00","3","Biblioteca economica Walter Bigiavi","tiziano@gmail.com"),
         ("2021-01-26","13:00","20:00","2","Biblioteca economica Walter Bigiavi","gino@gmail.com"),
         ("2021-01-08","13:00","20:00","1","Biblioteca di discipline umanistiche","marco@gmail.com"),
         ("2021-01-18","15:00","19:00","2","Biblioteca di discipline umanistiche","tiziano@gmail.com");
@@ -930,18 +932,29 @@ BEGIN
 END $$
 DELIMITER ;
 
-	    
-/* ANCORA DA IMPLEMENTARE
-
-
-# Visualizzazione delle statistiche
-##statistiche
 # Visualizzare la classifica delle biblioteche con postazioni letture meno utilizzate (in percentuale rispetto al numero di posti letture disponibili)
-# Visualizzare la classifica degli e-book piÃ¹ acceduti
-
-
-#TRIGGER
-
-#da verificare ancora presenza di altri trigger 
-
-*/
+DELIMITER $$
+CREATE PROCEDURE ClassificaBibliotecheMenoUsate()
+BEGIN
+	DECLARE Nome_Biblioteca varchar(40);
+	DECLARE Numero_Prenotazioni int;
+    DECLARE Numero_Posti int;
+    DECLARE Percentuale_Utilizzo FLOAT (6,2) UNSIGNED;
+    DECLARE stopCur INT DEFAULT 0;
+    DECLARE MaxReturn INT DEFAULT ( SELECT COUNT(DISTINCT(Biblioteca))
+									FROM PRENOTAZIONE);
+	DECLARE cur CURSOR FOR ( SELECT Biblioteca, Count(Distinct(IdPren)), Count(Distinct(Num)), 
+									TRUNCATE(  ((Count(Distinct(IdPren))/Count(Distinct(Num)))*100) , 	2) as Percentuale  
+							 FROM PRENOTAZIONE JOIN POSTI_LETTURA ON (Biblioteca=NomeBiblioteca)
+							 GROUP BY Biblioteca
+							 ORDER BY Percentuale ASC );
+	SET stopCur=0;
+    OPEN cur;
+    WHILE(stopCur<MaxReturn) DO
+		FETCH cur INTO Nome_Biblioteca, Numero_Prenotazioni, Numero_Posti, Percentuale_Utilizzo;
+        SELECT Nome_Biblioteca, Numero_Prenotazioni, Numero_Posti, Percentuale_Utilizzo;
+		SET stopCur=stopCur+1;
+	END WHILE;
+    CLOSE cur; 
+END $$
+DELIMITER ; 
