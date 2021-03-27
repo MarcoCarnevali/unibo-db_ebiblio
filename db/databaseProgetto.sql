@@ -227,12 +227,12 @@ VALUES  ("Biblioteca Universitaria","0512088300"),
         ("Biblioteca economica Walter Bigiavi","0512098285"),
         ("Biblioteca di discipline umanistiche","0512098310");
 
-INSERT INTO UTILIZZATORE (Email, Pass, StatoAccount)
-VALUES  ("gino@gmail.com","1234","Attivo"),
-		("marco@gmail.com","pass1234","Attivo"),
-        ("franco@gmail.com","0001234","Attivo"),
-        ("tiziano@gmail.com","passwordsupersicura","Sospeso"),
-        ("mauro@gmail.com","1234","Attivo");
+INSERT INTO UTILIZZATORE (Email, Pass, DataNascita ,StatoAccount)
+VALUES  ("gino@gmail.com","1234","1985-04-03","Attivo"),
+		("marco@gmail.com","pass1234","1967-06-12","Attivo"),
+        ("franco@gmail.com","0001234","1985-04-05","Attivo"),
+        ("tiziano@gmail.com","passwordsupersicura","1960-05-10","Sospeso"),
+        ("mauro@gmail.com","1234","1998-03-03","Attivo");
 
 INSERT INTO POSTI_LETTURA(Num, NomeBiblioteca, Presa, Ethernet) 
 VALUES	("1","Biblioteca Universitaria",true, false),
@@ -958,3 +958,20 @@ BEGIN
     CLOSE cur; 
 END $$
 DELIMITER ; 
+
+
+#CLUSTERING
+/* Implementare un sistema di clustering basato su algoritmo di K-Means, attraverso
+il quale si segmentano gli utenti utilizzatori, sulla base della loro professione, età, genere e
+numero di richieste di prestiti di libri cartacei effettuati. Visualizzare -tramite apposita
+funzionalità nella piattaforma- l’elenco degli utenti che appartiene a ciascun cluster.*/
+
+SELECT UTILIZZATORE.Email,
+		DATE_FORMAT(FROM_DAYS(DATEDIFF(CURRENT_DATE(),UTILIZZATORE.DataNascita)), '%Y') + 0 AS Eta,
+        Count(Cod) AS NumeroPrenotazioni 
+FROM UTILIZZATORE LEFT JOIN PRESTITO ON (Email=EmailUtilizzatore)
+GROUP BY Email
+INTO OUTFILE "/tmp/datiCluster.csv" #lo alloca nella cartella temportanea di un sistema linux
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
