@@ -990,7 +990,6 @@ SELECT UTILIZZATORE.Email,
         Count(Cod) AS NumeroPrenotazioni 
 FROM UTILIZZATORE LEFT JOIN PRESTITO ON (Email=EmailUtilizzatore)
 GROUP BY Email
-INTO OUTFILE "/tmp/datiCluster.csv" #lo alloca nella cartella temportanea di un sistema linux
+INTO OUTFILE "/tmp/datiCluster.arff" #lo alloca nella cartella temportanea di un sistema linux
 FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
 LINES TERMINATED BY '\n';
