@@ -79,6 +79,7 @@ FOREIGN KEY (Responsabile) REFERENCES BIBLIOTECA(Nome)
 create table UTILIZZATORE(
 Email varchar(30) PRIMARY KEY,
 Pass varchar(20) NOT NULL,
+Sesso char(1) CHECK(Sesso="M" OR Sesso="F"),
 Nome varchar(20), 
 Cognome varchar(30),
 Tel varchar(15),
@@ -227,12 +228,20 @@ VALUES  ("Biblioteca Universitaria","0512088300"),
         ("Biblioteca economica Walter Bigiavi","0512098285"),
         ("Biblioteca di discipline umanistiche","0512098310");
 
-INSERT INTO UTILIZZATORE (Email, Pass, DataNascita ,StatoAccount)
-VALUES  ("gino@gmail.com","1234","1985-04-03","Attivo"),
-		("marco@gmail.com","pass1234","1967-06-12","Attivo"),
-        ("franco@gmail.com","0001234","1985-04-05","Attivo"),
-        ("tiziano@gmail.com","passwordsupersicura","1960-05-10","Sospeso"),
-        ("mauro@gmail.com","1234","1998-03-03","Attivo");
+INSERT INTO UTILIZZATORE (Email, Pass, Sesso,DataNascita ,StatoAccount, Professione)
+VALUES  ("gino@gmail.com","1234","M","1985-04-03","Attivo","Studente"),
+		("marco@gmail.com","pass1234","M","1967-06-12","Attivo","Professore"),
+        ("franco@gmail.com","0001234","M","1985-04-05","Attivo","Studente"),
+        ("tiziano@gmail.com","passwordsupersicura","M","1960-05-10","Sospeso","Professore"),
+        ("mauro@gmail.com","psw1234","M","1991-03-01","Attivo","Tirocinante"),
+        ("vanessa@gmail.com","1234","F","1992-03-02","Attivo","Professore"),
+        ("melissa@gmail.com","psw1234","F","1993-03-03","Attivo","Assistente"),
+        ("giovanna@gmail.com","pswww1234","F","1994-03-04","Attivo","Assistente"),
+        ("carla@gmail.com","sdcsd1234","F","1995-03-05","Attivo","Studente"),
+        ("piero@gmail.com","sdfsf1234","M","1996-03-06","Attivo","Studente"),
+        ("luigi@gmail.com","cscs1234","M","1997-03-07","Attivo","Studente"),
+        ("matteo@gmail.com","cscs1234c","M","1998-03-08","Attivo","Studente"),
+        ("michele@gmail.com","cscds1234","M","1999-03-09","Attivo","Studente");
 
 INSERT INTO POSTI_LETTURA(Num, NomeBiblioteca, Presa, Ethernet) 
 VALUES	("1","Biblioteca Universitaria",true, false),
@@ -322,7 +331,16 @@ VALUES  ("2021-01-01","2021-05-01","2","gino@gmail.com"),
         ("2021-04-02","2021-04-17","13","tiziano@gmail.com"),
 		("2021-05-02","2021-05-17","13","franco@gmail.com"),
 		("2021-06-02","2021-06-17","13","marco@gmail.com"),
-		("2021-07-02","2021-07-17","13","tiziano@gmail.com");
+		("2021-07-02","2021-07-17","13","tiziano@gmail.com"),
+        ("2021-07-02","2021-07-17","15","tiziano@gmail.com"),
+        ("2021-08-02","2021-08-17","15","vanessa@gmail.com"),
+        ("2021-09-02","2021-09-17","15","tiziano@gmail.com"),
+        ("2021-10-02","2021-10-17","15","vanessa@gmail.com"),
+        ("2021-10-02","2021-10-17","16","melissa@gmail.com"),
+        ("2021-07-02","2021-07-17","19","michele@gmail.com"),
+        ("2021-10-12","2021-10-27","22","michele@gmail.com"),
+        ("2021-07-12","2021-07-27","23","tiziano@gmail.com"),
+        ("2021-03-05","2021-03-20","24","piero@gmail.com");
 
 INSERT INTO CONSEGNA(CodPrestito, Tipo, Note, Giorno, EmailVol)
 VALUES  ("1","Restituzione","werervrev","2021-01-01","tiziano@me.it"),
@@ -492,11 +510,11 @@ DELIMITER ;
 ##SOLO UTILIZZATORI
 # Registrazione alla piattaforma
 DELIMITER $$
-CREATE PROCEDURE Registrazione( IN mail varchar(30), IN psw varchar(20), IN NomeUt varchar(20), IN CognomeUt varchar(30), IN TelUt varchar(15), IN DataNascitaUt date, IN LuogoNascitaUt varchar(20), IN ProfessioneUt varchar(20))
+CREATE PROCEDURE Registrazione( IN mail varchar(30), IN psw varchar(20),IN SessoUt char(1), IN NomeUt varchar(20), IN CognomeUt varchar(30), IN TelUt varchar(15), IN DataNascitaUt date, IN LuogoNascitaUt varchar(20), IN ProfessioneUt varchar(20))
 BEGIN
 	SET @DataOdierna=CURDATE(); 
-	INSERT INTO UTILIZZATORE (Email, Pass, Nome, Cognome, Tel, DataNascita, LuogoNascita, DataCreazioneAccount, Professione)
-    VALUES(mail, psw, NomeUt, CognomeUt, TelUt, DataNascitaUt, LuogoNascitaUt, @DataOdierna, ProfessioneUt);
+	INSERT INTO UTILIZZATORE (Email, Pass, Sesso ,Nome, Cognome, Tel, DataNascita, LuogoNascita, DataCreazioneAccount, Professione)
+    VALUES(mail, psw, SessoUt, NomeUt, CognomeUt, TelUt, DataNascitaUt, LuogoNascitaUt, @DataOdierna, ProfessioneUt);
 END $$
 DELIMITER ;
 
@@ -968,6 +986,7 @@ funzionalità nella piattaforma- l’elenco degli utenti che appartiene a ciascu
 
 SELECT UTILIZZATORE.Email,
 		DATE_FORMAT(FROM_DAYS(DATEDIFF(CURRENT_DATE(),UTILIZZATORE.DataNascita)), '%Y') + 0 AS Eta,
+        Sesso,
         Count(Cod) AS NumeroPrenotazioni 
 FROM UTILIZZATORE LEFT JOIN PRESTITO ON (Email=EmailUtilizzatore)
 GROUP BY Email
