@@ -508,13 +508,22 @@ DELIMITER ;
 
 
 ##SOLO UTILIZZATORI
-# Registrazione alla piattaforma
+# Registrazione alla utente piattaforma
 DELIMITER $$
-CREATE PROCEDURE Registrazione( IN mail varchar(30), IN psw varchar(20),IN SessoUt char(1), IN NomeUt varchar(20), IN CognomeUt varchar(30), IN TelUt varchar(15), IN DataNascitaUt date, IN LuogoNascitaUt varchar(20), IN ProfessioneUt varchar(20))
+CREATE PROCEDURE RegistrazioneUtente( IN mail varchar(30), IN psw varchar(20),IN SessoUt char(1), IN NomeUt varchar(20), IN CognomeUt varchar(30), IN TelUt varchar(15), IN DataNascitaUt date, IN LuogoNascitaUt varchar(20), IN ProfessioneUt varchar(20))
 BEGIN
 	SET @DataOdierna=CURDATE(); 
 	INSERT INTO UTILIZZATORE (Email, Pass, Sesso ,Nome, Cognome, Tel, DataNascita, LuogoNascita, DataCreazioneAccount, Professione)
     VALUES(mail, psw, SessoUt, NomeUt, CognomeUt, TelUt, DataNascitaUt, LuogoNascitaUt, @DataOdierna, ProfessioneUt);
+END $$
+DELIMITER ;
+
+#Registrazione volontario alla piattaforma
+DELIMITER $$
+CREATE PROCEDURE RegistrazioneVolontario( IN mail varchar(30), IN psw varchar(20), IN NomeVol varchar(20), IN CognomeVol varchar(30), IN TelVol varchar(15), IN DataNascitaVol date, IN LuogoNascitaVol varchar(20), IN TrasportoVol varchar(20))
+BEGIN
+	INSERT INTO VOLONTARIO(Email, Pass, Nome, Cognome, Tel, DataNascita, LuogoNascita, Trasporto)
+    VALUES(mail, psw, NomeVol, CognomeVol, TelVol, DataNascitaVol, LuogoNascitaVol, TrasportoVol);
 END $$
 DELIMITER ;
 
