@@ -388,42 +388,17 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE VisualBiblioteche()
 BEGIN
-	DECLARE NomiBib varchar(40);
-	DECLARE stoppaCursore INT DEFAULT 0;
-	DECLARE NomiMax INT DEFAULT (SELECT COUNT(Nome) FROM BIBLIOTECA);
-	DECLARE cursore CURSOR FOR
-		SELECT Nome FROM BIBLIOTECA;
-	SET stoppaCursore=0;
-	OPEN cursore;
-	WHILE (stoppaCursore<NomiMax) DO
-		FETCH cursore INTO NomiBib;
-		SELECT NomiBib;
-        SET stoppaCursore = stoppaCursore+1;
-	END WHILE;
-	CLOSE cursore;
+	SELECT Nome, Indirizzo
+    FROM BIBLIOTECA;
 END $$
 DELIMITER ;
+
 
 # Visualizzazione dei posti lettura presenti in ogni biblioteca
 DELIMITER $$
 CREATE PROCEDURE VisualPosti()
 BEGIN
-	DECLARE Posto int;
-	DECLARE Biblioteca varchar(40);
-	DECLARE Presa boolean;
-	DECLARE Ethernet boolean;
-    DECLARE stopCur INT DEFAULT 0;
-	DECLARE MaxReturn INT DEFAULT (SELECT Count(*) FROM POSTI_LETTURA);
-	DECLARE cur CURSOR FOR 
-		SELECT * FROM POSTI_LETTURA;
-	SET stopCur = 0;
-	OPEN cur;
-	WHILE (stopCur<MaxReturn) DO 
-		FETCH cur INTO Posto, Biblioteca, Presa, Ethernet;
-		SELECT Posto, Biblioteca, Presa, Ethernet;
-        SET stopCur=stopCur+1;
-	END WHILE;
-	CLOSE cur;
+	SELECT * FROM POSTI_LETTURA;
 END $$
 DELIMITER ; 
 
@@ -431,23 +406,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE VisualLibri()
 BEGIN
-	DECLARE Codice int;
-	DECLARE Titolo varchar(50);
-	DECLARE Anno smallint;
-    DECLARE Edizione varchar(30);
-    DECLARE Biblioteca varchar(40);
-    DECLARE stopCur INT DEFAULT 0;
-	DECLARE MaxReturn INT DEFAULT (SELECT Count(*) FROM LIBRO);
-	DECLARE cur CURSOR FOR 
-		SELECT * FROM LIBRO;
-	SET stopCur = 0;
-	OPEN cur;
-	WHILE (stopCur<MaxReturn) DO 
-		FETCH cur INTO Codice, Titolo, Anno, Edizione, Biblioteca;
-		SELECT Codice, Titolo, Anno, Edizione, Biblioteca;
-        SET stopCur=stopCur+1;
-	END WHILE;
-	CLOSE cur;
+	SELECT * FROM LIBRO;
 END $$
 DELIMITER ;
 
@@ -473,32 +432,9 @@ AS SELECT  CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFin
 DELIMITER $$
 CREATE PROCEDURE VisualConsegne(IN EmailUt varchar(30))
 BEGIN
-	DECLARE CodPrestito int;
-    DECLARE Titolo varchar(50);
-    DECLARE Tipo varchar(12);
-    DECLARE Note varchar(200);
-    DECLARE Giorno date;
-    DECLARE EmailVol varchar(30);
-    DECLARE DataAvvio date;
-    DECLARE DataFine date;
-    DECLARE CodLibro int;
-    DECLARE EmailUtil varchar(30);
-    DECLARE StatoPrestito varchar(11);
-    DECLARE stopCur INT DEFAULT 0;
-    DECLARE MaxReturn INT DEFAULT ( SELECT Count(*) 
-									FROM PRESTITI_UT
-                                    WHERE EmailUtilizzatore = EmailUt);
-    DECLARE cur CURSOR FOR (SELECT *
-							FROM CONSEGNE_UT
-                            WHERE EmailUtilizzatore = EmailUt);
-    SET stopCur=0;
-    OPEN cur;
-    WHILE (stopCur<MaxReturn) DO
-		FETCH cur INTO CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtil, StatoPrestito;
-        SELECT CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtil, StatoPrestito;
-        SET stopCUr=stopCur+1;
-    END WHILE;
-    CLOSE cur;
+	SELECT *
+	FROM CONSEGNE_UT
+	WHERE EmailUtilizzatore = EmailUt;
 END $$
 DELIMITER ;
 
@@ -563,30 +499,12 @@ AS SELECT  Cod, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, Titolo
 DELIMITER $$
 CREATE PROCEDURE PrestitiUtente(IN EmailUti varchar(30)) 
 BEGIN
-	DECLARE CodPrestito int ;
-	DECLARE DataAvvio date;
-	DECLARE DataFine date;
-	DECLARE CodLibro int;
-	DECLARE Email varchar(30);
-	DECLARE Titolo varchar(50);
-    DECLARE stopCur INT DEFAULT 0;
-	DECLARE MaxReturn INT DEFAULT ( SELECT Count(*) 
-									FROM PRESTITI_UT
-                                    WHERE EmailUtilizzatore = EmailUti);
-	DECLARE cur CURSOR FOR (SELECT *
-							FROM PRESTITI_UT
-							WHERE EmailUtilizzatore = EmailUti );
-	
-    SET stopCur = 0;
-    OPEN cur;
-    WHILE (stopCur<MaxReturn) DO
-		FETCH cur INTO CodPrestito, DataAvvio, DataFine, CodLibro, Email, Titolo;
-        SELECT CodPrestito, DataAvvio, DataFine,CodLibro, Email, Titolo;
-		SET stopCur=stopCur+1;
-    END WHILE;
-    CLOSE cur;
+	SELECT *
+	FROM PRESTITI_UT
+	WHERE EmailUtilizzatore = EmailUti;  
 END $$
 DELIMITER ;
+
 
 
 
@@ -598,32 +516,11 @@ AS SELECT  Cod, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito,
 		FROM PRESTITO JOIN CARTACEO ON (PRESTITO.CodLibro=CARTACEO.Codice)
 						JOIN LIBRO ON (PRESTITO.Cod=LIBRO.Codice);
         
-
 DELIMITER $$
 CREATE PROCEDURE VisualPrenotazioniCartei()
 BEGIN
-	DECLARE Prestito int;
-	DECLARE DataAvvio date;
-	DECLARE DataFine date;
-	DECLARE CodLibro int;
-	DECLARE EmailUt varchar(30);
-    DECLARE StatoPrestito varchar(11);
-    DECLARE Biblioteca varchar(40);
-    
-	DECLARE stopCur INT DEFAULT 0;
-	DECLARE MaxReturn INT DEFAULT ( SELECT Count(*) 
-									FROM PRESTITI_VOL);
-	DECLARE cur CURSOR FOR (SELECT *
-							FROM PRESTITI_VOL);
-	
-    SET stopCur = 0;
-    OPEN cur;
-    WHILE (stopCur<MaxReturn) DO
-		FETCH cur INTO Prestito, DataAvvio, DataFine, CodLibro, EmailUt, StatoPrestito, Biblioteca;
-        SELECT Prestito, DataAvvio, DataFine, CodLibro, EmailUt, StatoPrestito, Biblioteca;
-		SET stopCur=stopCur+1;
-    END WHILE;
-    CLOSE cur;
+	SELECT *
+	FROM PRESTITI_VOL;
 END $$
 DELIMITER ;
 
@@ -798,33 +695,9 @@ AS SELECT IdPren, Giorno, OraInizio, OraFine, NumPosto, Biblioteca, EmailUtilizz
 DELIMITER $$
 CREATE PROCEDURE VisualPrenotazioniPosti(IN BibliotecaG varchar(40))
 BEGIN 
-	DECLARE Prenotazione int;
-	DECLARE Giorno date;
-	DECLARE OraInizio time;
-	DECLARE OraFine time;
-	DECLARE NumPosto int;
-	DECLARE BibliotecaGestita varchar(40);
-	DECLARE EmailUtilizzatore varchar(30);
-    DECLARE Presa boolean;
-    DECLARE Ethernet boolean;
-    
-    DECLARE stopCur INT DEFAULT 0;
-    DECLARE MaxReturn INT DEFAULT(	SELECT Count(*)
-									FROM PRENOTAZIONI_AMM
-									WHERE Biblioteca=BibliotecaG
-                                    );
-	DECLARE cur CURSOR FOR( SELECT *
-							FROM PRENOTAZIONI_AMM
-							WHERE Biblioteca=BibliotecaG
-                            );
-	SET stopCur=0;
-    OPEN cur;
-    WHILE (stopCur<MaxReturn) DO
-		FETCH cur INTO Prenotazione, Giorno, OraInizio, OraFine, NumPosto, BibliotecaGestita, EmailUtilizzatore, Presa, Ethernet;
-        SELECT Prenotazione, Giorno, OraInizio, OraFine, NumPosto, BibliotecaGestita, EmailUtilizzatore, Presa, Ethernet;
-        SET stopCur=stopCur+1;
-    END WHILE;
-    CLOSE cur;
+	SELECT *
+	FROM PRENOTAZIONI_AMM
+	WHERE Biblioteca=BibliotecaG;
 END $$
 DELIMITER ;
 
@@ -882,24 +755,10 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ClassificaVol()
 BEGIN
-	DECLARE NumeroConsegne int;
-    DECLARE Volontario varchar(30);
-	DECLARE stopCur INT DEFAULT 0;
-	DECLARE MaxReturn INT DEFAULT ( SELECT Count(distinct(EmailVol)) 
-									FROM CONSEGNA);
-	DECLARE cur CURSOR FOR 
-		SELECT Count(EmailVol), EmailVol 
-		FROM CONSEGNA 
-		GROUP BY EmailVol
-		ORDER BY Count(EmailVol) DESC;
-	SET stopCur = 0;
-	OPEN cur;
-	WHILE (stopCur<MaxReturn) DO 
-		FETCH cur INTO NumeroConsegne , Volontario;
-		SELECT NumeroConsegne, Volontario;
-        SET stopCur=stopCur+1;
-    END WHILE;
-	CLOSE cur;
+	SELECT Count(EmailVol), EmailVol 
+	FROM CONSEGNA 
+	GROUP BY EmailVol
+	ORDER BY Count(EmailVol) DESC;
 END $$
 DELIMITER ;
 
@@ -907,25 +766,10 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ClassificaCartacei()
 BEGIN
-	DECLARE NumeroPrenotazioni int;
-    DECLARE CodiceLibro int;
-    DECLARE TitoloLibro varchar(50);
-	DECLARE stopCur INT DEFAULT 0;
-	DECLARE MaxReturn INT DEFAULT ( SELECT Count(distinct(CodLibro)) 
-									FROM PRESTITI_UT);
-	DECLARE cur CURSOR FOR 
-		SELECT Count(CodLibro), CodLibro, Titolo
-		FROM PRESTITI_UT
-		GROUP BY CodLibro DESC
-		ORDER BY Count(CodLibro) DESC;
-	SET stopCur = 0;
-	OPEN cur;
-    WHILE (stopCur<MaxReturn) DO 
-		FETCH cur INTO NumeroPrenotazioni , CodiceLibro, TitoloLibro;
-		SELECT NumeroPrenotazioni , CodiceLibro, TitoloLibro;
-        SET stopCur=stopCur+1;
-    END WHILE;
-	CLOSE cur;
+	SELECT Count(CodLibro) as NumPrestiti, CodLibro, Titolo
+	FROM PRESTITI_UT
+	GROUP BY CodLibro DESC
+	ORDER BY Count(CodLibro) DESC;   
 END $$
 DELIMITER ;
 	
@@ -934,28 +778,9 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ClassificaEbook()
 BEGIN  
-	DECLARE Titolo_Ebook varchar(50);
-	DECLARE Codice_Ebook int;
-	DECLARE Anno_Uscita smallint;
-	DECLARE Edizione_Ebook varchar(30);
-	DECLARE Biblioteca_Ebook varchar(40); 
-	DECLARE Numero_Accessi int;
-	DECLARE stopCur INT DEFAULT 0;
-	DECLARE MaxReturn INT DEFAULT ( SELECT Count(distinct(EBOOK.Codice)) 
-									FROM EBOOK JOIN LIBRO ON (EBOOK.Codice=LIBRO.Codice));
-	DECLARE cur CURSOR FOR 
-			SELECT Titolo, EBOOK.Codice, NumeroAccessi, Anno, Edizione, Biblioteca
-			FROM EBOOK JOIN LIBRO ON (EBOOK.Codice=LIBRO.Codice)
-			ORDER BY NumeroAccessi DESC;
-			
-	SET stopCur = 0;
-	OPEN cur;
-	WHILE (stopCur<MaxReturn) DO 
-		FETCH cur INTO Titolo_Ebook, Codice_Ebook, Numero_Accessi, Anno_Uscita, Edizione_Ebook, Biblioteca_Ebook;
-		SELECT Titolo_Ebook, Codice_Ebook, Numero_Accessi, Anno_Uscita, Edizione_Ebook, Biblioteca_Ebook;
-		SET stopCur=stopCur+1;
-	END WHILE;
-	CLOSE cur;
+	SELECT Titolo, EBOOK.Codice, NumeroAccessi, Anno, Edizione, Biblioteca
+	FROM EBOOK JOIN LIBRO ON (EBOOK.Codice=LIBRO.Codice)
+	ORDER BY NumeroAccessi DESC;   
 END $$
 DELIMITER ;
 
@@ -963,26 +788,11 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ClassificaBibliotecheMenoUsate()
 BEGIN
-	DECLARE Nome_Biblioteca varchar(40);
-	DECLARE Numero_Prenotazioni int;
-    DECLARE Numero_Posti int;
-    DECLARE Percentuale_Utilizzo FLOAT (6,2) UNSIGNED;
-    DECLARE stopCur INT DEFAULT 0;
-    DECLARE MaxReturn INT DEFAULT ( SELECT COUNT(DISTINCT(Biblioteca))
-									FROM PRENOTAZIONE);
-	DECLARE cur CURSOR FOR ( SELECT Biblioteca, Count(Distinct(IdPren)), Count(Distinct(Num)), 
-									TRUNCATE(  ((Count(Distinct(IdPren))/Count(Distinct(Num)))*100) , 	2) as Percentuale  
-							 FROM PRENOTAZIONE JOIN POSTI_LETTURA ON (Biblioteca=NomeBiblioteca)
-							 GROUP BY Biblioteca
-							 ORDER BY Percentuale ASC );
-	SET stopCur=0;
-    OPEN cur;
-    WHILE(stopCur<MaxReturn) DO
-		FETCH cur INTO Nome_Biblioteca, Numero_Prenotazioni, Numero_Posti, Percentuale_Utilizzo;
-        SELECT Nome_Biblioteca, Numero_Prenotazioni, Numero_Posti, Percentuale_Utilizzo;
-		SET stopCur=stopCur+1;
-	END WHILE;
-    CLOSE cur; 
+	 SELECT Biblioteca, Count(Distinct(IdPren)) as NumeroPrenotazioni, Count(Distinct(Num)) as NumeroPosti, 
+			TRUNCATE(((Count(Distinct(IdPren))/Count(Distinct(Num)))*100) ,2) as Percentuale  
+	FROM PRENOTAZIONE JOIN POSTI_LETTURA ON (Biblioteca=NomeBiblioteca)
+	GROUP BY Biblioteca
+	ORDER BY Percentuale ASC;
 END $$
 DELIMITER ; 
 
