@@ -21,7 +21,7 @@ FOREIGN KEY (NomeBiblioteca) REFERENCES BIBLIOTECA(Nome)
                                 ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 create table FOTO(
-NomeFoto varchar(15),
+NomeFoto varchar(40),
 NomeBib varchar(40),
 PRIMARY KEY(NomeFoto, NomeBib),
 FOREIGN KEY (NomeBib) REFERENCES BIBLIOTECA(Nome)
@@ -227,6 +227,28 @@ VALUES  ("Biblioteca Universitaria","0512088300"),
         ("Biblioteca economica Walter Bigiavi","0512098280"),
         ("Biblioteca economica Walter Bigiavi","0512098285"),
         ("Biblioteca di discipline umanistiche","0512098310");
+
+INSERT INTO FOTO (NomeFoto, NomeBib)
+VALUES  ("universitaria1.jpeg","Biblioteca Universitaria"),
+		("universitaria2.jpeg","Biblioteca Universitaria"),
+		("universitaria3.jpeg","Biblioteca Universitaria"),
+		("universitaria4.jpeg","Biblioteca Universitaria"),
+        ("matteucci1.jpeg","Biblioteca Nicola Matteucci"),
+        ("matteucci2.jpeg","Biblioteca Nicola Matteucci"),
+        ("matteucci3.jpeg","Biblioteca Nicola Matteucci"),
+        ("matteucci4.jpeg","Biblioteca Nicola Matteucci"),
+        ("cicu1.jpeg","Biblioteca Giurica Antonio Cicu"),
+        ("cicu2.jpeg","Biblioteca Giurica Antonio Cicu"),
+        ("cicu3.jpeg","Biblioteca Giurica Antonio Cicu"),
+        ("cicu4.jpeg","Biblioteca Giurica Antonio Cicu"),
+        ("bigiavi1.jpeg","Biblioteca economica Walter Bigiavi"),
+        ("bigiavi2.jpeg","Biblioteca economica Walter Bigiavi"),
+        ("bigiavi3.jpeg","Biblioteca economica Walter Bigiavi"),
+        ("bigiavi4.jpeg","Biblioteca economica Walter Bigiavi"),
+        ("umanistiche1.jpeg","Biblioteca di discipline umanistiche"),
+        ("umanistiche2.jpeg","Biblioteca di discipline umanistiche"),
+        ("umanistiche3.jpeg","Biblioteca di discipline umanistiche"),
+        ("umanistiche4.jpeg","Biblioteca di discipline umanistiche");
 
 INSERT INTO UTILIZZATORE (Email, Pass, Sesso,DataNascita ,StatoAccount, Professione)
 VALUES  ("gino@gmail.com","1234","M","1985-04-03","Attivo","Studente"),
