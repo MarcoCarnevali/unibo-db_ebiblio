@@ -410,8 +410,19 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE VisualBiblioteche()
 BEGIN
-	SELECT Nome, Indirizzo
-    FROM BIBLIOTECA;
+	SELECT Nome, Indirizzo, NomeFoto
+	FROM BIBLIOTECA JOIN FOTO ON (Nome=NomeBib)
+	WHERE NomeFoto LIKE "%1.jpeg";
+END $$
+DELIMITER ;
+
+# Visualizzazioni foto biblioteca
+DELIMITER $$
+CREATE PROCEDURE FotoBib(IN BibliotecaScelta varchar(40))
+BEGIN
+	SELECT NomeFoto
+	FROM FOTO
+	WHERE NomeBib = BibliotecaScelta;
 END $$
 DELIMITER ;
 
@@ -424,7 +435,7 @@ BEGIN
 END $$
 DELIMITER ; 
 
-# Visualizzazione dei libri disponibili in ogni biblioteca
+# Visualizzazione dei libri disponibili in tutte le biblioteche
 DELIMITER $$
 CREATE PROCEDURE VisualLibri()
 BEGIN
@@ -432,7 +443,29 @@ BEGIN
 END $$
 DELIMITER ;
 
-# Visualizzazione di un E-BOOK	
+#Visualizzazione dei cartacei di una biblioteca
+DELIMITER $$
+CREATE PROCEDURE VisualCartaceiBib(in BibliotecaScelta varchar(40))
+BEGIN
+	SELECT CARTACEO.Codice, Titolo, Anno, Edizione,StatoPrestito, Pagine, Scaffale, StatoConservazione
+	FROM CARTACEO JOIN LIBRO ON (CARTACEO.Codice=LIBRO.Codice)
+	WHERE Biblioteca = BibliotecaScelta;
+END $$
+DELIMITER;
+
+
+#Visualizzazione degli ebook di una biblioteca
+DELIMITER $$
+CREATE PROCEDURE VisualEbookBib(in BibliotecaScelta varchar(40))
+BEGIN
+	SELECT EBOOK.Codice, Titolo, Anno, Edizione, Dimensione, NumeroAccessi, Link
+	FROM EBOOK JOIN LIBRO ON (EBOOK.Codice=LIBRO.Codice)
+	WHERE Biblioteca = BibliotecaScelta;
+END $$
+DELIMITER;
+
+
+# Visualizzazione scheda di un E-BOOK	
 DELIMITER $$
 CREATE PROCEDURE VisualEbook(IN CodiceEbook int)
 BEGIN
