@@ -397,12 +397,19 @@ VALUES  ("alice@gmail.com","pass123","Alice","Fumagalli","3334541216","1960-03-0
 #OPERAZIONI SUI DATI (da implementare attraverso stored procedure)
 ##TUTTI GLI UTENTI
 # Autenticazione alla piattaforma
+# Tipo 0 = Utilizzatore,			Tipo 1 = Volontario
 DELIMITER $$
-CREATE PROCEDURE Autenticazione( IN mail varchar(30), IN psw varchar(20), OUT Stato varchar(7) )
+CREATE PROCEDURE Autenticazione(IN tipo bool,  IN mail varchar(30), IN psw varchar(20))
 BEGIN
-	SELECT StatoAccount as Stato
-	FROM UTILIZZATORE
-	WHERE (Email=mail AND Pass=psw);
+	IF (tipo=0) THEN 
+		SELECT StatoAccount as Stato
+		FROM UTILIZZATORE
+		WHERE (Email=mail AND Pass=psw);
+    ELSE 
+		SELECT *
+        FROM VOLONTARIO
+        WHERE (Email=mail AND Pass=psw);
+    END IF;
 END $$
 DELIMITER ;
 
