@@ -426,6 +426,16 @@ BEGIN
 END $$
 DELIMITER ;
 
+# Visualizzazione biblioteca
+DELIMITER $$
+CREATE PROCEDURE VisualBiblioteca(IN NomeBiblioteca varchar(40))
+BEGIN
+	SELECT *
+    FROM BIBLIOTECA
+    WHERE Nome=NomeBiblioteca;
+END $$
+DELIMITER ;
+
 
 # Visualizzazione dei posti lettura presenti in ogni biblioteca
 DELIMITER $$
