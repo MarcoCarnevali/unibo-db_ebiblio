@@ -48,6 +48,16 @@ app.get('/library/:id', (req, res) => {
     });
 })
 
+app.get('/library/gallery/:id', (req, res) => {
+    connection.query(`SELECT * FROM FOTO WHERE (NomeBib="${req.params.id}");`, (err, rows) => {
+        console.error(err)
+        console.log(rows)
+        if (err)
+            return res.status(500).send({ error: err });
+        return res.status(200).send({ result: rows });
+    });
+})
+
 app.get('/logout', function (req, res) {
     res.clearCookie("ebiblio_email");
     return res.status(200).send({ result: "Done" });

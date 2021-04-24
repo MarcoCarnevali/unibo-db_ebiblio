@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "./components/NavBar";
 import { BookCard } from "./components/BookCard";
+import GalleryCard from "./components/GalleryCard";
 import Map from "./components/Map";
 import GlassInput from "./components/GlassInput";
 import "./style/main.css";
 import { useLocation } from "react-router-dom";
-import { getBiblio, getBooks, getEBooks } from "./Network/NetworkManager";
+import { getBiblio, getBooks, getEBooks, getGallery } from "./Network/NetworkManager";
 
 const informations = (data) => {
     return (
@@ -67,6 +68,7 @@ const Detail = () => {
     const [data, setData] = useState(null);
     const [books, setBooks] = useState(null);
     const [eBooks, setEBooks] = useState(null);
+    const [photos, setPhotos] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const datePickerChanged = (value) => {
@@ -77,18 +79,25 @@ const Detail = () => {
         try {
             setLoading(true);
             const data = await getBiblio(ref)
+            setData(data.result);
+
             const booksResponse = await getBooks(ref);
-            const eBooksResponse = await getEBooks(ref);
             const booksCards = booksResponse.result.map(x => (<BookCard book={x}/>))
+            setBooks(booksCards);
+
+            const eBooksResponse = await getEBooks(ref);
             const eBooksCards = eBooksResponse.result.map(x => (<BookCard book={x}/>))
             setEBooks(eBooksCards)
-            setData(data.result);
-            setBooks(booksCards);
+
+            const galleryResponse = await getGallery(ref);
+            const galleryCards = galleryResponse.result.map(x => (<GalleryCard biblio={x} />));
+            setPhotos(galleryCards);
+
             setLoading(false);
         } catch (error) {
             setData({Nome: "", Lat: 0.0, Lon: 0.0, Indirizzo: "", NoteStoriche: ""})
             setLoading(false);
-            console.log(error);
+            console.error(error);
         }
     }, []);
 
@@ -108,16 +117,19 @@ const Detail = () => {
                 </div>
                 <div id="gallery">
                     <span className="text-3xl font-bold">Gallery</span>
+                    <div className="grid mt-5 grid-cols-3 gap-4">
+                        {photos}
+                    </div>
                 </div>
                 <div id="books">
                     <span className="text-3xl font-bold">Books</span>
-                    <div className="grid mt-5 grid-flow-row grid-cols-3 gap-4">
+                    <div className="grid mt-5 grid-cols-3 gap-4">
                         {books}
                     </div>
                 </div>
                 <div id="ebooks">
                     <span className="text-3xl font-bold">eBooks</span>
-                    <div className="grid mt-5 grid-flow-row grid-cols-3 gap-4">
+                    <div className="grid mt-5 grid-cols-3 gap-4">
                         {eBooks}
                     </div>
                 </div>

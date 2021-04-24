@@ -44,6 +44,11 @@ export const getEBooks = async (libraryName) => {
     return response.data;
 }
 
+export const getGallery = async (libraryName) => {
+    const response = await performGET(`/library/gallery/${libraryName}`);
+    return response.data;
+}
+
 export const bookBooking = async (bookId) => {
     const email = checkLogged();
     if (email === 'not-logged') { return null }
