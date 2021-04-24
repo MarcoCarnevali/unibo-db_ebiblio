@@ -98,9 +98,9 @@ app.post('/login', (req, res) => {
     connection.query(`CALL Autenticazione("${mail}", "${psw}", @a);`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
-        else if (!rows[0][0]) {
+        else if (!rows[0][0]) 
             return res.status(406).send({ error: "wrong user"});
-        }
+        
         res.cookie('ebiblio_email', mail, { maxAge: 900000, httpOnly: false });
         return res.status(200).send({ result: rows[0][0] });
     });

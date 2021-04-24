@@ -53,7 +53,8 @@ export const bookBooking = async (bookId) => {
 
 const performGET = async (path, params) => {
     return axios.get(address + path, {
-        params: params
+        params: params,
+        withCredentials: true
     });
 }
 
