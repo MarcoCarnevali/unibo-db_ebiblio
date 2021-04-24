@@ -47,6 +47,9 @@ const Home = ({ history }) => {
             if (error.response.status === 500) {
                 setError('*Error: something went wrong')
                 return
+            }else if (error.response.status === 406) {
+                setError("*Error: Wrong Email or Password")
+                return
             }
         }
     }
