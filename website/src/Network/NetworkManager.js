@@ -17,8 +17,8 @@ export const signup = async (mail, psw, SessoUt, NomeUt, CognomeUt, TelUt, DataN
     return response.data;
 }
 
-export const login = async (mail, psw) => {
-    const response = await performPOST("/login", { mail, psw });
+export const login = async (tipo, mail, psw) => {
+    const response = await performPOST("/login", { tipo, mail, psw });
     return response.data;
 }
 

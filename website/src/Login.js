@@ -30,7 +30,7 @@ const Home = ({ history }) => {
         }
 
         try {
-            const response = await login(data["Email"], data["Password"]);
+            const response = await login(0, data["Email"], data["Password"]);
             if(!response.result) {
                 setError("*Error: Wrong Email or Password")
                 return

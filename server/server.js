@@ -104,8 +104,9 @@ app.post('/signup', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    const { mail, psw } = req.body;
-    connection.query(`CALL Autenticazione("${mail}", "${psw}", @a);`, (err, rows) => {
+    const { tipo, mail, psw } = req.body;
+    connection.query(`CALL Autenticazione("${tipo}", "${mail}", "${psw}", @a);`, (err, rows) => {
+
         if (err)
             return res.status(500).send({ error: err });
         else if (!rows[0][0]) 
