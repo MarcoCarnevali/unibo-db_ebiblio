@@ -535,6 +535,21 @@ BEGIN
 END $$
 DELIMITER ;
 
+# Posti lettura disponibli
+DELIMITER $$
+CREATE PROCEDURE PostiDisponibili(IN Inizio time, IN Fine time, IN Biblio varchar(40), IN GiornoPren date)
+BEGIN
+	SELECT * 
+    FROM POSTI_LETTURA
+    WHERE NomeBiblioteca=Biblio AND Num NOT IN 
+		(SELECT NumPosto
+		FROM PRENOTAZIONE
+		WHERE Giorno=GiornoPren AND Biblioteca=Biblio AND (Inizio BETWEEN OraInizio AND OraFine) AND (Fine BETWEEN OraInizio AND OraFine));
+END $$
+DELIMITER ;
+
+
+
 # Prenotazione di un posto lettura
 DELIMITER $$
 CREATE PROCEDURE PrenotazionePosto(IN GiornoPren date, IN InizioPren time, IN FinePren time, IN Num int, IN Biblio varchar(40), IN EmailUt varchar(30))
