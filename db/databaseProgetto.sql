@@ -533,7 +533,7 @@ BEGIN
     WHERE NomeBiblioteca=Biblio AND Num NOT IN 
 		(SELECT NumPosto
 		FROM PRENOTAZIONE
-		WHERE Giorno=GiornoPren AND Biblioteca=Biblio AND (Inizio BETWEEN OraInizio AND OraFine) AND (Fine BETWEEN OraInizio AND OraFine));
+		WHERE Giorno=GiornoPren AND Biblioteca=Biblio AND ((Inizio BETWEEN OraInizio AND OraFine) OR (Fine BETWEEN OraInizio AND OraFine)));
 END $$
 DELIMITER ;
 
