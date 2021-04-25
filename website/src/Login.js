@@ -8,23 +8,19 @@ const Home = ({ history }) => {
     const [error, setError] = useState(null);
     const [userType, setUserType] = useState(null);
 
-    const nextTapped = () => {
-        history.push('/signup');
-    }
-
     const myChangeHandler = (event) => {
         let nam = event.target.placeholder || event.target.computedName;
         let val = event.target.value;
-      
-        if (data == null) {
-            setData({ [nam]: val })
-            return
-        }
-
+        
         if (nam === "User") {
             setUserType('user');
         } else if (nam === "Volunteer") {
             setUserType('volunteer');
+        }
+
+        if (data == null) {
+            setData({ [nam]: val })
+            return
         }
 
         const newData = data
