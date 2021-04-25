@@ -85,11 +85,28 @@ app.get('/library/:id/ebooks', function (req, res) {
     });
 });
 
+app.get('/book/:id', function (req, res) {
+    connection.query(`SELECT * FROM LIBRO JOIN CARTACEO ON (LIBRO.Codice = CARTACEO.Codice) WHERE LIBRO.Codice="${req.params.id}";`, (err, rows) => {
+        console.error(err)
+        if (err)
+            return res.status(500).send({ error: err });
+        return res.status(200).send({ result: rows });
+    });
+});
+
 app.get('/library/perks/:id', (req, res) => {
     connection.query(`SELECT * FROM POSTI_LETTURA WHERE NomeBiblioteca="${req.params.id}";`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
         return res.status(200).send({ result: rows });
+    });
+});
+
+app.get('/bookings', (req, res) => {
+    connection.query(`call VisualPrenotazioniCartei();`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err });
+        return res.status(200).send({ result: rows[0] });
     });
 });
 
@@ -125,7 +142,16 @@ app.post('/login', (req, res) => {
 app.post('/user/booking/book', (req, res) => {
     const { bookId, email } = req.body;
     connection.query(`CALL PrestitoCartaceo("${bookId}", "${email}");`, (err, rows) => {
-        console.error(err);
+        if (err)
+            return res.status(500).send({ error: err.mesasge });
+        return res.status(200).send({ result: "Done" });
+    });
+});
+
+app.get('/bookings/deliver/:id', (req, res) => {
+    const { type, note, email } = req.query;
+    connection.query(`CALL InsertConsegna(${req.params.id}, "${type}", "${note}", "${email}");`, (err, rows) => {
+        console.error("ERR: ",err);
         if (err)
             return res.status(500).send({ error: err.mesasge });
         return res.status(200).send({ result: "Done" });

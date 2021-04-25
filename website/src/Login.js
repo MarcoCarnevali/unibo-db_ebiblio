@@ -42,6 +42,8 @@ const Home = ({ history }) => {
             if(!response.result) {
                 setError("*Error: Wrong Email or Password")
                 return
+            } else if (userType === "volunteer") {
+                history.push("/volunteer");
             } else if (response.result.Stato === 'Attivo') {
                 history.push("/");
             }else{

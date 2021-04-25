@@ -613,13 +613,13 @@ DELIMITER ;
 
 # Inserimento di un nuovo evento di consegna
 DELIMITER $$
-CREATE PROCEDURE InsertConsegna (IN NumPrestito int, IN Tipo varchar(12), IN Note varchar(200),IN Giorno date,IN EmailVolontario varchar(30))
+CREATE PROCEDURE InsertConsegna (IN NumPrestito int, IN Tipo varchar(12), IN Note varchar(200), IN EmailVolontario varchar(30))
 BEGIN
+	SET @Giorno=CURDATE(); 
 	INSERT INTO CONSEGNA(CodPrestito, Tipo, Note, Giorno, EmailVol)
-    VALUES(NumPrestito, Tipo, Note, Giorno, EmailVolontario);
+    VALUES(NumPrestito, Tipo, Note, @Giorno, EmailVolontario);
 END $$
 DELIMITER ;
-
 
 #TRIGGER CONSEGNA
 DELIMITER |

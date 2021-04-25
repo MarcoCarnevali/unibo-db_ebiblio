@@ -4,6 +4,7 @@ import Home from "./Home";
 import Detail from "./Detail";
 import Login from "./Login";
 import Signup from "./Signup";
+import BookingHome from "./BookingHome";
 import { AuthProvider } from "./auth/Auth"
 import PrivateRoute from "./routes/PrivateRoute";
 
@@ -13,6 +14,7 @@ const App = () => {
       <AuthProvider>
         <Switch>
           <Route exact path={process.env.PUBLIC_URL + '/'} component={Home} />
+          <Route exact path={process.env.PUBLIC_URL + '/volunteer'} component={BookingHome} />
           <Route exact path={process.env.PUBLIC_URL + '/detail'} component={Detail} />
           <Route exact path={process.env.PUBLIC_URL + '/login'} component={Login} />
           <Route exact path={process.env.PUBLIC_URL + '/signup'} component={Signup} />

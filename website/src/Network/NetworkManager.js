@@ -40,6 +40,11 @@ export const getBooks = async (libraryName) => {
     return response.data;
 }
 
+export const getBook = async (bookId) => {
+    const response = await performGET(`/book/${bookId}`);
+    return response.data;
+}
+
 export const getEBooks = async (libraryName) => {
     const response = await performGET(`/library/${libraryName}/ebooks`);
     return response.data;
@@ -55,12 +60,26 @@ export const getPhones = async (libraryName) => {
     return response.data;
 }
 
+export const getBookings = async (libraryName) => {
+    const response = await performGET(`/bookings`);
+    console.log(response)
+    return response.data;
+}
+
 export const bookBooking = async (bookId) => {
     const email = checkLogged();
     if (email === 'not-logged') { return null }
     const response = await performPOST(`/user/booking/book`, { email, bookId });
     return response.data;
 }
+
+export const bookDeliver = async (bookId, type, note) => {
+    const email = checkLogged();
+    if (email === 'not-logged') { return null }
+    const response = await performGET(`/bookings/deliver/${bookId}`, { email, type, note });
+    return response.data;
+}
+
 
 const performGET = async (path, params) => {
     return axios.get(address + path, {
