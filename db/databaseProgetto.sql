@@ -850,7 +850,7 @@ CREATE PROCEDURE ClassificaCartacei()
 BEGIN
 	SELECT Count(CodLibro) as NumPrestiti, CodLibro, Titolo
 	FROM PRESTITI_UT
-	GROUP BY CodLibro DESC
+	GROUP BY CodLibro
 	ORDER BY Count(CodLibro) DESC;   
 END $$
 DELIMITER ;
