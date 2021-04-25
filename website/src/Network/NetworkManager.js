@@ -80,6 +80,17 @@ export const bookDeliver = async (bookId, type, note) => {
     return response.data;
 }
 
+export const checkSeatAvailability = async (libraryName, startTime, endTime, date) => {
+    const response = await performGET(`/library/${libraryName}/seats`, { startTime, endTime, date });
+    return response.data;
+}
+
+export const bookSeat = async (libraryName, startTime, endTime, date, seatId) => {
+    const email = checkLogged();
+    if (email === 'not-logged') { return null }
+    const response = await performPOST(`/library/${libraryName}/seat/${seatId}/book`, { startTime, endTime, date, email });
+    return response.data;
+}
 
 const performGET = async (path, params) => {
     return axios.get(address + path, {

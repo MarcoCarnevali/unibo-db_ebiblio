@@ -81,14 +81,14 @@ const Home = ({ history }) => {
                                 <GlassInput custom="birth" id="birth" type="date" placeholder="Date of birth" onChange={myChangeHandler} />
                                 <GlassInput type="text" placeholder="Place of birth" onChange={myChangeHandler} />
                                 <GlassInput type="tel" placeholder="Phone number" onChange={myChangeHandler} />
-                                <select class="bg-white bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md">
+                                <select className="bg-white bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md">
                                     <option>Select gender: </option>
                                     <option>Male</option>
                                     <option>Female</option>
                                 </select>
                                 {userType !== null && userType === 'volunteer' ? (
                                     <>
-                                        <select class="bg-white bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md">
+                                        <select className="bg-white bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md">
                                             <option>Select transportation type: </option>
                                             <option>Car</option>
                                             <option>Foot</option>

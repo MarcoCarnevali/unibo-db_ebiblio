@@ -18,7 +18,7 @@ export default class BookingCard extends React.Component {
     }
 
     ctaAction = async () => {
-        await bookDeliver(this.props.booking.CodLibro, this.state.type, this.state.note)
+        await bookDeliver(this.props.booking.Prestito, this.state.type, this.state.note)
         window.location.reload();
     }
 
@@ -91,7 +91,7 @@ export default class BookingCard extends React.Component {
                                         <span>Booking Status: {this.state.book.StatoPrestito || ""}</span>
                                     </div>
                                     <div className="relative p-6 flex-auto ml-5">
-                                        <select class="bg-blue-900 bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md" onChange={this.pickerChanged}>
+                                        <select className="bg-blue-900 bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md" onChange={this.pickerChanged}>
                                             <option value="Restituzione" >Restituzione</option>
                                             <option value="Affidamento" >Affidamento</option>
                                         </select>

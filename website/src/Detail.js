@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import NavBar from "./components/NavBar";
 import { BookCard } from "./components/BookCard";
 import GalleryCard from "./components/GalleryCard";
+import SeatCard from "./components/SeatCard";
 import Map from "./components/Map";
 import GlassInput from "./components/GlassInput";
 import "./style/main.css";
 import { useLocation } from "react-router-dom";
-import { getBiblio, getBooks, getEBooks, getGallery, getPhones } from "./Network/NetworkManager";
+import { getBiblio, getBooks, getEBooks, getGallery, getPhones, checkSeatAvailability, bookSeat } from "./Network/NetworkManager";
 
 const informations = (data, phones) => {
     return (
@@ -65,10 +66,46 @@ const Detail = () => {
     const [eBooks, setEBooks] = useState(null);
     const [photos, setPhotos] = useState(null);
     const [phones, setPhones] = useState(null);
+    const [bookingDates, setBookingDates] = useState(null);
+    const [availableSeats, setAvailableSeats] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const datePickerChanged = (value) => {
-        setBookButtonDisabled(false);
+    const datePickerChanged = (event) => {
+        console.log("date: ", event.target.value)
+        setBookingDates({ date: event.target.value, startTime: bookingDates?.startTime || null, endTime: bookingDates?.endTime || null })
+        if (bookingDates?.startTime && bookingDates?.endTime) {
+            setBookButtonDisabled(false);
+        }
+    }
+
+    const startTimePickerChanged = (event) => {
+        console.log("start time: ", event.target.value)
+        setBookingDates({ date: bookingDates?.date || null, startTime: event.target.value || null, endTime: bookingDates?.endTime || null })
+        if (bookingDates?.date && bookingDates?.endTime) {
+            setBookButtonDisabled(false);
+        }
+    }
+
+    const endTimePickerChanged = (event) => {
+        console.log("endTime: ", event.target.value)
+        setBookingDates({ date: bookingDates?.date || null, startTime: bookingDates?.startTime || null, endTime: event.target.value })
+        if (bookingDates?.date && bookingDates?.startTime) {
+            setBookButtonDisabled(false);
+        }
+    }
+
+    const tappedSeatAvailability = async () => {
+        const response = await checkSeatAvailability(ref, bookingDates.startTime, bookingDates.endTime, bookingDates.date)
+        console.log(response);
+        const seats = response.result.map(x => (<SeatCard seat={x} onClick={() => bookSeatTapped(x.Num)} />))
+        setAvailableSeats(seats)
+    }
+
+    const bookSeatTapped = async (seatId) => {
+        console.log("CIAO:",seatId)
+        const response = await bookSeat(ref, bookingDates.startTime, bookingDates.endTime, bookingDates.date, seatId);
+        console.log(response);
+        //window.location.reload();
     }
 
     useEffect(async () => {
@@ -147,9 +184,29 @@ const Detail = () => {
                 <div id="book">
                     <span className="text-3xl font-bold">Book</span>
                     <div className="mt-5">
-                        <span className="block-inline">Select Date and time: </span>
-                        <GlassInput className="block-inline text-black ml-3" textColor="text-black" type="datetime-local" onChange={e => datePickerChanged(e.target.value)} />
-                        <button className="block-inline bg-blue-500 text-white p-5 rounded-full ml-10 disabled:opacity-50" disabled={bookButtonDisabled}>Book now!</button>
+                        <span className="block-inline">Select Date: </span>
+                        <GlassInput title="date" className="block-inline text-black ml-3" textColor="text-black" type="date" min={new Date().toISOString().slice(0, 10)} onChange={datePickerChanged} />
+                    </div>
+                    <div className="mt-5">
+                        <span className="block-inline">Select Start time: </span>
+                        <GlassInput className="block-inline text-black ml-3" textColor="text-black" type="time" onChange={startTimePickerChanged} />
+                    </div>
+                    <div className="mt-5">
+                        <span className="block-inline">Select End time: </span>
+                        <GlassInput className="block-inline text-black ml-3" textColor="text-black" type="time" onChange={endTimePickerChanged} />
+                    </div>
+                    <div className="mt-5">
+                        <button className="block-inline bg-blue-500 text-white p-5 rounded-full disabled:opacity-50" disabled={bookButtonDisabled} onClick={tappedSeatAvailability}>Check availability</button>
+                    </div>
+
+                    {availableSeats != null ? (
+                        <div className="mt-10 disabled:opacity-0" disabled={availableSeats === null}>
+                            <span className="font-bold text-lg">Available seats: </span>
+                        </div>
+                    ) : (<></>)}
+
+                    <div className="grid mt-5 grid-cols-3 gap-4">
+                        {availableSeats}
                     </div>
                 </div>
             </div>

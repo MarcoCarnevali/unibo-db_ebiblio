@@ -151,7 +151,28 @@ app.post('/user/booking/book', (req, res) => {
 app.get('/bookings/deliver/:id', (req, res) => {
     const { type, note, email } = req.query;
     connection.query(`CALL InsertConsegna(${req.params.id}, "${type}", "${note}", "${email}");`, (err, rows) => {
-        console.error("ERR: ",err);
+        console.error("ERR: ", err);
+        if (err)
+            return res.status(500).send({ error: err.mesasge });
+        return res.status(200).send({ result: "Done" });
+    });
+});
+
+app.get('/library/:id/seats', (req, res) => {
+    const { date, startTime, endTime } = req.query;
+    connection.query(`CALL PostiDisponibili("${startTime}", "${endTime}", "${req.params.id}", "${date}");`, (err, rows) => {
+        console.log(rows[0])
+        if (err)
+            return res.status(500).send({ error: err.mesasge });
+        return res.status(200).send({ result: rows[0] });
+    });
+});
+
+app.post('/library/:id/seat/:seatId/book', (req, res) => {
+    const { date, startTime, endTime, email } = req.body;
+    connection.query(`CALL PrenotazionePosto("${date}", "${startTime}", "${endTime}", "${req.params.seatId}", "${req.params.id}", "${email}");`, (err, rows) => {
+        console.error(err)
+        console.log(rows)
         if (err)
             return res.status(500).send({ error: err.mesasge });
         return res.status(200).send({ result: "Done" });
