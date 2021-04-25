@@ -6,18 +6,26 @@ import { login } from "./Network/NetworkManager";
 const Home = ({ history }) => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
+    const [userType, setUserType] = useState(null);
 
     const nextTapped = () => {
         history.push('/signup');
     }
 
     const myChangeHandler = (event) => {
-        let nam = event.target.placeholder;
+        let nam = event.target.placeholder || event.target.computedName;
         let val = event.target.value;
         if (data == null) {
             setData({ [nam]: val })
             return
         }
+
+        if (nam === "User") {
+            setUserType('user');
+        } else if (nam === "Volunteer") {
+            setUserType('volunteer');
+        }
+
         const newData = data
         newData[nam] = val
         setData(newData);
@@ -30,7 +38,7 @@ const Home = ({ history }) => {
         }
 
         try {
-            const response = await login(0, data["Email"], data["Password"]);
+            const response = await login(userType || "user", data["Email"], data["Password"]);
             if(!response.result) {
                 setError("*Error: Wrong Email or Password")
                 return
@@ -63,6 +71,15 @@ const Home = ({ history }) => {
                         </div>
                         <div className="divide-y divide-gray-200">
                             <div className="flex flex-col py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                            <span className="text-white">User type: </span>
+                                <div className="inline-block">
+                                    <input type="radio" id="user" name="type" value="user" checked={userType !== null && userType === 'volunteer' ? false : true} onChange={myChangeHandler} />
+                                    <label className="ml-2 text-white" for="user">User</label>
+                                </div>
+                                <div className="inline-block">
+                                    <input type="radio" id="volunteer" name="type" value="volunteer" checked={userType !== null && userType === 'volunteer' ? true : false} onChange={myChangeHandler} />
+                                    <label className="ml-2 text-white" for="volunteer">Volunteer</label>
+                                </div>
                                 <GlassInput type="email" placeholder="Email" onChange={myChangeHandler} />
                                 <GlassInput type="password" placeholder="Password" onChange={myChangeHandler} />
                                 <button className="bg-white bg-opacity-80 rounded-full border-2 border-white border-opacity-20 text-lg font-medium shadow-sm p-3 w-1/2 place-self-center" onClick={loginTapped}>Sign in</button>

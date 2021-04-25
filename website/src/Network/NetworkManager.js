@@ -18,7 +18,8 @@ export const signup = async (mail, psw, SessoUt, NomeUt, CognomeUt, TelUt, DataN
 }
 
 export const login = async (tipo, mail, psw) => {
-    const response = await performPOST("/login", { tipo, mail, psw });
+    const numberType = tipo === 'volunteer' ? 1 : 0;
+    const response = await performPOST("/login", { tipo: numberType, mail, psw });
     return response.data;
 }
 
