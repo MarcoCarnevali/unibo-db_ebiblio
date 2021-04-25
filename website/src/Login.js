@@ -12,12 +12,10 @@ const Home = ({ history }) => {
         let nam = event.target.placeholder || event.target.computedName;
         let val = event.target.value;
         
-        if (nam === "User") {
-            setUserType('user');
-        } else if (nam === "Volunteer") {
-            setUserType('volunteer');
+        if (val === "user" || val === "volunteer") {
+            setUserType(val);
         }
-
+        
         if (data == null) {
             setData({ [nam]: val })
             return
