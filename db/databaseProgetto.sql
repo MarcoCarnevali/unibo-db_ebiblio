@@ -311,14 +311,14 @@ VALUES	("Divina Commedia-Completo","1814","Originale","Biblioteca Universitaria"
         
  
 INSERT INTO CARTACEO(Codice,StatoPrestito, Pagine, Scaffale, StatoConservazione) 
-VALUES	("1","Disponibile","1500","15","Non Buono"),
-		("2","Disponibile","190","5","Buono"),
-		("6","Prenotato","100","6","Ottimo"),
+VALUES	("1","Consegnato","1500","15","Non Buono"),
+		("2","Consegnato","190","5","Buono"),
+		("6","Consegnato","100","6","Ottimo"),
 		("8","Disponibile","300","7","Scadente"),
-		("9","Consegnato","300","7","Ottimo"),
-        ("10","Disponibile","300","7","Ottimo"),
-		("13","Disponibile","300","7","Ottimo"),
-        ("15","Disponibile","1000","7","Ottimo"),
+		("9","Disponibile","300","7","Ottimo"),
+        ("10","Consegnato","300","7","Ottimo"),
+		("13","Prenotato","300","7","Ottimo"),
+        ("15","Prenotato","1000","7","Ottimo"),
         ("16","Disponibile","800","7","Scadente"),
         ("19","Disponibile","550","7","Non Buono"),
         ("22","Disponibile","1200","7","Ottimo"),
@@ -350,24 +350,13 @@ VALUES  ("2021-01-01","2021-05-01","2","gino@gmail.com"),
 		("2021-01-01","2021-03-01","6","marco@gmail.com"),
         ("2021-01-02","2021-04-01","1","gino@gmail.com"),
         ("2021-01-02","2021-04-01","10","franco@gmail.com"),
-        ("2021-04-02","2021-04-17","13","tiziano@gmail.com"),
-		("2021-05-02","2021-05-17","13","franco@gmail.com"),
-		("2021-06-02","2021-06-17","13","marco@gmail.com"),
-		("2021-07-02","2021-07-17","13","tiziano@gmail.com"),
-        ("2021-07-02","2021-07-17","15","tiziano@gmail.com"),
-        ("2021-08-02","2021-08-17","15","vanessa@gmail.com"),
-        ("2021-09-02","2021-09-17","15","tiziano@gmail.com"),
-        ("2021-10-02","2021-10-17","15","vanessa@gmail.com"),
-        ("2021-10-02","2021-10-17","16","melissa@gmail.com"),
-        ("2021-07-02","2021-07-17","19","michele@gmail.com"),
-        ("2021-10-12","2021-10-27","22","michele@gmail.com"),
-        ("2021-07-12","2021-07-27","23","tiziano@gmail.com"),
-        ("2021-03-05","2021-03-20","24","piero@gmail.com");
+        ("2021-04-02","2021-04-17","15","tiziano@gmail.com"),
+		("2021-05-02","2021-05-17","13","franco@gmail.com");
 
 INSERT INTO CONSEGNA(CodPrestito, Tipo, Note, Giorno, EmailVol)
-VALUES  ("1","Restituzione","werervrev","2021-01-01","tiziano@me.it"),
-		("2","Restituzione","verervre","2021-02-01","fabio@me.it"),
-        ("3","Restituzione","xxxxxxxxxxxxxxxx","2021-02-25","pippo@me.it"),
+VALUES  ("1","Affidamento","werervrev","2021-01-01","tiziano@me.it"),
+		("2","Affidamento","verervre","2021-02-01","fabio@me.it"),
+        ("3","Affidamento","xxxxxxxxxxxxxxxx","2021-02-25","pippo@me.it"),
         ("4","Affidamento","xxxxxxxxxxxxxxxx","2021-03-08","pippo@me.it");
 
 INSERT INTO PRENOTAZIONE(Giorno, OraInizio, OraFine, NumPosto, Biblioteca, EmailUtilizzatore) 
@@ -601,7 +590,8 @@ DELIMITER ;
 CREATE VIEW PRESTITI_VOL(Prestito, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito, Biblioteca)
 AS SELECT  Cod, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito, Biblioteca
 		FROM PRESTITO JOIN CARTACEO ON (PRESTITO.CodLibro=CARTACEO.Codice)
-						JOIN LIBRO ON (PRESTITO.Cod=LIBRO.Codice);
+						JOIN LIBRO ON (PRESTITO.Cod=LIBRO.Codice)
+                        WHERE StatoPrestito <> "Disponibile";
         
 DELIMITER $$
 CREATE PROCEDURE VisualPrenotazioniCartei()
@@ -631,10 +621,13 @@ BEGIN
 		#INSERISCI DATA INIZIO E FINE SU PRESTITO
 		#La data di fine prestito viene calcolata come 15 giorni dalla data di consegna
 		UPDATE PRESTITO SET DataAvvio = NEW.Giorno WHERE (Cod=NEW.CodPrestito);
+        UPDATE PRESTITI_VOL SET DataAvvio = NEW.Giorno WHERE (PRESTITI_VOL.Prestito=NEW.CodPrestito);
 		UPDATE PRESTITO SET DataFine = DATE_ADD(NEW.Giorno, INTERVAL 15 DAY) WHERE (Cod=NEW.CodPrestito);
+        UPDATE PRESTITI_VOL SET DataFine = DATE_ADD(NEW.Giorno, INTERVAL 15 DAY) WHERE (PRESTITI_VOL.Prestito=NEW.CodPrestito);
 	ELSE
 		#se riconsegno prima aggiorno la data
 		UPDATE PRESTITO SET DataFine = NEW.Giorno WHERE (Cod=NEW.CodPrestito);
+        UPDATE PRESTITI_VOL SET DataFine=NEW.Giorno WHERE (PRESTITI_VOL.Prestito=NEW.CodPrestito);
 	END IF;
 	#CAMBIO LO STATO IN CONSEGNATO O DISPONIBILE
 	SET @CodiceLibro = 0;
@@ -643,8 +636,10 @@ BEGIN
 	WHERE Cod=NEW.CodPrestito;
     IF (NEW.Tipo="Affidamento") THEN
 		UPDATE CARTACEO SET StatoPrestito="Consegnato" WHERE (Codice=@CodiceLibro);
+        UPDATE PRESTITI_VOL SET StatoPrestito="Consegnato" WHERE (PRESTITI_VOL.Prestito=NEW.CodPrestito);
 	ELSE 
 		UPDATE CARTACEO SET StatoPrestito="Disponibile" WHERE (Codice=@CodiceLibro);
+        UPDATE PRESTITI_VOL SET StatoPrestito="Disponibile" WHERE (PRESTITI_VOL.Prestito=NEW.CodPrestito);
     END IF;
 END |
 DELIMITER ;
