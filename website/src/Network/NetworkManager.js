@@ -3,7 +3,7 @@ const axios = require('axios');
 const address = "http://localhost:8123"
 
 export const getBiblios = async () => {
-    const response = await performGET("/getBiblios");
+    const response = await performGET("/libraries");
     return response.data;
 }
 
@@ -47,6 +47,11 @@ export const getEBooks = async (libraryName) => {
 
 export const getGallery = async (libraryName) => {
     const response = await performGET(`/library/gallery/${libraryName}`);
+    return response.data;
+}
+
+export const getPhones = async (libraryName) => {
+    const response = await performGET(`/library/phones/${libraryName}`);
     return response.data;
 }
 

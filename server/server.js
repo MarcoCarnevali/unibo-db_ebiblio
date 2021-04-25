@@ -31,7 +31,7 @@ app.listen(port, () => {
     console.log(`Ebiblio app listening at http://${host}:${port}`)
 });
 
-app.get('/getBiblios', (req, res) => {
+app.get('/libraries', (req, res) => {
     connection.query('CALL VisualBiblioteche();', (err, rows) => {
         if (err) {
             return res.status(500).send({ error: err.message });
@@ -50,8 +50,14 @@ app.get('/library/:id', (req, res) => {
 
 app.get('/library/gallery/:id', (req, res) => {
     connection.query(`SELECT * FROM FOTO WHERE (NomeBib="${req.params.id}");`, (err, rows) => {
-        console.error(err)
-        console.log(rows)
+        if (err)
+            return res.status(500).send({ error: err });
+        return res.status(200).send({ result: rows });
+    });
+})
+
+app.get('/library/phones/:id', (req, res) => {
+    connection.query(`SELECT NumTel FROM TELEFONO WHERE (NomeBiblioteca="${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
         return res.status(200).send({ result: rows });
@@ -108,9 +114,9 @@ app.post('/login', (req, res) => {
     connection.query(`CALL Autenticazione("${tipo}", "${mail}", "${psw}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
-        else if (!rows[0][0]) 
-            return res.status(406).send({ error: "wrong user"});
-        
+        else if (!rows[0][0])
+            return res.status(406).send({ error: "wrong user" });
+
         res.cookie('ebiblio_email', mail, { maxAge: 900000, httpOnly: false, encode: String });
         return res.status(200).send({ result: rows[0][0] });
     });
