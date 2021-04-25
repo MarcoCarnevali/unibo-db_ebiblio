@@ -15,6 +15,7 @@ const Home = ({ history }) => {
     const myChangeHandler = (event) => {
         let nam = event.target.placeholder || event.target.computedName;
         let val = event.target.value;
+      
         if (data == null) {
             setData({ [nam]: val })
             return
@@ -75,11 +76,11 @@ const Home = ({ history }) => {
                             <div className="flex flex-col py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                             <span className="text-white">User type: </span>
                                 <div className="inline-block">
-                                    <input type="radio" id="user" name="type" value="user" checked={userType !== null && userType === 'volunteer' ? false : true} onChange={myChangeHandler} />
+                                    <input type="radio" id="user" name="type" value="user" defaultChecked onChange={myChangeHandler} />
                                     <label className="ml-2 text-white" for="user">User</label>
                                 </div>
                                 <div className="inline-block">
-                                    <input type="radio" id="volunteer" name="type" value="volunteer" checked={userType !== null && userType === 'volunteer' ? true : false} onChange={myChangeHandler} />
+                                    <input type="radio" id="volunteer" name="type" value="volunteer" onChange={myChangeHandler} />
                                     <label className="ml-2 text-white" for="volunteer">Volunteer</label>
                                 </div>
                                 <GlassInput type="email" placeholder="Email" onChange={myChangeHandler} />
