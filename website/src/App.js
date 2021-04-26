@@ -9,21 +9,23 @@ import DetailAdmin from "./admin/DetailAdmin";
 import Signup from "./Signup";
 import BookingHome from "./BookingHome";
 import { AuthProvider } from "./auth/Auth"
-import PrivateRoute from "./routes/PrivateRoute";
+import AdminRoute from "./routes/AdminRoute";
+import VolunteerRoute from "./routes/VolunteerRoute";
+import UserRoute from "./routes/UserRoute";
 
 const App = () => {
   return (
     <Router>
       <AuthProvider>
         <Switch>
-          <Route exact path={process.env.PUBLIC_URL + '/'} component={Home} />
-          <Route exact path={process.env.PUBLIC_URL + '/volunteer'} component={BookingHome} />
-          <Route exact path={process.env.PUBLIC_URL + '/detail'} component={Detail} />
+          <UserRoute exact path={process.env.PUBLIC_URL + '/'} component={Home} />
+          <VolunteerRoute exact path={process.env.PUBLIC_URL + '/volunteer'} component={BookingHome} />
+          <UserRoute exact path={process.env.PUBLIC_URL + '/detail'} component={Detail} />
           <Route exact path={process.env.PUBLIC_URL + '/login'} component={Login} />
           <Route exact path={process.env.PUBLIC_URL + '/signup'} component={Signup} />
           <Route exact path={process.env.PUBLIC_URL + '/loginAdmin'} component={LoginAdmin} />
-          <Route exact path={process.env.PUBLIC_URL + '/homeAdmin'} component={HomeAdmin} />
-          <Route exact path={process.env.PUBLIC_URL + '/detailAdmin'} component={DetailAdmin} />
+          <AdminRoute exact path={process.env.PUBLIC_URL + '/homeAdmin'} component={HomeAdmin} />
+          <AdminRoute exact path={process.env.PUBLIC_URL + '/detailAdmin'} component={DetailAdmin} />
         </Switch>
       </AuthProvider>
     </Router>

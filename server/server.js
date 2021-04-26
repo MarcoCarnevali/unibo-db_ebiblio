@@ -66,6 +66,7 @@ app.get('/library/phones/:id', (req, res) => {
 
 app.get('/logout', function (req, res) {
     res.clearCookie("ebiblio_email");
+    res.clearCookie("ebiblio_userType");
     return res.status(200).send({ result: "Done" });
 });
 
