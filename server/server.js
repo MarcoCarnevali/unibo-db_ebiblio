@@ -184,8 +184,8 @@ app.post('/library/:id/seat/:seatId/book', (req, res) => {
 });
 
 app.post('/library/:id/books/:bookId/modify', (req, res) => {
-    const { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link } = req.body;
-    connection.query(`CALL UpdateLibro("${req.params.bookId}", "${req.params.id}", "${title || ""}", ${year || 0}, "${edition || ""}", "${lendStatus || ""}", ${pages || 0}, ${shelf || 0}, "${conservationStatus || ""}", "${dimension || ""}", ${nAccess || 0}, "${link || ""}");`, (err, rows) => {
+    const { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link, genre, author } = req.body;
+    connection.query(`CALL UpdateLibro("${req.params.bookId}", "${req.params.id}", "${title || ""}", ${year || 0}, "${edition || ""}", "${genre || ""}","${lendStatus || ""}", ${pages || 0}, ${shelf || 0}, "${conservationStatus || ""}", "${dimension || ""}", ${nAccess || 0}, "${link || ""}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });
@@ -201,8 +201,8 @@ app.post('/library/:id/books/:bookId/delete', (req, res) => {
 });
 
 app.post('/library/:id/books/add', (req, res) => {
-    const { title, year, edition, type, lendStatus, pages, shelf, conservationStatus, dimension, link } = req.body;
-    connection.query(`CALL InsertLibro("${title}", ${year}, "${edition}", "${req.params.id}", ${type}, "${lendStatus}", ${pages || 0}, ${shelf}, "${conservationStatus}", "${dimension}", "${link}");`, (err, rows) => {
+    const { title, year, edition, type, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, author } = req.body;
+    connection.query(`CALL InsertLibro("${title}", ${year}, "${edition}", "${req.params.id}", ${type}, "${genre}", "${lendStatus}", ${pages || 0}, ${shelf}, "${conservationStatus}", "${dimension}", "${link}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });

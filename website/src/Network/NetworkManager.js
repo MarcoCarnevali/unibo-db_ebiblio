@@ -104,10 +104,10 @@ export const bookSeat = async (libraryName, startTime, endTime, date, seatId) =>
     return response.data;
 }
 
-export const modifyBook = async (libraryName, bookId, title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link) => {
+export const modifyBook = async (libraryName, bookId, title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link, genre, author) => {
     const userType = checkUserType();
     if (userType === 'admin') { return null }
-    const response = await performPOST(`/library/${libraryName}/books/${bookId}/modify`, { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link });
+    const response = await performPOST(`/library/${libraryName}/books/${bookId}/modify`, { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link, genre });
     return response.data;
 }
 
@@ -118,10 +118,10 @@ export const deleteBook = async (libraryName, bookId) => {
     return response.data;
 }
 
-export const addBook = async (libraryName, title, type, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, link) => {
+export const addBook = async (libraryName, title, type, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, author) => {
     const userType = checkUserType();
     if (userType === 'admin') { return null }
-    const response = await performPOST(`/library/${libraryName}/books/add`, { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, type, link });
+    const response = await performPOST(`/library/${libraryName}/books/add`, { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, type, link, genre });
     return response.data;
 }
 

@@ -15,6 +15,7 @@ export default class AddBookButton extends React.Component {
     }
 
     openModal = () => {
+        console.log("CIAO")
         this.setState({ showModal: true, isBook: this.props.isBook, inputs: {} })
     }
 
@@ -23,16 +24,16 @@ export default class AddBookButton extends React.Component {
     }
 
     addAction = async () => {
-        const { title, edition, year, pages, shelf, conservationStatus, lendStatus, dimension, link } = this.state.inputs;
-        await addBook(this.props.library, title, this.props.isBook, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, link)
+        const { title, edition, year, pages, shelf, conservationStatus, lendStatus, dimension, link, genre, author } = this.state.inputs;
+        await addBook(this.props.library, title, this.props.isBook, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, author)
         window.location.reload();
     }
 
     render() {
         return (
             <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="ml-5 mt-2 inline-block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" onClick={this.openModal} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg onClick={this.openModal} xmlns="http://www.w3.org/2000/svg" className="ml-5 mt-2 inline-block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 {this.state.showModal ? (
                     <>
@@ -64,6 +65,10 @@ export default class AddBookButton extends React.Component {
                                                 <br />
                                                 <span>Year: <input className="border rounded" name="year" onChange={this.handleChange} /></span>
                                                 <br />
+                                                <span>Genre: <input className="border rounded" name="genre" onChange={this.handleChange} /></span>
+                                                <br />
+                                                <span>Author: <input className="border rounded" name="author" onChange={this.handleChange} /></span>
+                                                <br />
                                                 <span>Pages: <input className="border rounded" name="pages" onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span>Shelf: <input className="border rounded" name="shelf" onChange={this.handleChange} /></span>
@@ -77,6 +82,10 @@ export default class AddBookButton extends React.Component {
                                                 <span>Edition: <input className="border rounded" name="edition" onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span>Year: <input className="border rounded" name="year" onChange={this.handleChange} /></span>
+                                                <br />
+                                                <span>Genre: <input className="border rounded" name="genre" onChange={this.handleChange} /></span>
+                                                <br />
+                                                <span>Author: <input className="border rounded" name="author" onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span>Size: <input className="border rounded" name="dimension" onChange={this.handleChange} /></span>
                                                 <br />

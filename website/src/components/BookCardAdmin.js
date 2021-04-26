@@ -23,8 +23,8 @@ export default class BookCardAdmin extends React.Component {
     }
 
     modifyAction = async () => {
-        const {title, edition, year, pages, shelf, conservationStatus, lendStatus, dimension, link } = this.state.inputs;
-        await modifyBook(this.props.library, this.props.book.Codice, title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, null, link )
+        const {title, edition, year, pages, shelf, conservationStatus, lendStatus, dimension, link, genre } = this.state.inputs;
+        await modifyBook(this.props.library, this.props.book.Codice, title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, null, link, genre )
         window.location.reload();
     }
 
@@ -78,6 +78,10 @@ export default class BookCardAdmin extends React.Component {
                                                 <br />
                                                 <span>Year: <input className="border rounded" name="year" defaultValue={this.props.book.Anno} onChange={this.handleChange} /></span>
                                                 <br />
+                                                <span>Genre: <input className="border rounded" name="genre" defaultValue={this.props.book.Genere} onChange={this.handleChange} /></span>
+                                                <br />
+                                                <span>Author: <input className="border rounded" name="author" defaultValue={this.props.book.Autore} onChange={this.handleChange} /></span>
+                                                <br />
                                                 <span>Pages: <input className="border rounded" name="pages" defaultValue={this.props.book.Pagine} onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span>Shelf: <input className="border rounded" name="shelf" defaultValue={this.props.book.Scaffale} onChange={this.handleChange} /></span>
@@ -91,6 +95,13 @@ export default class BookCardAdmin extends React.Component {
                                                 <span>Edition: <input className="border rounded" name="edition" defaultValue={this.props.book.Edizione} onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span>Year: <input className="border rounded" name="year" defaultValue={this.props.book.Anno} onChange={this.handleChange} /></span>
+                                                <br />
+                                                <span>Genre: <input className="border rounded" name="genre" defaultValue={this.props.book.Genere} onChange={this.handleChange} /></span>
+                                                <br />
+                                                <span>Authors: <input className="border rounded" name="author" defaultValue={this.props.book.Autore} onChange={this.handleChange} /></span>
+                                                <br />
+                                                <span className="text-xs text-gray-400">Note: write a list of author delimited by a ',' e.g. Marco Carnevali,Tiziano Bruno</span>
+                                                <br />
                                                 <br />
                                                 <span>Size: <input className="border rounded" name="dimension" defaultValue={this.props.book.Dimensione} onChange={this.handleChange} /></span>
                                                 <br />

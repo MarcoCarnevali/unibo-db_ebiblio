@@ -76,6 +76,8 @@ export class BookCard extends React.Component {
                                                 <br />
                                                 <span>Year: {this.props.book.Anno}</span>
                                                 <br />
+                                                <span>Genre: {this.props.book.Genere}</span>
+                                                <br />
                                                 <span>Pages: {this.props.book.Pagine}</span>
                                                 <br />
                                                 <span>Shelf: {this.props.book.Scaffale}</span>
@@ -89,6 +91,8 @@ export class BookCard extends React.Component {
                                                 <span>Edition: {this.props.book.Edizione}</span>
                                                 <br />
                                                 <span>Year: {this.props.book.Anno}</span>
+                                                <br />
+                                                <span>Genre: {this.props.book.Genere}</span>
                                                 <br />
                                                 <span>Size: {this.props.book.Dimensione}</span>
                                                 <br />
