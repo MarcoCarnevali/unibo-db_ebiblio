@@ -207,3 +207,30 @@ app.post('/library/:id/books/add', (req, res) => {
         return res.status(200).send({ result: "Done" });
     });
 });
+
+
+app.post('/user/:email/message', (req, res) => {
+    const { title, text, adminEmail } = req.body;
+    connection.query(`CALL InsertMessaggio("${title}", "${text}", "${adminEmail}", "${req.params.email}");`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: "Done" });
+    });
+});
+
+app.post('/user/:email/flag', (req, res) => {
+    const { text, adminEmail } = req.body;
+    connection.query(`CALL InsertSegnalazione("${text}", "${adminEmail}", "${req.params.email}");`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: "Done" });
+    });
+});
+
+app.post('/user/:email/approve', (req, res) => {
+    connection.query(`CALL AssoluzioneUtente("${req.params.email}");`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: "Done" });
+    });
+});

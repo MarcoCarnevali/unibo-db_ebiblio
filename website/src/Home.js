@@ -36,7 +36,7 @@ const Home = ({ history }) => {
                 <div className="my-16">
                     <a className="text-lg font-bold">Libraries in Bologna: </a>
                 </div>
-                <div className="grid grid-flow-row grid-cols-3 grid-rows-3 gap-40">
+                <div className="grid grid-flow-row grid-cols-3 gap-40">
                     {data}
                 </div>
             </div>

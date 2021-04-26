@@ -118,10 +118,33 @@ export const deleteBook = async (libraryName, bookId) => {
     return response.data;
 }
 
-export const addBook = async (libraryName, title, type, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link) => {
+export const addBook = async (libraryName, title, type, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, link) => {
     const userType = checkUserType();
     if (userType === 'admin') { return null }
     const response = await performPOST(`/library/${libraryName}/books/add`, { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, type, link });
+    return response.data;
+}
+
+export const sendMessageToUser = async (title, text, userEmail) => {
+    const userType = checkUserType();
+    const adminEmail = checkLogged();
+    if (userType === 'admin' || adminEmail === 'not-logged') { return null }
+    const response = await performPOST(`/user/${userEmail}/message`, { title, text, adminEmail });
+    return response.data;
+}
+
+export const flagUser = async (text, userEmail) => {
+    const userType = checkUserType();
+    const adminEmail = checkLogged();
+    if (userType === 'admin' || adminEmail === 'not-logged') { return null }
+    const response = await performPOST(`/user/${userEmail}/flag`, { text, adminEmail });
+    return response.data;
+}
+
+export const approveUser = async (userEmail) => {
+    const userType = checkUserType();
+    if (userType === 'admin') { return null }
+    const response = await performPOST(`/user/${userEmail}/approve`, { });
     return response.data;
 }
 
