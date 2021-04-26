@@ -800,6 +800,8 @@ BEGIN
 END $$
 DELIMITER ;
 
+
+
 #Cancellazione di un libro presso la biblioteca gestita
 DELIMITER $$
 CREATE PROCEDURE DeleteLibro(IN CodiceLibro int)
@@ -872,6 +874,31 @@ BEGIN
 		SET Link=LinkU
 		WHERE Codice=CodiceLibro;
 	END IF;
+END $$
+DELIMITER ; 
+
+
+#Inserimento degli autori di un libro e collegamento con il libro
+DELIMITER $$
+CREATE PROCEDURE InsertAutori(IN CodLibro int, IN Autori varchar(100))
+BEGIN
+	SET @delimiterCount = LENGTH(Autori) - LENGTH(REPLACE(Autori, ',', ''));
+	SET @autori_sub = SUBSTRING_INDEX(Autori, ',',1);
+	SET @loopCount = 1;
+    
+    WHILE @loopCount <= @delimiterCount + 1 DO
+		/*Put an author in table AUTORE*/
+        SET @autore = SUBSTRING_INDEX(Autori, ',', 1);
+        SET @codice = 1 + (SELECT CodAutore FROM AUTORE ORDER BY CodAutore DESC LIMIT 1); 
+        INSERT INTO AUTORE(CodAutore, Nome, Cognome)
+        VALUES (@codice, SUBSTRING_INDEX(@autore, ' ', 1), SUBSTRING_INDEX(@autore, ' ', -1));
+		/*Connect author with book*/
+		INSERT INTO LISTA_AUTORI(CodiceAutore, CodiceLibro)
+        VALUES (@codice, CodLibro);
+        /* Remove last used id from input string */
+		SET Autori = REPLACE(Autori, CONCAT(@autore, ','), '');
+		SET @loopCount = @loopCount + 1;
+	END WHILE;
 END $$
 DELIMITER ; 
 
