@@ -394,9 +394,13 @@ BEGIN
 		SELECT StatoAccount as Stato
 		FROM UTILIZZATORE
 		WHERE (Email=mail AND Pass=psw);
-    ELSE 
+    ELSEIF (tipo=1) THEN 
 		SELECT *
         FROM VOLONTARIO
+        WHERE (Email=mail AND Pass=psw);
+	ELSE 
+		SELECT *
+        FROM AMMINISTRATORE
         WHERE (Email=mail AND Pass=psw);
     END IF;
 END $$

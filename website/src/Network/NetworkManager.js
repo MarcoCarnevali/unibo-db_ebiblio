@@ -18,7 +18,12 @@ export const signup = async (mail, psw, SessoUt, NomeUt, CognomeUt, TelUt, DataN
 }
 
 export const login = async (tipo, mail, psw) => {
-    const numberType = tipo === 'volunteer' ? 1 : 0;
+    var numberType = 0;
+    if (tipo === 'volunteer')
+        numberType = 1
+    else if (tipo === 'admin')
+        numberType = 2
+
     const response = await performPOST("/login", { tipo: numberType, mail, psw });
     return response.data;
 }
@@ -28,6 +33,13 @@ export const checkLogged = () => {
     const parts = value.split(`; ebiblio_email=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
     else return "not-logged";
+}
+
+export const checkUserType = () => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ebiblio_userType=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    else return null;
 }
 
 export const logout = async () => {
@@ -89,6 +101,27 @@ export const bookSeat = async (libraryName, startTime, endTime, date, seatId) =>
     const email = checkLogged();
     if (email === 'not-logged') { return null }
     const response = await performPOST(`/library/${libraryName}/seat/${seatId}/book`, { startTime, endTime, date, email });
+    return response.data;
+}
+
+export const modifyBook = async (libraryName, bookId, title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link) => {
+    const userType = checkUserType();
+    if (userType === 'admin') { return null }
+    const response = await performPOST(`/library/${libraryName}/books/${bookId}/modify`, { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link });
+    return response.data;
+}
+
+export const deleteBook = async (libraryName, bookId) => {
+    const userType = checkUserType();
+    if (userType === 'admin') { return null }
+    const response = await performPOST(`/library/${libraryName}/books/${bookId}/delete`, { });
+    return response.data;
+}
+
+export const addBook = async (libraryName, title, type, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link) => {
+    const userType = checkUserType();
+    if (userType === 'admin') { return null }
+    const response = await performPOST(`/library/${libraryName}/books/add`, { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, type, link });
     return response.data;
 }
 

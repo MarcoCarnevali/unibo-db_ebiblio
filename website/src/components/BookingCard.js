@@ -1,6 +1,7 @@
 import React from "react";
 import { getBook, bookDeliver } from "../Network/NetworkManager";
 import GlassInput from "../components/GlassInput";
+const dateFormat = require('dateformat');
 
 export default class BookingCard extends React.Component {
     constructor(props) {
@@ -34,23 +35,23 @@ export default class BookingCard extends React.Component {
         return (
             <>
                 <article className="rounded-2xl shadow-lg w-auto border border-gray-200 bg-white bg-opacity-60 backdrop-blur transition duration-500 ease-in-out transform hover:scale-105" onClick={this.openModal}>
-                    <h1 className="text-lg p-2 md:p-4">
-                        <a className="no-underline hover:underline text-black" href="#">
+                    <h1 className="text-lg font-bold p-2 md:p-4">
+                        <a className="text-black text-lg" href="#">
                             {this.props.booking.EmailUtilizzatore}
                         </a>
                     </h1>
 
-                    <a className="flex items-center no-underline hover:underline text-black text-sm p-2 md:p-4" href="#">
+                    <a className="flex items-center text-black text-sm p-2 md:p-4" href="#">
                         Library: {this.props.booking.Biblioteca}
                     </a>
-                    <a className="flex items-center no-underline hover:underline text-black text-sm p-2 md:p-4" href="#">
+                    <a className="flex items-center text-black text-sm p-2 md:p-4" href="#">
                         Status: {this.props.booking.StatoPrestito}
                     </a>
-                    <a className="flex items-center no-underline hover:underline text-black text-sm p-2 md:p-4" href="#">
-                        Start Date: {this.props.booking.DataAvvio}
+                    <a className="flex items-center text-black text-sm p-2 md:p-4" href="#">
+                        Start Date: {dateFormat(this.props.booking.DataAvvio, "dd/mm/yyyy")}
                     </a>
-                    <a className="flex items-center no-underline hover:underline text-black text-sm p-2 md:p-4" href="#">
-                        End Date: {this.props.booking.DataFine}
+                    <a className="flex items-center text-black text-sm p-2 md:p-4" href="#">
+                        End Date: {dateFormat(this.props.booking.DataFine, "dd/mm/yyyy")}
                     </a>
 
                 </article>

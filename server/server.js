@@ -128,13 +128,16 @@ app.post('/signup', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { tipo, mail, psw } = req.body;
+    console.log(req.body)
     connection.query(`CALL Autenticazione("${tipo}", "${mail}", "${psw}");`, (err, rows) => {
+        console.error(rows)
         if (err)
             return res.status(500).send({ error: err });
         else if (!rows[0][0])
             return res.status(406).send({ error: "wrong user" });
 
         res.cookie('ebiblio_email', mail, { maxAge: 900000, httpOnly: false, encode: String });
+        res.cookie('ebiblio_userType', tipo, { maxAge: 900000, httpOnly: false, encode: String });
         return res.status(200).send({ result: rows[0][0] });
     });
 });
@@ -143,7 +146,7 @@ app.post('/user/booking/book', (req, res) => {
     const { bookId, email } = req.body;
     connection.query(`CALL PrestitoCartaceo("${bookId}", "${email}");`, (err, rows) => {
         if (err)
-            return res.status(500).send({ error: err.mesasge });
+            return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });
     });
 });
@@ -153,7 +156,7 @@ app.get('/bookings/deliver/:id', (req, res) => {
     connection.query(`CALL InsertConsegna(${req.params.id}, "${type}", "${note}", "${email}");`, (err, rows) => {
         console.error("ERR: ", err);
         if (err)
-            return res.status(500).send({ error: err.mesasge });
+            return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });
     });
 });
@@ -163,7 +166,7 @@ app.get('/library/:id/seats', (req, res) => {
     connection.query(`CALL PostiDisponibili("${startTime}", "${endTime}", "${req.params.id}", "${date}");`, (err, rows) => {
         console.log(rows[0])
         if (err)
-            return res.status(500).send({ error: err.mesasge });
+            return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: rows[0] });
     });
 });
@@ -174,7 +177,33 @@ app.post('/library/:id/seat/:seatId/book', (req, res) => {
         console.error(err)
         console.log(rows)
         if (err)
-            return res.status(500).send({ error: err.mesasge });
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: "Done" });
+    });
+});
+
+app.post('/library/:id/books/:bookId/modify', (req, res) => {
+    const { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link } = req.body;
+    connection.query(`CALL UpdateLibro("${req.params.bookId}", "${req.params.id}", "${title || ""}", ${year || 0}, "${edition || ""}", "${lendStatus || ""}", ${pages || 0}, ${shelf || 0}, "${conservationStatus || ""}", "${dimension || ""}", ${nAccess || 0}, "${link || ""}");`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: "Done" });
+    });
+});
+
+app.post('/library/:id/books/:bookId/delete', (req, res) => {
+    connection.query(`CALL DeleteLibro("${req.params.bookId}");`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: "Done" });
+    });
+});
+
+app.post('/library/:id/books/add', (req, res) => {
+    const { title, year, edition, type, lendStatus, pages, shelf, conservationStatus, dimension, link } = req.body;
+    connection.query(`CALL InsertLibro("${title}", ${year}, "${edition}", "${req.params.id}", ${type}, "${lendStatus}", ${pages || 0}, ${shelf}, "${conservationStatus}", "${dimension}", "${link}");`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });
     });
 });

@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Home from "./Home";
 import Detail from "./Detail";
 import Login from "./Login";
+import LoginAdmin from "./admin/LoginAdmin";
+import HomeAdmin from "./admin/HomeAdmin";
+import DetailAdmin from "./admin/DetailAdmin";
 import Signup from "./Signup";
 import BookingHome from "./BookingHome";
 import { AuthProvider } from "./auth/Auth"
@@ -18,6 +21,9 @@ const App = () => {
           <Route exact path={process.env.PUBLIC_URL + '/detail'} component={Detail} />
           <Route exact path={process.env.PUBLIC_URL + '/login'} component={Login} />
           <Route exact path={process.env.PUBLIC_URL + '/signup'} component={Signup} />
+          <Route exact path={process.env.PUBLIC_URL + '/loginAdmin'} component={LoginAdmin} />
+          <Route exact path={process.env.PUBLIC_URL + '/homeAdmin'} component={HomeAdmin} />
+          <Route exact path={process.env.PUBLIC_URL + '/detailAdmin'} component={DetailAdmin} />
         </Switch>
       </AuthProvider>
     </Router>

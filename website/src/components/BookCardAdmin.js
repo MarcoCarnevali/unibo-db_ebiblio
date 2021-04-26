@@ -1,34 +1,36 @@
 import React from "react";
-import { bookBooking } from "../Network/NetworkManager";
+import { modifyBook, deleteBook } from "../Network/NetworkManager";
 import GlassInput from "../components/GlassInput";
 
-export class BookCard extends React.Component {
+export default class BookCardAdmin extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { showModal: false, isBook: !this.props.book.Dimensione, bookDate: "" };
+        this.state = { showModal: false, isBook: !this.props.book.Dimensione, inputs: {} };
+    }
+
+    handleChange = (e) => {
+        var inputs = this.state.inputs
+        inputs[e.target.name] = e.target.value
+        this.setState({ showModal: true, isBook: this.state.isBook, inputs: inputs })
     }
 
     openModal = () => {
-        this.setState({ showModal: true, isBook: !this.props.book.Dimensione, bookDate: this.state.bookDate })
+        this.setState({ showModal: true, isBook: !this.props.book.Dimensione, inputs: {} })
     }
 
     closeModal = () => {
-        this.setState({ showModal: false, isBook: !this.props.book.Dimensione, bookDate: this.state.bookDate })
+        this.setState({ showModal: false, isBook: !this.props.book.Dimensione, inputs: {} })
     }
 
-    ctaAction = async () => {
-        if (this.state.isBook) {
-            const response = await bookBooking(this.props.book.Codice);
-            if (response !== null) {
-                window.location.reload();
-            }
-        } else {
-            // Redirect to links
-        }
+    modifyAction = async () => {
+        const {title, edition, year, pages, shelf, conservationStatus, lendStatus, dimension, link } = this.state.inputs;
+        await modifyBook(this.props.library, this.props.book.Codice, title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, null, link )
+        window.location.reload();
     }
 
-    datePickerChanged = (value) => {
-        this.setState({ showModal: this.state.showModal, isBook: !this.props.book.Dimensione, bookDate: value })
+    deleteAction = async () => {
+        await deleteBook(this.props.library, this.props.book.Codice);
+        window.location.reload();
     }
 
     render() {
@@ -57,7 +59,7 @@ export class BookCard extends React.Component {
                                     {/*header*/}
                                     <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
                                         <h3 className="text-3xl font-semibold ml-5">
-                                            {this.props.book.Titolo}
+                                            <input className="border rounded font-bold" name="title" defaultValue={this.props.book.Titolo} onChange={this.handleChange} />
                                         </h3>
                                         <button
                                             className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -72,37 +74,32 @@ export class BookCard extends React.Component {
                                     <div className="relative p-6 flex-auto ml-5">
                                         {this.state.isBook ? (
                                             <>
-                                                <span>Edition: {this.props.book.Edizione}</span>
+                                                <span>Edition: <input className="border rounded" name="edition" defaultValue={this.props.book.Edizione} onChange={this.handleChange} /></span>
                                                 <br />
-                                                <span>Year: {this.props.book.Anno}</span>
+                                                <span>Year: <input className="border rounded" name="year" defaultValue={this.props.book.Anno} onChange={this.handleChange} /></span>
                                                 <br />
-                                                <span>Pages: {this.props.book.Pagine}</span>
+                                                <span>Pages: <input className="border rounded" name="pages" defaultValue={this.props.book.Pagine} onChange={this.handleChange} /></span>
                                                 <br />
-                                                <span>Shelf: {this.props.book.Scaffale}</span>
+                                                <span>Shelf: <input className="border rounded" name="shelf" defaultValue={this.props.book.Scaffale} onChange={this.handleChange} /></span>
                                                 <br />
-                                                <span>Book Status: {this.props.book.StatoConservazione}</span>
+                                                <span>Book Status: <input className="border rounded" name="conservationStatus" defaultValue={this.props.book.StatoConservazione} onChange={this.handleChange} /></span>
                                                 <br />
-                                                <span>Booking Status: {this.props.book.StatoPrestito}</span>
+                                                <span>Booking Status: <input className="border rounded" name="lendStatus" defaultValue={this.props.book.StatoPrestito} onChange={this.handleChange} /></span>
                                             </>
                                         ) : (
                                             <>
-                                                <span>Edition: {this.props.book.Edizione}</span>
+                                                <span>Edition: <input className="border rounded" name="edition" defaultValue={this.props.book.Edizione} onChange={this.handleChange} /></span>
                                                 <br />
-                                                <span>Year: {this.props.book.Anno}</span>
+                                                <span>Year: <input className="border rounded" name="year" defaultValue={this.props.book.Anno} onChange={this.handleChange} /></span>
                                                 <br />
-                                                <span>Size: {this.props.book.Dimensione}</span>
+                                                <span>Size: <input className="border rounded" name="dimension" defaultValue={this.props.book.Dimensione} onChange={this.handleChange} /></span>
+                                                <br />
+                                                <span>Link: <input className="border rounded" name="link" defaultValue={this.props.book.Link} onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span>AccessNumber: {this.props.book.NumeroAccessi}</span>
                                             </>
                                         )}
                                     </div>
-                                    {/* Book section */}
-                                    {!this.state.isBook ? (<></>) : (
-                                        <div className="relative p-6 flex-auto ml-5">
-                                            <span className="block-inline">Select Date and time: </span>
-                                            <br />
-                                            <GlassInput className="block-inline text-black ml-3" textColor="text-black" type="datetime-local" onChange={e => this.datePickerChanged(e.target.value)} />
-                                        </div>)}
                                     {/*footer*/}
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                                         <button
@@ -113,12 +110,20 @@ export class BookCard extends React.Component {
                                             Close
                                     </button>
                                         <button
+                                            className="bg-red-600 text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 disabled:opacity-40"
+                                            type="button"
+                                            onClick={this.deleteAction}
+                                            disabled={false}
+                                        >
+                                            Delete
+                                        </button>
+                                        <button
                                             className="bg-blue-600 text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 disabled:opacity-40"
                                             type="button"
-                                            onClick={this.ctaAction}
-                                            disabled={this.state.isBook && (this.props.book.StatoConservazione === 'Scadente' || this.props.book.StatoPrestito !== 'Disponibile' || !this.state.bookDate)}
+                                            onClick={this.modifyAction}
+                                            disabled={false}
                                         >
-                                            {this.state.isBook ? "Book" : "Access"}
+                                            Modify
                                         </button>
                                     </div>
                                 </div>

@@ -7,7 +7,7 @@ import Map from "./components/Map";
 import GlassInput from "./components/GlassInput";
 import "./style/main.css";
 import { useLocation } from "react-router-dom";
-import { getBiblio, getBooks, getEBooks, getGallery, getPhones, checkSeatAvailability, bookSeat } from "./Network/NetworkManager";
+import { getBiblio, getBooks, getEBooks, getGallery, getPhones, checkSeatAvailability, bookSeat, checkLogged } from "./Network/NetworkManager";
 
 const informations = (data, phones) => {
     return (
@@ -35,26 +35,6 @@ const informations = (data, phones) => {
         </div>
     )
 }
-
-const perks = () => {
-    return (
-        <div>
-            <div className="space-x-3 mt-5">
-                <svg width="24" height="24" className="inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="green">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <a className="inline-block align-middle">Charge plug</a>
-            </div>
-            <div className="space-x-3">
-                <svg width="24" height="24" className="inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="red">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                <a className="inline-block align-middle">Ethernet plug</a>
-            </div>
-        </div>
-    )
-}
-
 
 const Detail = () => {
     let { search } = useLocation();
@@ -96,16 +76,20 @@ const Detail = () => {
 
     const tappedSeatAvailability = async () => {
         const response = await checkSeatAvailability(ref, bookingDates.startTime, bookingDates.endTime, bookingDates.date)
-        console.log(response);
         const seats = response.result.map(x => (<SeatCard seat={x} onClick={() => bookSeatTapped(x.Num)} />))
         setAvailableSeats(seats)
     }
 
     const bookSeatTapped = async (seatId) => {
-        console.log("CIAO:",seatId)
+        const email = checkLogged();
+        console.log(email)
+        if (email === 'not-logged') {
+            window.alert('please log-in to book a seat');
+            return
+        }
         const response = await bookSeat(ref, bookingDates.startTime, bookingDates.endTime, bookingDates.date, seatId);
         console.log(response);
-        //window.location.reload();
+        window.location.reload();
     }
 
     useEffect(async () => {
