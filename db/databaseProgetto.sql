@@ -34,6 +34,7 @@ Titolo varchar(50),
 Anno smallint,
 Edizione varchar(30),
 Biblioteca varchar(40),
+Genere varchar(30),
 FOREIGN KEY (Biblioteca) REFERENCES BIBLIOTECA(Nome)
 							ON DELETE CASCADE
 							ON UPDATE CASCADE
@@ -282,34 +283,95 @@ VALUES	("1","Biblioteca Universitaria",true, false),
 		("2","Biblioteca di discipline umanistiche",true, false),
         ("3","Biblioteca di discipline umanistiche",true, false);
 
-INSERT INTO LIBRO(Titolo, Anno, Edizione, Biblioteca) 
-VALUES	("Divina Commedia-Completo","1814","Originale","Biblioteca Universitaria"),
-		("Divina Commedia-Paradiso","2015","Petrini","Biblioteca Universitaria"),
-        ("Divina Commedia-Inferno","2015","Petrini","Biblioteca Universitaria"),
-        ("Divina Commedia-Purgatorio","2015","Petrini","Biblioteca Universitaria"),
-        ("Il deserto dei tartari","1940","RCS","Biblioteca Universitaria"),
-        ("Il deserto dei tartari","2012","Feltrinelli","Biblioteca Nicola Matteucci"),
-        ("Il nome della Rosa","1980","Bompiani","Biblioteca Nicola Matteucci"),
-        ("Il nome della Rosa","2002","Repubblica","Biblioteca Nicola Matteucci"),
-        ("Prima Lezione di diritto","2006","Laterza","Biblioteca Giurica Antonio Cicu"),
-        ("Fondamenti della scienza giuridica","2005","Giappichelli","Biblioteca Giurica Antonio Cicu"),
-        ("Argomenti di teoria del diritto","2016","Faralli","Biblioteca Giurica Antonio Cicu"),
-        ("Elogio del diritto","2019","Nave di Tesco","Biblioteca Giurica Antonio Cicu"),
-        ("Il mistero del processo","1994","Adelphi","Biblioteca Giurica Antonio Cicu"),
-        ("Sistemi giuridici comparati","1996","Utet","Biblioteca Giurica Antonio Cicu"),
-        ("Il metodo Warren Buffet","1994","Hoepli","Biblioteca economica Walter Bigiavi"),
-        ("Microeconomia","2014","Piras","Biblioteca economica Walter Bigiavi"),
-        ("Macroeconomia","2010","Il Mulino","Biblioteca economica Walter Bigiavi"),
-        ("Pachidermi e pappagalli","2019","Feltinelli","Biblioteca economica Walter Bigiavi"),
-        ("Storia economica","2006","Franco Angeli","Biblioteca economica Walter Bigiavi"),
-        ("Corso di economia aziendale","2005","Il  Mulino","Biblioteca economica Walter Bigiavi"),
-        ("L'alchimista","2017","La nave di Teseo","Biblioteca di discipline umanistiche"),
-        ("Manifesto della psicologia","2012","Mastopaolo","Biblioteca di discipline umanistiche"),
-        ("Nella quiete e nella gratitudine","2007","Accademia Edizioni","Biblioteca di discipline umanistiche"),
-        ("Il mito del denaro","2009","Magi","Biblioteca di discipline umanistiche"),
-        ("Tutto è relazione","2019","Crisalide","Biblioteca di discipline umanistiche");
+INSERT INTO LIBRO(Titolo, Anno, Edizione, Biblioteca, Genere) 
+VALUES	("Divina Commedia-Completo","1814","Originale","Biblioteca Universitaria", "Classico"),
+		("Divina Commedia-Paradiso","2015","Petrini","Biblioteca Universitaria", "Classico"),
+        ("Divina Commedia-Inferno","2015","Petrini","Biblioteca Universitaria", "Classico"),
+        ("Divina Commedia-Purgatorio","2015","Petrini","Biblioteca Universitaria", "Classico"),
+        ("Il deserto dei tartari","1940","RCS","Biblioteca Universitaria", "Romanzo"),
+        ("Il deserto dei tartari","2012","Feltrinelli","Biblioteca Nicola Matteucci", "Romanzo"),
+        ("Il nome della Rosa","1980","Bompiani","Biblioteca Nicola Matteucci", "Romanzo"),
+        ("Il nome della Rosa","2002","Repubblica","Biblioteca Nicola Matteucci", "Romanzo"),
+        ("Prima Lezione di diritto","2006","Laterza","Biblioteca Giurica Antonio Cicu", "Diritto"),
+        ("Fondamenti della scienza giuridica","2005","Giappichelli","Biblioteca Giurica Antonio Cicu", "Diritto"),
+        ("Argomenti di teoria del diritto","2016","Faralli","Biblioteca Giurica Antonio Cicu", "Diritto"),
+        ("Elogio del diritto","2019","Nave di Teseo","Biblioteca Giurica Antonio Cicu", "Diritto"),
+        ("Il mistero del processo","1994","Adelphi","Biblioteca Giurica Antonio Cicu", "Diritto"),
+        ("Sistemi giuridici comparati","1996","Utet","Biblioteca Giurica Antonio Cicu", "Diritto"),
+        ("Il metodo Warren Buffet","1994","Hoepli","Biblioteca economica Walter Bigiavi", "Economico"),
+        ("Microeconomia","2014","Piras","Biblioteca economica Walter Bigiavi", "Economico"),
+        ("Macroeconomia","2010","Il Mulino","Biblioteca economica Walter Bigiavi", "Economico"),
+        ("Pachidermi e pappagalli","2019","Feltinelli","Biblioteca economica Walter Bigiavi", "Economico"),
+        ("Storia economica","2006","Franco Angeli","Biblioteca economica Walter Bigiavi", "Economico"),
+        ("Corso di economia aziendale","2005","Il  Mulino","Biblioteca economica Walter Bigiavi", "Economico"),
+        ("L'alchimista","2017","La nave di Teseo","Biblioteca di discipline umanistiche", "Romanzo"),
+        ("Manifesto della psicologia","2012","Mastopaolo","Biblioteca di discipline umanistiche", "Psicologia"),
+        ("Nella quiete e nella gratitudine","2007","Accademia Edizioni","Biblioteca di discipline umanistiche", "Romanzo"),
+        ("Il mito del denaro","2009","Magi","Biblioteca di discipline umanistiche", "Economico"),
+        ("Tutto è relazione","2019","Crisalide","Biblioteca di discipline umanistiche", "Psicologia");
         
- 
+INSERT INTO AUTORE(Nome, Cognome)
+VALUES  ("Dante","Alighieri"),    
+		("Dino","Buzzati"),
+        ("Umberto","Eco"),   
+        ("Paolo","Grossi"),   
+        ("Luigi","Garofalo"),   
+        ("Carla","Faralli"),
+        ("Massimo","Cacciari"),   
+        ("Natalino","Irti"),
+        ("Salvatore","Satta"),
+        ("Antonio","Gambaro"),
+        ("Rodolfo","Sacco"),
+        ("Robert","Hagstrom"),
+        ("Frank","Robert"),
+        ("Edward","Cartwright"),
+        ("Romano","Piras"),
+        ("Oliver","Blanchard"),
+        ("Carlo","Cottarelli"),
+        ("Ennio","De Simone"),
+        ("Giuseppe","Airoldi"),
+        ("Giorgio","Brunetti"),
+        ("Vittorio","Coda"),
+        ("Paulo","Coelho"),
+        ("Mario","Mastropaolo"),
+        ("Hellinger","Bert"),
+        ("Claudio","Widmann"),
+        ("Fabrizio","Rossi");
+
+INSERT INTO LISTA_AUTORI(CodiceAutore, CodiceLibro)
+VALUES  ("1","1"),    
+		("1","2"),
+        ("1","3"),   
+        ("1","4"),   
+        ("2","5"),   
+        ("2","6"),
+        ("3","7"),   
+        ("3","8"),
+        ("4","9"),
+        ("5","10"),
+        ("6","11"),
+        ("7","12"),
+        ("8","12"),
+        ("9","13"),
+        ("10","14"),
+        ("11","14"),
+        ("12","15"),
+        ("13","16"),
+        ("14","16"),
+        ("15","16"),
+        ("16","17"),
+        ("17","18"),
+        ("18","19"),
+        ("19","20"),
+        ("20","20"),
+        ("21","20"),
+        ("22","21"),
+        ("23","22"),
+        ("24","23"),
+        ("25","24"),
+        ("26","25");
+
+
 INSERT INTO CARTACEO(Codice,StatoPrestito, Pagine, Scaffale, StatoConservazione) 
 VALUES	("1","Consegnato","1500","15","Non Buono"),
 		("2","Consegnato","190","5","Buono"),
@@ -457,7 +519,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE VisualCartaceiBib(in BibliotecaScelta varchar(40))
 BEGIN
-	SELECT CARTACEO.Codice, Titolo, Anno, Edizione,StatoPrestito, Pagine, Scaffale, StatoConservazione
+	SELECT CARTACEO.Codice, Titolo, Anno, Edizione, Genere,StatoPrestito, Pagine, Scaffale, StatoConservazione
 	FROM CARTACEO JOIN LIBRO ON (CARTACEO.Codice=LIBRO.Codice)
 	WHERE Biblioteca = BibliotecaScelta;
 END $$
@@ -468,9 +530,18 @@ DELIMITER;
 DELIMITER $$
 CREATE PROCEDURE VisualEbookBib(in BibliotecaScelta varchar(40))
 BEGIN
-	SELECT EBOOK.Codice, Titolo, Anno, Edizione, Dimensione, NumeroAccessi, Link
+	SELECT EBOOK.Codice, Titolo, Anno, Edizione, Genere, Dimensione, NumeroAccessi, Link
 	FROM EBOOK JOIN LIBRO ON (EBOOK.Codice=LIBRO.Codice)
 	WHERE Biblioteca = BibliotecaScelta;
+END $$
+DELIMITER;
+
+#Visual Autori per titolo
+DELIMITER $$
+CREATE PROCEDURE VisualAutori (IN Codice INT)
+BEGIN
+	SELECT * FROM AUTORE WHERE CodAutore IN
+    (SELECT CodiceAutore FROM LISTA_AUTORI WHERE CodiceLibro=Codice);
 END $$
 DELIMITER;
 
@@ -479,12 +550,27 @@ DELIMITER;
 DELIMITER $$
 CREATE PROCEDURE VisualEbook(IN CodiceEbook int)
 BEGIN
-	SELECT EBOOK.Codice, Titolo, Anno, Edizione, Biblioteca, Dimensione, NumeroAccessi, Link
+    UPDATE EBOOK SET NumeroAccessi=NumeroAccessi+1 WHERE (EBOOK.Codice=CodiceEbook);
+	
+    SELECT EBOOK.Codice, Titolo, Anno, Edizione, Genere ,Biblioteca, Dimensione, NumeroAccessi, Link
     FROM EBOOK JOIN LIBRO ON (EBOOK.Codice=LIBRO.Codice)
     WHERE EBOOK.Codice=CodiceEbook;
+    
+    SELECT * FROM AUTORE WHERE CodAutore IN
+    (SELECT CodiceAutore FROM LISTA_AUTORI WHERE CodiceLibro=CodiceEbook);
 END $$
 DELIMITER ;
 
+#inserimento dati nello storico ebook
+DELIMITER $$
+CREATE PROCEDURE StoricoEbook(IN CodiceEbook int, IN EmailUt varchar(30))
+BEGIN
+SET @GiornoUt = CURDATE();
+SET @OraUt = CURTIME();
+INSERT INTO STORICO_EBOOK(CodEbook, EmailUtente, Giorno, Ora)
+VALUES (CodiceEbook, EmailUt, @GiornoUt, @OraUt);
+END $$
+DELIMITER ;
 
 
 # Visualizzazione propri eventi di consegna
@@ -551,6 +637,18 @@ BEGIN
     VALUES(Num, Biblio, EmailUt, GiornoPren, InizioPren, FinePren);
 END $$
 DELIMITER ;
+
+#Visualizzazione prenotazioni di posti lettura da parte di un utente
+DELIMITER $$
+CREATE PROCEDURE VisualPostiUt(IN EmailUti varchar(30))
+BEGIN
+	SELECT * 
+    FROM PRENOTAZIONE 
+    WHERE EmailUtilizzatore=EmailUti;
+END $$
+DELiMITER ;
+
+
 
 # Prestito di un libro cartaceo
 DELIMITER $$
@@ -683,14 +781,14 @@ DELIMITER ;
     CAMPO VUOTO -> "". LO STESSO VALE SE INSERIAMO UN CARTACEO,
     POSSIAMO INSERIRE I CAMPI Dimensione e Link VUOTI.*/
 DELIMITER $$
-CREATE PROCEDURE InsertLibro(IN Titolo varchar(50), IN Anno smallint, IN Edizione varchar(30), IN Biblioteca varchar(40), 
+CREATE PROCEDURE InsertLibro(IN Titolo varchar(50), IN Anno smallint, IN Edizione varchar(30), IN Biblioteca varchar(40), Genere varchar(30),
 IN Tipo Bool,
 IN StatoPrestito varchar(11), IN Pagine smallint, IN Scaffale smallint, IN StatoConservazione varchar(9),
 IN Dimensione varchar(10), IN Link varchar(2100) )
 # se Tipo=true allora è un cartaceo, se Tipo=false allora è un ebook
 BEGIN
-		INSERT INTO LIBRO(Titolo, Anno, Edizione, Biblioteca)
-        VALUES(Titolo, Anno, Edizione, Biblioteca);
+		INSERT INTO LIBRO(Titolo, Anno, Edizione, Biblioteca, Genere)
+        VALUES(Titolo, Anno, Edizione, Biblioteca, Genere);
         SET @UltimoCodice = LAST_INSERT_ID();
 	IF Tipo="1" THEN
         INSERT INTO CARTACEO(Codice, StatoPrestito, Pagine, Scaffale, StatoConservazione)
@@ -715,7 +813,7 @@ DELIMITER ;
 #Aggiornamento di un libro presso la biblioteca gestita
 DELIMITER $$
 CREATE PROCEDURE UpdateLibro(IN CodiceLibro int, IN BibliotecaGestita varchar(40) , 
-				IN TitoloU varchar(50), IN AnnoU smallint, IN EdizioneU varchar(30),
+				IN TitoloU varchar(50), IN AnnoU smallint, IN EdizioneU varchar(30), IN GenereU varchar(30),
 				IN StatoPrestitoU varchar(11), IN PagineU smallint, IN ScaffaleU smallint, IN StatoConservazioneU varchar(9),
                 IN DimensioneU varchar(10), IN NumeroAccessiU int, IN LinkU varchar(2100))
 BEGIN
@@ -732,6 +830,11 @@ BEGIN
     IF (EdizioneU IS NOT NULL AND EdizioneU <> "" AND EdizioneU <> " ") THEN
 		UPDATE LIBRO
 		SET Edizione=EdizioneU
+		WHERE Codice=CodiceLibro AND Biblioteca=BibliotecaGestita;
+	END IF;
+    IF (GenereU IS NOT NULL AND GenereU <> "" AND GenereU <> " ") THEN
+		UPDATE LIBRO
+		SET Genere=GenereU
 		WHERE Codice=CodiceLibro AND Biblioteca=BibliotecaGestita;
 	END IF;
     IF (StatoPrestitoU IS NOT NULL AND StatoPrestitoU <> "" AND StatoPrestitoU <> " ") THEN
