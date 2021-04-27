@@ -5,8 +5,8 @@ import AddBookButton from "../components/AddBookButton";
 import GlassInput from "../components/GlassInput";
 import "../style/main.css";
 import { useLocation } from "react-router-dom";
-import { getBiblio, getBooks, getEBooks, checkLogged } from "../Network/NetworkManager";
-
+import { getBiblio, getBooks, getEBooks, getLibrarySeatsBooked } from "../Network/NetworkManager";
+import SeatCard from "../components/SeatCard";
 
 const DetailAdmin = () => {
     let { search } = useLocation();
@@ -15,6 +15,7 @@ const DetailAdmin = () => {
     const [data, setData] = useState(null);
     const [books, setBooks] = useState(null);
     const [eBooks, setEBooks] = useState(null);
+    const [seats, setSeats] = useState(null);
     const [loading, setLoading] = useState(true);
 
 
@@ -31,6 +32,10 @@ const DetailAdmin = () => {
             const eBooksResponse = await getEBooks(ref);
             const eBooksCards = eBooksResponse.result.map(x => (<BookCardAdmin book={x} library={ref} />))
             setEBooks(eBooksCards)
+
+            const seatsResponse = await getLibrarySeatsBooked(ref);
+            const seatsCards = seatsResponse.result.map(x => (<SeatCard seat={x} />))
+            //setSeats(seatsCards)
 
             setLoading(false);
         } catch (error) {

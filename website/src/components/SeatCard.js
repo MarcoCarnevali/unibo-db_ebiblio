@@ -1,11 +1,12 @@
 import React from "react";
+const dateFormat = require('dateformat');
 
 export default class SeatCard extends React.Component {
     render() {
         return (
             <article className="rounded-2xl shadow-lg w-auto border border-gray-200 bg-white bg-opacity-60 backdrop-blur transition duration-500 ease-in-out transform hover:scale-105">
                 <h1 className="text-lg p-2 md:p-4">
-                    <a className="no-underline hover:underline text-black" href="#">
+                    <a className="text-black">
                         Seat Number: {this.props.seat.Num}
                     </a>
                 </h1>
@@ -31,16 +32,34 @@ export default class SeatCard extends React.Component {
                         )}
                     </svg>
                 </div>
-                <div className="p-2 md:p-4">
-                    <button
-                        className="bg-blue-600 text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 disabled:opacity-40"
-                        type="button"
-                        onClick={this.props.onClick}
-                    >
-                        Book
-                    </button>
-                </div>
 
+                {this.props.seat.Giorno ? (
+                    <div className="p-2 md:p-4 text-black">
+                        <a className="">
+                            Date: {dateFormat(this.props.seat.Giorno, "dd/mm/yyyy")}
+                        </a>
+                        <br />
+                        <a className="">
+                            Start Time: {this.props.seat.OraInizio.slice(0, -3)}
+                        </a>
+                        <br />
+                        <a className="">
+                            End Time: {this.props.seat.OraFine.slice(0, -3)}
+                        </a>
+                    </div>
+                ) : (<></>)}
+
+                {!this.props.seat.Giorno ? (
+                    <div className="p-2 md:p-4">
+                        <button
+                            className="bg-blue-600 text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 disabled:opacity-40"
+                            type="button"
+                            onClick={this.props.onClick}
+                        >
+                            Book
+                    </button>
+                    </div>
+                ) : (<></>)}
             </article>
         )
     }

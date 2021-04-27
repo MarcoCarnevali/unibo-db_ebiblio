@@ -172,6 +172,16 @@ app.get('/library/:id/seats', (req, res) => {
     });
 });
 
+app.get('/library/:id/seatsList', (req, res) => {
+    connection.query(`CALL VisualPrenotazioniPosti("${req.params.id}");`, (err, rows) => {
+        console.log(rows[0])
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: rows[0] });
+    });
+});
+
+
 app.post('/library/:id/seat/:seatId/book', (req, res) => {
     const { date, startTime, endTime, email } = req.body;
     connection.query(`CALL PrenotazionePosto("${date}", "${startTime}", "${endTime}", "${req.params.seatId}", "${req.params.id}", "${email}");`, (err, rows) => {
@@ -233,5 +243,32 @@ app.post('/user/:email/approve', (req, res) => {
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });
+    });
+});
+
+app.get('/user/:email/seats', (req, res) => {
+    connection.query(`CALL VisualPostiUt("${req.params.email}");`, (err, rows) => {
+        console.log(rows)
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: rows[0] });
+    });
+});
+
+app.get('/user/:email/delivered', (req, res) => {
+    connection.query(`CALL VisualConsegne("${req.params.email}");`, (err, rows) => {
+        console.log(rows)
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: rows[0] });
+    });
+});
+
+app.get('/user/:email/lended', (req, res) => {
+    connection.query(`CALL PrestitiUtente("${req.params.email}");`, (err, rows) => {
+        console.log(rows)
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: rows[0] });
     });
 });

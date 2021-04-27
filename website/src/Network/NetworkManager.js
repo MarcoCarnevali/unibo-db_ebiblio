@@ -114,7 +114,7 @@ export const modifyBook = async (libraryName, bookId, title, year, edition, lend
 export const deleteBook = async (libraryName, bookId) => {
     const userType = checkUserType();
     if (userType === 'admin') { return null }
-    const response = await performPOST(`/library/${libraryName}/books/${bookId}/delete`, { });
+    const response = await performPOST(`/library/${libraryName}/books/${bookId}/delete`, {});
     return response.data;
 }
 
@@ -144,9 +144,36 @@ export const flagUser = async (text, userEmail) => {
 export const approveUser = async (userEmail) => {
     const userType = checkUserType();
     if (userType === 'admin') { return null }
-    const response = await performPOST(`/user/${userEmail}/approve`, { });
+    const response = await performPOST(`/user/${userEmail}/approve`, {});
     return response.data;
 }
+
+export const getLibrarySeatsBooked = async (libraryName) => {
+    const response = await performGET(`/library/${libraryName}/seatsList`, {});
+    return response.data;
+}
+
+export const getUserSeatsBooked = async () => {
+    const email = checkLogged();
+    if (email === 'not-logged') { return null }
+    const response = await performGET(`/user/${email}/seats`, {});
+    return response.data;
+}
+
+export const getUserDelivered = async () => {
+    const email = checkLogged();
+    if (email === 'not-logged') { return null }
+    const response = await performGET(`/user/${email}/delivered`, {});
+    return response.data;
+}
+
+export const getUserLended= async () => {
+    const email = checkLogged();
+    if (email === 'not-logged') { return null }
+    const response = await performGET(`/user/${email}/lended`, {});
+    return response.data;
+}
+
 
 const performGET = async (path, params) => {
     return axios.get(address + path, {

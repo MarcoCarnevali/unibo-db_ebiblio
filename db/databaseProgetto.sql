@@ -507,6 +507,14 @@ BEGIN
 END $$
 DELIMITER ; 
 
+# Visualizzazione dei posti lettura presenti in ogni biblioteca
+DELIMITER $$
+CREATE PROCEDURE InsertAutori(IN Autori varchar(100))
+BEGIN
+	SELECT * FROM POSTI_LETTURA;
+END $$
+DELIMITER ; 
+
 # Visualizzazione dei libri disponibili in tutte le biblioteche
 DELIMITER $$
 CREATE PROCEDURE VisualLibri()
@@ -642,8 +650,9 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE VisualPostiUt(IN EmailUti varchar(30))
 BEGIN
-	SELECT * 
+	SELECT Giorno, OraInizio, OraFine, Num, Biblioteca, Presa, Ethernet 
     FROM PRENOTAZIONE 
+    JOIN POSTI_LETTURA AS P ON (NumPosto = P.Num ) AND (Biblioteca = P.NomeBiblioteca)
     WHERE EmailUtilizzatore=EmailUti;
 END $$
 DELiMITER ;
