@@ -98,7 +98,11 @@ export default class BookCardAdmin extends React.Component {
                                                 <br />
                                                 <span>Book Status: <input className="border rounded" name="conservationStatus" defaultValue={this.props.book.StatoConservazione} onChange={this.handleChange} /></span>
                                                 <br />
+                                                <span className="text-xs text-gray-400">Note: Book status must be "Ottimo" or "Buono" or "Non Buono" or "Scadente"</span>
+                                                <br />
                                                 <span>Booking Status: <input className="border rounded" name="lendStatus" defaultValue={this.props.book.StatoPrestito} onChange={this.handleChange} /></span>
+                                                <br />
+                                                <span className="text-xs text-gray-400">Note: Booking status must be "Disponibile" or "Prenotato" or "Consegnato"</span>
                                             </>
                                         ) : (
                                             <>
@@ -108,10 +112,9 @@ export default class BookCardAdmin extends React.Component {
                                                 <br />
                                                 <span>Genre: <input className="border rounded" name="genre" defaultValue={this.props.book.Genere} onChange={this.handleChange} /></span>
                                                 <br />
-                                                <span>Authors: <input className="border rounded" name="authors" defaultValue={this.authors} onChange={this.handleChange} /></span>
+                                                <span>Authors: <input className="border rounded" name="authors" defaultValue={this.state.authors} onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span className="text-xs text-gray-400">Note: write a list of author delimited by a ',' e.g. Marco Carnevali,Tiziano Bruno</span>
-                                                <br />
                                                 <br />
                                                 <span>Size: <input className="border rounded" name="dimension" defaultValue={this.props.book.Dimensione} onChange={this.handleChange} /></span>
                                                 <br />

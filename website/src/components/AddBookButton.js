@@ -68,13 +68,19 @@ export default class AddBookButton extends React.Component {
                                                 <br />
                                                 <span>Authors: <input className="border rounded" name="authors" onChange={this.handleChange} /></span>
                                                 <br />
+                                                <span className="text-xs text-gray-400">Note: write a list of author delimited by a ',' e.g. Marco Carnevali,Tiziano Bruno</span>
+                                                <br />
                                                 <span>Pages: <input className="border rounded" name="pages" onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span>Shelf: <input className="border rounded" name="shelf" onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span>Book Status: <input className="border rounded" name="conservationStatus" onChange={this.handleChange} /></span>
                                                 <br />
+                                                <span className="text-xs text-gray-400">Note: Book status must be "Ottimo" or "Buono" or "Non Buono" or "Scadente"</span>
+                                                <br />
                                                 <span>Booking Status: <input className="border rounded" name="lendStatus" onChange={this.handleChange} /></span>
+                                                <br />
+                                                <span className="text-xs text-gray-400">Note: Booking status must be "Disponibile" or "Prenotato" or "Consegnato"</span>
                                             </>
                                         ) : (
                                             <>
@@ -86,10 +92,11 @@ export default class AddBookButton extends React.Component {
                                                 <br />
                                                 <span>Authors: <input className="border rounded" name="authors" onChange={this.handleChange} /></span>
                                                 <br />
+                                                <span className="text-xs text-gray-400">Note: write a list of author delimited by a ',' e.g. Marco Carnevali,Tiziano Bruno</span>
+                                                <br />
                                                 <span>Size: <input className="border rounded" name="dimension" onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span>Link: <input className="border rounded" name="link" onChange={this.handleChange} /></span>
-                                                <br />
                                             </>
                                         )}
                                     </div>
