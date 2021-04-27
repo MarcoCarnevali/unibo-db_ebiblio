@@ -774,6 +774,43 @@ DELIMITER ;
 
 
 #SOLO AMMINISTRATORI
+
+
+#Inserimento degli autori di un libro e collegamento con il libro
+DELIMITER $$
+CREATE PROCEDURE InsertAutori(IN CodLibro int, IN Autori varchar(100))
+BEGIN
+	SET @delimiterCount = LENGTH(Autori) - LENGTH(REPLACE(Autori, ',', ''));
+	SET @autori_sub = SUBSTRING_INDEX(Autori, ',',1);
+	SET @loopCount = 1;
+   
+    WHILE @loopCount <= @delimiterCount + 1 DO
+		SET @autore = SUBSTRING_INDEX(Autori, ',', 1);	
+		SET @AutoreEsistente = (SELECT CodAutore FROM AUTORE WHERE Nome= SUBSTRING_INDEX(@autore, ' ', 1) AND COGNOME = SUBSTRING_INDEX(@autore, ' ', -1));
+		SET @CoppiaEsistente = (SELECT CodiceAutore FROM LISTA_AUTORI WHERE CodiceLibro=CodLibro AND CodiceAutore=@AutoreEsistente );
+        
+        IF (@AutoreEsistente IS NULL) THEN
+           /*Put an author in table AUTORE*/
+            INSERT INTO AUTORE(Nome,Cognome)
+            VALUES (SUBSTRING_INDEX(@autore, ' ', 1), SUBSTRING_INDEX(@autore, ' ', -1)) ;
+            SET @codice = (SELECT Count(*) FROM AUTORE);
+            /*Connect author with book*/
+			INSERT INTO LISTA_AUTORI(CodiceAutore, CodiceLibro)
+			VALUES (@codice, CodLibro);
+        ELSEIF (@CoppiaEsistente IS NULL) THEN
+			/*Connect EXISTING author with book*/
+			INSERT INTO LISTA_AUTORI(CodiceAutore, CodiceLibro)
+			VALUES (@AutoreEsistente, CodLibro);
+        END IF;
+        
+        /* Remove last used id from input string */
+		SET Autori = REPLACE(Autori, CONCAT(@autore, ','), '');
+		SET @loopCount = @loopCount + 1;
+	END WHILE;
+END $$
+DELIMITER ; 
+
+
 # Inserimento di un libro presso la biblioteca gestita
 /*  NELLA CALL DI QUESTA PROCUDERE, QUANDO INSERIAMO UN EBOOK,
 	BISOGNA IMMETTERE IL VALORE "0" PER I CAMPI Pagine e Scafale,
@@ -817,7 +854,7 @@ DELIMITER $$
 CREATE PROCEDURE UpdateLibro(IN CodiceLibro int, IN BibliotecaGestita varchar(40) , 
 				IN TitoloU varchar(50), IN AnnoU smallint, IN EdizioneU varchar(30), IN GenereU varchar(30),
 				IN StatoPrestitoU varchar(11), IN PagineU smallint, IN ScaffaleU smallint, IN StatoConservazioneU varchar(9),
-                IN DimensioneU varchar(10), IN NumeroAccessiU int, IN LinkU varchar(2100))
+                IN DimensioneU varchar(10), IN NumeroAccessiU int, IN LinkU varchar(2100), IN AutoriU varchar(100))
 BEGIN
 	IF (TitoloU IS NOT NULL AND TitoloU <> "" AND TitoloU <> " ") THEN
 		UPDATE LIBRO
@@ -874,33 +911,13 @@ BEGIN
 		SET Link=LinkU
 		WHERE Codice=CodiceLibro;
 	END IF;
+	IF (AutoriU IS NOT NULL AND AutoriU <> "" AND AutoriU <> " ") THEN
+		DELETE FROM LISTA_AUTORI WHERE LISTA_AUTORI.CodiceLibro=CodiceLibro;
+        CALL InsertAutori(CodiceLibro,AutoriU);
+	END IF;
 END $$
-DELIMITER ; 
+DELIMITER ;
 
-
-#Inserimento degli autori di un libro e collegamento con il libro
-DELIMITER $$
-CREATE PROCEDURE InsertAutori(IN CodLibro int, IN Autori varchar(100))
-BEGIN
-	SET @delimiterCount = LENGTH(Autori) - LENGTH(REPLACE(Autori, ',', ''));
-	SET @autori_sub = SUBSTRING_INDEX(Autori, ',',1);
-	SET @loopCount = 1;
-    
-    WHILE @loopCount <= @delimiterCount + 1 DO
-		/*Put an author in table AUTORE*/
-        SET @autore = SUBSTRING_INDEX(Autori, ',', 1);
-        SET @codice = 1 + (SELECT CodAutore FROM AUTORE ORDER BY CodAutore DESC LIMIT 1); 
-        INSERT INTO AUTORE(CodAutore, Nome, Cognome)
-        VALUES (@codice, SUBSTRING_INDEX(@autore, ' ', 1), SUBSTRING_INDEX(@autore, ' ', -1));
-		/*Connect author with book*/
-		INSERT INTO LISTA_AUTORI(CodiceAutore, CodiceLibro)
-        VALUES (@codice, CodLibro);
-        /* Remove last used id from input string */
-		SET Autori = REPLACE(Autori, CONCAT(@autore, ','), '');
-		SET @loopCount = @loopCount + 1;
-	END WHILE;
-END $$
-DELIMITER ; 
 
 
 # Visualizzazione di tutte le prenotazioni presso la biblioteca gestita
