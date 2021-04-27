@@ -12,8 +12,8 @@ export const getBiblio = async (libraryName) => {
     return response.data;
 }
 
-export const signup = async (mail, psw, SessoUt, NomeUt, CognomeUt, TelUt, DataNascitaUt, LuogoNascitaUt, ProfessioneUt) => {
-    const response = await performPOST("/signup", { mail, psw, SessoUt, NomeUt, CognomeUt, TelUt, DataNascitaUt, LuogoNascitaUt, ProfessioneUt });
+export const signup = async (mail, psw, SessoUt, NomeUt, CognomeUt, TelUt, DataNascitaUt, LuogoNascitaUt, ProfessioneUt, TrasportoUt, type) => {
+    const response = await performPOST("/signup", { mail, psw, SessoUt, NomeUt, CognomeUt, TelUt, DataNascitaUt, LuogoNascitaUt, ProfessioneUt, TrasportoUt, type });
     return response.data;
 }
 

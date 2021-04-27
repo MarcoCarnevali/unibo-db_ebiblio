@@ -2,28 +2,29 @@ import React, { useState, useEffect } from "react";
 import GlassInput from "./components/GlassInput";
 import { Link } from "react-router-dom";
 import { signup } from "./Network/NetworkManager";
+import "./style/main.css";
 
 const Home = ({ history }) => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
-    const [userType, setUserType] = useState(null);
-
-    const backTapped = () => {
-        history.push('/login');
-    }
-
+    const [userType, setUserType] = useState("user");
+    const [gender, setGender] = useState("M");
+    const [transportation, setTransportation] = useState("car");
+    
     const myChangeHandler = (event) => {
         let nam = event.target.placeholder || event.target.computedName;
         let val = event.target.value;
+        
+        if (val === "user" || val === "volunteer")
+            setUserType(val);
+        else if (val === "male" || val === "female") 
+            setGender(val === "male" ? "M" : "F");
+        else if (val === "car" || val === "bike" || val === "foot") 
+            setTransportation(val === 'car' ? 'auto' : val === 'bike' ? 'bici' : 'piedi');
+        
         if (data == null) {
             setData({ [nam]: val })
             return
-        }
-
-        if (nam === "User") {
-            setUserType('user');
-        } else if (nam === "Volunteer") {
-            setUserType('volunteer');
         }
 
         const newData = data
@@ -32,7 +33,7 @@ const Home = ({ history }) => {
     }
 
     const signupTapped = async () => {
-        console.log(data)
+        console.log("DATA: ",data)
         if (data === null || !data["Email"] || !data["Password"] ) {
             setError('*Error: please compile all fields')
             return
@@ -42,7 +43,8 @@ const Home = ({ history }) => {
             return
         }
         try {
-            const response = await signup(data["Email"], data["Password"], "M", data["First Name"], data["Last Name"], data["Phone Number"], data["Date of birth"], data["Place of birth"], "Studente");
+            await signup(data["Email"], data["Password"], gender, data["First Name"], data["Last Name"], data["Phone number"], data["Date of birth"], data["Place of birth"], data["Job"], transportation, userType);
+            history.push('/login')
         } catch (error) {
             if (error.response.status === 409) {
                 setError('*Error: email already exists')
@@ -66,11 +68,11 @@ const Home = ({ history }) => {
                             <div className="flex flex-col py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                                 <span className="text-white">User type: </span>
                                 <div className="inline-block">
-                                    <input type="radio" id="user" name="type" value="user" checked={userType !== null && userType === 'volunteer' ? false : true} onChange={myChangeHandler} />
+                                    <input type="radio" id="user" name="type" value="user" defaultChecked onChange={myChangeHandler} />
                                     <label className="ml-2 text-white" for="user">User</label>
                                 </div>
                                 <div className="inline-block">
-                                    <input type="radio" id="volunteer" name="type" value="volunteer" checked={userType !== null && userType === 'volunteer' ? true : false} onChange={myChangeHandler} />
+                                    <input type="radio" id="volunteer" name="type" value="volunteer" onChange={myChangeHandler} />
                                     <label className="ml-2 text-white" for="volunteer">Volunteer</label>
                                 </div>
                                 <GlassInput type="email" placeholder="Email" onChange={myChangeHandler} />
@@ -81,18 +83,16 @@ const Home = ({ history }) => {
                                 <GlassInput custom="birth" id="birth" type="date" placeholder="Date of birth" onChange={myChangeHandler} />
                                 <GlassInput type="text" placeholder="Place of birth" onChange={myChangeHandler} />
                                 <GlassInput type="tel" placeholder="Phone number" onChange={myChangeHandler} />
-                                <select className="bg-white bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md">
-                                    <option>Select gender: </option>
-                                    <option>Male</option>
-                                    <option>Female</option>
+                                <select className="bg-white bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md" onChange={myChangeHandler}>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
                                 </select>
                                 {userType !== null && userType === 'volunteer' ? (
                                     <>
-                                        <select className="bg-white bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md">
-                                            <option>Select transportation type: </option>
-                                            <option>Car</option>
-                                            <option>Foot</option>
-                                            <option>Bike</option>
+                                        <select className="bg-white bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md" onChange={myChangeHandler}>
+                                            <option value="car">Car</option>
+                                            <option value="foot">Foot</option>
+                                            <option value="bike">Bike</option>
                                         </select>
                                     </>
                                 ) : (<>
