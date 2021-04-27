@@ -9,7 +9,6 @@ const Home = ({ history }) => {
     const [error, setError] = useState(null);
     const [userType, setUserType] = useState("user");
     const [gender, setGender] = useState("M");
-    const [transportation, setTransportation] = useState("car");
     
     const myChangeHandler = (event) => {
         let nam = event.target.placeholder || event.target.computedName;
@@ -19,8 +18,6 @@ const Home = ({ history }) => {
             setUserType(val);
         else if (val === "male" || val === "female") 
             setGender(val === "male" ? "M" : "F");
-        else if (val === "car" || val === "bike" || val === "foot") 
-            setTransportation(val === 'car' ? 'auto' : val === 'bike' ? 'bici' : 'piedi');
         
         if (data == null) {
             setData({ [nam]: val })
@@ -43,7 +40,7 @@ const Home = ({ history }) => {
             return
         }
         try {
-            await signup(data["Email"], data["Password"], gender, data["First Name"], data["Last Name"], data["Phone number"], data["Date of birth"], data["Place of birth"], data["Job"], transportation, userType);
+            await signup(data["Email"], data["Password"], gender, data["First Name"], data["Last Name"], data["Phone number"], data["Date of birth"], data["Place of birth"], data["Job"], data["Transportation"], userType);
             history.push('/login')
         } catch (error) {
             if (error.response.status === 409) {
@@ -89,11 +86,7 @@ const Home = ({ history }) => {
                                 </select>
                                 {userType !== null && userType === 'volunteer' ? (
                                     <>
-                                        <select className="bg-white bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md" onChange={myChangeHandler}>
-                                            <option value="car">Car</option>
-                                            <option value="foot">Foot</option>
-                                            <option value="bike">Bike</option>
-                                        </select>
+                                         <GlassInput type="text" placeholder="Transportation" onChange={myChangeHandler} />
                                     </>
                                 ) : (<>
 
