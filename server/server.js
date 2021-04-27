@@ -129,7 +129,6 @@ app.post('/signup', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { tipo, mail, psw } = req.body;
-    console.log(req.body)
     connection.query(`CALL Autenticazione("${tipo}", "${mail}", "${psw}");`, (err, rows) => {
         console.error(rows)
         if (err)
@@ -166,7 +165,6 @@ app.get('/bookings/deliver/:id', (req, res) => {
 app.get('/library/:id/seats', (req, res) => {
     const { date, startTime, endTime } = req.query;
     connection.query(`CALL PostiDisponibili("${startTime}", "${endTime}", "${req.params.id}", "${date}");`, (err, rows) => {
-        console.log(rows[0])
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: rows[0] });
@@ -175,7 +173,6 @@ app.get('/library/:id/seats', (req, res) => {
 
 app.get('/library/:id/seatsList', (req, res) => {
     connection.query(`CALL VisualPrenotazioniPosti("${req.params.id}");`, (err, rows) => {
-        console.log(rows[0])
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: rows[0] });
@@ -186,8 +183,6 @@ app.get('/library/:id/seatsList', (req, res) => {
 app.post('/library/:id/seat/:seatId/book', (req, res) => {
     const { date, startTime, endTime, email } = req.body;
     connection.query(`CALL PrenotazionePosto("${date}", "${startTime}", "${endTime}", "${req.params.seatId}", "${req.params.id}", "${email}");`, (err, rows) => {
-        console.error(err)
-        console.log(rows)
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });
@@ -195,8 +190,8 @@ app.post('/library/:id/seat/:seatId/book', (req, res) => {
 });
 
 app.post('/library/:id/books/:bookId/modify', (req, res) => {
-    const { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link, genre, author } = req.body;
-    connection.query(`CALL UpdateLibro("${req.params.bookId}", "${req.params.id}", "${title || ""}", ${year || 0}, "${edition || ""}", "${genre || ""}","${lendStatus || ""}", ${pages || 0}, ${shelf || 0}, "${conservationStatus || ""}", "${dimension || ""}", ${nAccess || 0}, "${link || ""}");`, (err, rows) => {
+    const { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link, genre, authors } = req.body;
+    connection.query(`CALL UpdateLibro("${req.params.bookId}", "${req.params.id}", "${title || ""}", ${year || 0}, "${edition || ""}", "${genre || ""}","${lendStatus || ""}", ${pages || 0}, ${shelf || 0}, "${conservationStatus || ""}", "${dimension || ""}", ${nAccess || 0}, "${link || ""}", "${authors}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });
@@ -212,8 +207,8 @@ app.post('/library/:id/books/:bookId/delete', (req, res) => {
 });
 
 app.post('/library/:id/books/add', (req, res) => {
-    const { title, year, edition, type, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, author } = req.body;
-    connection.query(`CALL InsertLibro("${title}", ${year}, "${edition}", "${req.params.id}", ${type}, "${genre}", "${lendStatus}", ${pages || 0}, ${shelf}, "${conservationStatus}", "${dimension}", "${link}");`, (err, rows) => {
+    const { title, year, edition, type, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, authors } = req.body;
+    connection.query(`CALL InsertLibro("${title}", ${year}, "${edition}", "${req.params.id}", ${type}, "${genre}", "${lendStatus}", ${pages || 0}, ${shelf}, "${conservationStatus}", "${dimension}", "${link}", "${authors});`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });
@@ -249,7 +244,6 @@ app.post('/user/:email/approve', (req, res) => {
 
 app.get('/user/:email/seats', (req, res) => {
     connection.query(`CALL VisualPostiUt("${req.params.email}");`, (err, rows) => {
-        console.log(rows)
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: rows[0] });
@@ -274,7 +268,14 @@ app.get('/user/:email/lended', (req, res) => {
 
 app.get('/admin/:email/getLibrary', (req, res) => {
     connection.query(`CALL BibliotecaAmministratore("${req.params.email}");`, (err, rows) => {
-        console.log(rows)
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: rows[0] });
+    });
+});
+
+app.get('/book/:id/getAuthors', (req, res) => {
+    connection.query(`CALL VisualAutori("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: rows[0] });

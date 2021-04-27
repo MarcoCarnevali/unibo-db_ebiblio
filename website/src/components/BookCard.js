@@ -1,19 +1,28 @@
 import React from "react";
-import { bookBooking } from "../Network/NetworkManager";
+import { bookBooking, getBookAuthors } from "../Network/NetworkManager";
 import GlassInput from "../components/GlassInput";
 
 export class BookCard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { showModal: false, isBook: !this.props.book.Dimensione, bookDate: "" };
+        this.state = { showModal: false, isBook: !this.props.book.Dimensione, bookDate: "", authors: "" };
     }
 
-    openModal = () => {
-        this.setState({ showModal: true, isBook: !this.props.book.Dimensione, bookDate: this.state.bookDate })
+    openModal = async () => {
+        this.setState({ showModal: true, isBook: this.state.isBook, bookDate: this.state.bookDate, authors: this.state.authors })
+
+        if (this.state.authors === "") {
+            const response = await getBookAuthors(this.props.book.Codice);
+            const authorsArray = response.result.map(x => {
+                return `${x.Nome} ${x.Cognome}`
+            });
+            this.setState({ showModal: true, isBook: this.state.isBook, bookDate: this.state.bookDate, authors: authorsArray.toString() })
+        }
+
     }
 
     closeModal = () => {
-        this.setState({ showModal: false, isBook: !this.props.book.Dimensione, bookDate: this.state.bookDate })
+        this.setState({ showModal: false, isBook: !this.props.book.Dimensione, bookDate: this.state.bookDate, authors: this.state.authors })
     }
 
     ctaAction = async () => {
@@ -78,7 +87,7 @@ export class BookCard extends React.Component {
                                                 <br />
                                                 <span>Genre: {this.props.book.Genere}</span>
                                                 <br />
-                                                <span>Author: {this.props.book.Author || ""}</span>
+                                                <span>Authors: {this.state.authors}</span>
                                                 <br />
                                                 <span>Pages: {this.props.book.Pagine}</span>
                                                 <br />
@@ -93,6 +102,8 @@ export class BookCard extends React.Component {
                                                 <span>Edition: {this.props.book.Edizione}</span>
                                                 <br />
                                                 <span>Year: {this.props.book.Anno}</span>
+                                                <br />
+                                                <span>Authors: {this.state.authors}</span>
                                                 <br />
                                                 <span>Genre: {this.props.book.Genere}</span>
                                                 <br />

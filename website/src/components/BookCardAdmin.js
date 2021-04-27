@@ -1,30 +1,38 @@
 import React from "react";
-import { modifyBook, deleteBook } from "../Network/NetworkManager";
+import { modifyBook, deleteBook, getBookAuthors } from "../Network/NetworkManager";
 import GlassInput from "../components/GlassInput";
 
 export default class BookCardAdmin extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { showModal: false, isBook: !this.props.book.Dimensione, inputs: {} };
+        this.state = { showModal: false, isBook: !this.props.book.Dimensione, inputs: {}, authors: ""};
     }
 
     handleChange = (e) => {
         var inputs = this.state.inputs
         inputs[e.target.name] = e.target.value
-        this.setState({ showModal: true, isBook: this.state.isBook, inputs: inputs })
+        this.setState({ showModal: true, isBook: this.state.isBook, inputs: inputs, authors: this.state.authors })
     }
 
-    openModal = () => {
-        this.setState({ showModal: true, isBook: !this.props.book.Dimensione, inputs: {} })
+    openModal = async () => {
+        this.setState({ showModal: true, isBook: !this.props.book.Dimensione, inputs: {}, authors: this.state.authors })
+        if (this.state.authors === "") {
+            const response = await getBookAuthors(this.props.book.Codice);
+            console.log(response)
+            const authorsArray = response.result.map(x => {
+                return `${x.Nome} ${x.Cognome}`
+            });
+            this.setState({ showModal: true, isBook: !this.props.book.Dimensione, inputs: {}, authors: authorsArray.toString() })
+        }
     }
 
     closeModal = () => {
-        this.setState({ showModal: false, isBook: !this.props.book.Dimensione, inputs: {} })
+        this.setState({ showModal: false, isBook: !this.props.book.Dimensione, inputs: {}, authors: this.state.authors })
     }
 
     modifyAction = async () => {
-        const {title, edition, year, pages, shelf, conservationStatus, lendStatus, dimension, link, genre } = this.state.inputs;
-        await modifyBook(this.props.library, this.props.book.Codice, title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, null, link, genre )
+        const {title, edition, year, pages, shelf, conservationStatus, lendStatus, dimension, link, genre, authors } = this.state.inputs;
+        await modifyBook(this.props.library, this.props.book.Codice, title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, null, link, genre, authors )
         window.location.reload();
     }
 
@@ -80,7 +88,9 @@ export default class BookCardAdmin extends React.Component {
                                                 <br />
                                                 <span>Genre: <input className="border rounded" name="genre" defaultValue={this.props.book.Genere} onChange={this.handleChange} /></span>
                                                 <br />
-                                                <span>Author: <input className="border rounded" name="author" defaultValue={this.props.book.Autore} onChange={this.handleChange} /></span>
+                                                <span>Authors: <input className="border rounded" name="authors" defaultValue={this.state.authors} onChange={this.handleChange} /></span>
+                                                <br />
+                                                <span className="text-xs text-gray-400">Note: write a list of author delimited by a ',' e.g. Marco Carnevali,Tiziano Bruno</span>
                                                 <br />
                                                 <span>Pages: <input className="border rounded" name="pages" defaultValue={this.props.book.Pagine} onChange={this.handleChange} /></span>
                                                 <br />
@@ -98,7 +108,7 @@ export default class BookCardAdmin extends React.Component {
                                                 <br />
                                                 <span>Genre: <input className="border rounded" name="genre" defaultValue={this.props.book.Genere} onChange={this.handleChange} /></span>
                                                 <br />
-                                                <span>Authors: <input className="border rounded" name="author" defaultValue={this.props.book.Autore} onChange={this.handleChange} /></span>
+                                                <span>Authors: <input className="border rounded" name="authors" defaultValue={this.authors} onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span className="text-xs text-gray-400">Note: write a list of author delimited by a ',' e.g. Marco Carnevali,Tiziano Bruno</span>
                                                 <br />

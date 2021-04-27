@@ -104,10 +104,10 @@ export const bookSeat = async (libraryName, startTime, endTime, date, seatId) =>
     return response.data;
 }
 
-export const modifyBook = async (libraryName, bookId, title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link, genre, author) => {
+export const modifyBook = async (libraryName, bookId, title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link, genre, authors) => {
     const userType = checkUserType();
     if (userType === 'admin') { return null }
-    const response = await performPOST(`/library/${libraryName}/books/${bookId}/modify`, { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link, genre });
+    const response = await performPOST(`/library/${libraryName}/books/${bookId}/modify`, { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, nAccess, link, genre, authors });
     return response.data;
 }
 
@@ -118,11 +118,11 @@ export const deleteBook = async (libraryName, bookId) => {
     return response.data;
 }
 
-export const addBook = async (libraryName, title, type, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, author) => {
+export const addBook = async (libraryName, title, type, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, authors) => {
     const userType = checkUserType();
     if (userType === 'admin') { return null }
     console.log(libraryName)
-    const response = await performPOST(`/library/${libraryName}/books/add`, { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, type, link, genre });
+    const response = await performPOST(`/library/${libraryName}/books/add`, { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, type, link, genre, authors });
     return response.data;
 }
 
@@ -179,6 +179,11 @@ export const getAdminLibrary = async () => {
     const email = checkLogged();
     if (email === 'not-logged') { return null }
     const response = await performGET(`/admin/${email}/getLibrary`, {});
+    return response.data;
+}
+
+export const getBookAuthors = async (bookId) => {
+    const response = await performGET(`/book/${bookId}/getAuthors`, {});
     return response.data;
 }
 

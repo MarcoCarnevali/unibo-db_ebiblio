@@ -15,7 +15,6 @@ export default class AddBookButton extends React.Component {
     }
 
     openModal = () => {
-        console.log("CIAO")
         this.setState({ showModal: true, isBook: this.props.isBook, inputs: {} })
     }
 
@@ -24,8 +23,8 @@ export default class AddBookButton extends React.Component {
     }
 
     addAction = async () => {
-        const { title, edition, year, pages, shelf, conservationStatus, lendStatus, dimension, link, genre, author } = this.state.inputs;
-        await addBook(this.props.library, title, this.props.isBook, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, author)
+        const { title, edition, year, pages, shelf, conservationStatus, lendStatus, dimension, link, genre, authors } = this.state.inputs;
+        await addBook(this.props.library, title, this.props.isBook, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, authors)
         window.location.reload();
     }
 
@@ -67,7 +66,7 @@ export default class AddBookButton extends React.Component {
                                                 <br />
                                                 <span>Genre: <input className="border rounded" name="genre" onChange={this.handleChange} /></span>
                                                 <br />
-                                                <span>Author: <input className="border rounded" name="author" onChange={this.handleChange} /></span>
+                                                <span>Authors: <input className="border rounded" name="authors" onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span>Pages: <input className="border rounded" name="pages" onChange={this.handleChange} /></span>
                                                 <br />
@@ -85,7 +84,7 @@ export default class AddBookButton extends React.Component {
                                                 <br />
                                                 <span>Genre: <input className="border rounded" name="genre" onChange={this.handleChange} /></span>
                                                 <br />
-                                                <span>Author: <input className="border rounded" name="author" onChange={this.handleChange} /></span>
+                                                <span>Authors: <input className="border rounded" name="authors" onChange={this.handleChange} /></span>
                                                 <br />
                                                 <span>Size: <input className="border rounded" name="dimension" onChange={this.handleChange} /></span>
                                                 <br />
