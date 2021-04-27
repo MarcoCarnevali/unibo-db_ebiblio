@@ -137,8 +137,9 @@ app.post('/login', (req, res) => {
         else if (!rows[0][0])
             return res.status(406).send({ error: "wrong user" });
 
-        res.cookie('ebiblio_email', mail, { maxAge: 900000, httpOnly: false, encode: String });
-        res.cookie('ebiblio_userType', tipo, { maxAge: 900000, httpOnly: false, encode: String });
+        const hour = 3600000;
+        res.cookie('ebiblio_email', mail, { maxAge: hour * 24, httpOnly: false, encode: String });
+        res.cookie('ebiblio_userType', tipo, { maxAge: hour * 24, httpOnly: false, encode: String });
         return res.status(200).send({ result: rows[0][0] });
     });
 });

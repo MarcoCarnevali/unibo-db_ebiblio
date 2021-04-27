@@ -6,7 +6,7 @@ export default class SeatCard extends React.Component {
         return (
             <article className="rounded-2xl shadow-lg w-auto border border-gray-200 bg-white bg-opacity-60 backdrop-blur transition duration-500 ease-in-out transform hover:scale-105">
                 <h1 className="text-lg p-2 md:p-4">
-                    <a className="text-black">
+                    <a className="text-black font-bold">
                         Seat Number: {this.props.seat.Num}
                     </a>
                 </h1>
@@ -35,15 +35,15 @@ export default class SeatCard extends React.Component {
 
                 {this.props.seat.Giorno ? (
                     <div className="p-2 md:p-4 text-black">
-                        <a className="">
+                        <a className="flex items-center text-black text-sm">
                             Date: {dateFormat(this.props.seat.Giorno, "dd/mm/yyyy")}
                         </a>
                         <br />
-                        <a className="">
+                        <a className="flex items-center text-black text-sm">
                             Start Time: {this.props.seat.OraInizio.slice(0, -3)}
                         </a>
                         <br />
-                        <a className="">
+                        <a className="flex items-center text-black text-sm">
                             End Time: {this.props.seat.OraFine.slice(0, -3)}
                         </a>
                     </div>
