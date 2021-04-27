@@ -4,8 +4,7 @@ import Home from "./Home";
 import Detail from "./Detail";
 import Login from "./Login";
 import LoginAdmin from "./admin/LoginAdmin";
-import HomeAdmin from "./admin/HomeAdmin";
-import DetailAdmin from "./admin/DetailAdmin";
+import AdminDashboard from "./admin/AdminDashboard";
 import Signup from "./Signup";
 import Profile from "./Profile";
 import BookingHome from "./BookingHome";
@@ -27,8 +26,7 @@ const App = () => {
           <Route exact path={process.env.PUBLIC_URL + '/login'} component={Login} />
           <Route exact path={process.env.PUBLIC_URL + '/signup'} component={Signup} />
           <Route exact path={process.env.PUBLIC_URL + '/loginAdmin'} component={LoginAdmin} />
-          <AdminRoute exact path={process.env.PUBLIC_URL + '/homeAdmin'} component={HomeAdmin} />
-          <AdminRoute exact path={process.env.PUBLIC_URL + '/detailAdmin'} component={DetailAdmin} />
+          <AdminRoute exact path={process.env.PUBLIC_URL + '/adminDashboard'} component={AdminDashboard} />
         </Switch>
       </AuthProvider>
     </Router>

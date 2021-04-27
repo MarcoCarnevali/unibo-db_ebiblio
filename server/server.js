@@ -121,7 +121,7 @@ app.post('/signup', (req, res) => {
         if (err && err.code === 'ER_DUP_ENTRY')
             return res.status(409).send({ error: "Email already exist" });
         else if (err)
-            return res.status(500).send({ error: err });
+            return res.status(500).send({ error: err.message });
 
         return res.status(200).send({ result: "Signup successful" });
     });
@@ -258,7 +258,6 @@ app.get('/user/:email/seats', (req, res) => {
 
 app.get('/user/:email/delivered', (req, res) => {
     connection.query(`CALL VisualConsegne("${req.params.email}");`, (err, rows) => {
-        console.log(rows)
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: rows[0] });
@@ -267,9 +266,19 @@ app.get('/user/:email/delivered', (req, res) => {
 
 app.get('/user/:email/lended', (req, res) => {
     connection.query(`CALL PrestitiUtente("${req.params.email}");`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: rows[0] });
+    });
+});
+
+app.get('/admin/:email/getLibrary', (req, res) => {
+    connection.query(`CALL BibliotecaAmministratore("${req.params.email}");`, (err, rows) => {
         console.log(rows)
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: rows[0] });
     });
 });
+
+

@@ -174,6 +174,13 @@ export const getUserLended= async () => {
     return response.data;
 }
 
+export const getAdminLibrary = async () => {
+    const email = checkLogged();
+    if (email === 'not-logged') { return null }
+    const response = await performGET(`/admin/${email}/getLibrary`, {});
+    return response.data;
+}
+
 
 const performGET = async (path, params) => {
     return axios.get(address + path, {

@@ -11,7 +11,7 @@ const UserRoute = ({ component: RouteComponent, ...rest }) => {
         !!isUser ? (
           <RouteComponent {...routeProps} />
         ) : (
-          <Redirect to={checkUserType() === '1' ? "/volunteer" : checkUserType() === '2' ? "/homeAdmin" : "/login"} />
+          <Redirect to={checkUserType() === '1' ? "/volunteer" : checkUserType() === '2' ? "/adminDashboard" : "/login"} />
         )
       }
     />

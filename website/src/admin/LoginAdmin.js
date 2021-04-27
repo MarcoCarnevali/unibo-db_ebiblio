@@ -35,7 +35,7 @@ const LoginAdmin = ({ history }) => {
                 return
             }
 
-            history.push("/homeAdmin");
+            history.push("/adminDashboard");
 
         } catch (error) {
             console.error(error)
