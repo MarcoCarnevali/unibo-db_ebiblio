@@ -8,7 +8,7 @@ export default class BookingCard extends React.Component {
         super(props);
         this.state = { showModal: false, book: {}, type: "restituzione", note: "" };
     }
-
+span
     openModal = async () => {
         const response = await getBook(this.props.booking.CodLibro);
         this.setState({ showModal: true, book: response.result[0], type: "restituzione", note: "" })
@@ -36,23 +36,23 @@ export default class BookingCard extends React.Component {
             <>
                 <article className="rounded-2xl shadow-lg w-auto border border-gray-200 bg-white bg-opacity-60 backdrop-blur transition duration-500 ease-in-out transform hover:scale-105" onClick={this.openModal}>
                     <h1 className="text-lg font-bold p-2 md:p-4">
-                        <a className="text-black text-lg" href="#">
+                        <span className="text-black text-lg" href="#">
                             {this.props.booking.EmailUtilizzatore}
-                        </a>
+                        </span>
                     </h1>
 
-                    <a className="flex items-center text-black text-sm p-2 md:p-4" href="#">
+                    <span className="flex items-center text-black text-sm p-2 md:p-4">
                         Library: {this.props.booking.Biblioteca}
-                    </a>
-                    <a className="flex items-center text-black text-sm p-2 md:p-4" href="#">
+                    </span>
+                    <span className="flex items-center text-black text-sm p-2 md:p-4">
                         Status: {this.props.booking.StatoPrestito}
-                    </a>
-                    <a className="flex items-center text-black text-sm p-2 md:p-4" href="#">
+                    </span>
+                    <span className="flex items-center text-black text-sm p-2 md:p-4">
                         Start Date: {dateFormat(this.props.booking.DataAvvio, "dd/mm/yyyy")}
-                    </a>
-                    <a className="flex items-center text-black text-sm p-2 md:p-4" href="#">
+                    </span>
+                    <span className="flex items-center text-black text-sm p-2 md:p-4">
                         End Date: {dateFormat(this.props.booking.DataFine, "dd/mm/yyyy")}
-                    </a>
+                    </span>
 
                 </article>
                 {this.state.showModal ? (

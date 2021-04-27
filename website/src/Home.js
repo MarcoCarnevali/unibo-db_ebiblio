@@ -10,20 +10,23 @@ const Home = ({ history }) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(async () => {
-        try {
-            setLoading(true);
-            const data = await getBiblios()
-            console.log(data);
-            const cards = data.result.map(biblio => {
-                return (<Card biblio={biblio} onClick={() => cardTapped(biblio.Nome)} />)
-            })
-            setData(cards);
-            setLoading(false);
-        } catch (error) {
-            setLoading(false);
-            console.log(error);
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                setLoading(true);
+                const data = await getBiblios()
+                console.log(data);
+                const cards = data.result.map(biblio => {
+                    return (<Card biblio={biblio} onClick={() => cardTapped(biblio.Nome)} />)
+                })
+                setData(cards);
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+                console.log(error);
+            }
         }
+        loadData();
     }, []);
 
     if (loading)
@@ -34,7 +37,7 @@ const Home = ({ history }) => {
             <NavBar />
             <div className="mx-40 my-20">
                 <div className="my-16">
-                    <a className="text-lg font-bold">Libraries in Bologna: </a>
+                    <span className="text-lg font-bold">Libraries in Bologna: </span>
                 </div>
                 <div className="grid grid-flow-row grid-cols-3 gap-20">
                     {data}

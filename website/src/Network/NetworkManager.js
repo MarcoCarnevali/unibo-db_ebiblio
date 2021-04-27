@@ -192,6 +192,19 @@ export const getEbook = async (bookId) => {
     return response.data;
 }
 
+export const getUserMessages = async () => {
+    const email = checkLogged();
+    if (email === 'not-logged') { return null }
+    const response = await performGET(`/user/${email}/getMessages`, {});
+    return response.data;
+}
+
+export const getUserFlags = async () => {
+    const email = checkLogged();
+    if (email === 'not-logged') { return null }
+    const response = await performGET(`/user/${email}/getFlags`, {});
+    return response.data;
+}
 
 
 const performGET = async (path, params) => {

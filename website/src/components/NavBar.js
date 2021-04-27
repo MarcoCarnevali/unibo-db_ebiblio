@@ -1,5 +1,5 @@
 import React from "react";
-import { checkLogged } from "../Network/NetworkManager";
+import { checkLogged, checkUserType } from "../Network/NetworkManager";
 import { Link } from "react-router-dom";
 import { logout } from "../Network/NetworkManager";
 
@@ -19,7 +19,7 @@ export default class NavBar extends React.Component {
     }
 
     logoutTapped = async () => {
-        const response = await logout();
+        await logout();
         window.location.reload();
     }
 
@@ -36,7 +36,11 @@ export default class NavBar extends React.Component {
         else
             rightHeader = (
                 <div className="float-right">
-                    <span>Logged as: {this.state.email}</span>
+                    {checkUserType() === "0" ?
+                        (<Link to="/profile" className="no-underline hover:underline">Logged as: {this.state.email}</Link>)
+                        :
+                        (<span className="">Logged as: {this.state.email}</span>)
+                    }
                     <button className="p-2 mx-2 text-white font-bold rounded-lg transition bg-blue-600" onClick={this.logoutTapped}> Logout </button>
                 </div>
             )

@@ -106,7 +106,7 @@ const AdminDashboard = () => {
             <NavBar />
             <div className="mx-40 my-20 space-y-10 h-full">
                 <div className="my-16">
-                    <a className="text-6xl font-bold">{data.Nome}</a>
+                    <span className="text-6xl font-bold">{data.Nome}</span>
                 </div>
                 <div id="books">
                     <span className="text-3xl font-bold align-middle">Books</span>
@@ -123,14 +123,14 @@ const AdminDashboard = () => {
                     </div>
                 </div>
                 <div className="my-16">
-                    <a className="text-lg font-bold">Seats booked: </a>
+                    <span className="text-lg font-bold">Seats booked: </span>
                 </div>
                 <div className="grid grid-flow-row grid-cols-3 gap-20">
                     {seats}
                 </div>
 
                 <div className="my-20">
-                    <a className="text-lg font-bold">Manage users: </a>
+                    <span className="text-lg font-bold">Manage users: </span>
 
                     <div className="mt-5">
                         <span>Type the user email: <input className="border rounded ml-2" name="user-email" placeholder="user@email.com" onChange={handleChange} /></span>

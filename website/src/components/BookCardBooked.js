@@ -1,6 +1,4 @@
 import React from "react";
-import { bookBooking } from "../Network/NetworkManager";
-import GlassInput from "../components/GlassInput";
 const dateFormat = require('dateformat');
 
 export default class BookCardBooked extends React.Component {

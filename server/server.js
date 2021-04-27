@@ -292,4 +292,21 @@ app.get('/book/:id/getAuthors', (req, res) => {
     });
 });
 
+app.get('/user/:id/getMessages', (req, res) => {
+    connection.query(`SELECT * FROM MESSAGGIO WHERE EmailUti = "${req.params.id}";`, (err, rows) => {
+        console.error(err)
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: rows });
+    });
+});
+
+app.get('/user/:id/getFlags', (req, res) => {
+    connection.query(`SELECT * FROM SEGNALAZIONE WHERE EmailUti = "${req.params.id}";`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: rows });
+    });
+});
+
 

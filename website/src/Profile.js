@@ -2,37 +2,48 @@ import React, { useState, useEffect } from "react";
 import NavBar from "./components/NavBar";
 import SeatCard from "./components/SeatCard"
 import BookCardBooked from "./components/BookCardBooked"
-import { getUserSeatsBooked, getUserDelivered, getUserLended } from "./Network/NetworkManager";
+import UserMessagesCard from "./components/UserMessagesCard"
+import { getUserSeatsBooked, getUserDelivered, getUserLended, getUserMessages, getUserFlags } from "./Network/NetworkManager";
 
 const Profile = ({ history }) => {
-    const [seats, setSeats] = useState(null);
-    const [delivered, setDelivered] = useState(null);
-    const [lended, setLended] = useState(null);
+    const [seats, setSeats] = useState([]);
+    const [delivered, setDelivered] = useState([]);
+    const [lended, setLended] = useState([]);
+    const [messages, setMessages] = useState([]);
+    const [flags, setFlags] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(async () => {
-        try {
-            setLoading(true);
-            const seatsResponse = await getUserSeatsBooked()
-            
-            const seats = seatsResponse.result.map(x => (<SeatCard seat={x} />))
-            setSeats(seats);
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                setLoading(true);
+                const seatsResponse = await getUserSeatsBooked()
 
-            const deliveredResponse = await getUserDelivered();
-            const deliveredCards = deliveredResponse.result.map(x => (<BookCardBooked book={x} />));
-            setDelivered(deliveredCards);
-            console.log("delivered: ",deliveredResponse);
+                const seats = seatsResponse.result.map(x => (<SeatCard seat={x} />))
+                setSeats(seats);
 
-            const lendedResponse = await getUserLended();
-            const lendedCards = lendedResponse.result.map(x => (<BookCardBooked book={x} />));
-            setLended(lendedCards);
-            console.log("lended: ",lendedResponse);
+                const deliveredResponse = await getUserDelivered();
+                const deliveredCards = deliveredResponse.result.map(x => (<BookCardBooked book={x} />));
+                setDelivered(deliveredCards);
+                const lendedResponse = await getUserLended();
+                const lendedCards = lendedResponse.result.map(x => (<BookCardBooked book={x} />));
+                setLended(lendedCards);
 
-            setLoading(false);
-        } catch (error) {
-            setLoading(false);
-            console.log(error);
+                const messagesResponse = await getUserMessages();
+                const messagesCards = messagesResponse.result.map(x => (<UserMessagesCard message={x} />));
+                setMessages(messagesCards);
+
+                const flagsResponse = await getUserFlags();
+                const flagsCards = flagsResponse.result.map(x => (<UserMessagesCard message={x} isFlag={true} />));
+                setFlags(flagsCards);
+
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+                console.log(error);
+            }
         }
+        loadData();
     }, []);
 
     if (loading)
@@ -42,26 +53,57 @@ const Profile = ({ history }) => {
         <div className="bg-gray-200">
             <NavBar />
             <div className="mx-40 my-20">
-                <div className="my-16">
-                    <a className="text-lg font-bold">Seats booked: </a>
-                </div>
-                <div className="grid grid-flow-row grid-cols-3 gap-20">
-                    {seats}
-                </div>
+                {seats.length > 0 ? (
+                    <>
+                        <div className="my-16">
+                            <span className="text-lg font-bold">Seats booked: </span>
+                        </div>
+                        <div className="grid grid-flow-row grid-cols-3 gap-20">
+                            {seats}
+                        </div>
+                    </>
+                ) : (<></>)}
 
-                <div className="my-16">
-                    <a className="text-lg font-bold">Books delivered: </a>
-                </div>
-                <div className="grid grid-flow-row grid-cols-3 gap-20">
-                    {delivered}
-                </div>
+                {delivered.length > 0 ? (
+                    <>
+                        <div className="my-16">
+                            <span className="text-lg font-bold">Books delivered: </span>
+                        </div>
+                        <div className="grid grid-flow-row grid-cols-3 gap-20">
+                            {delivered}
+                        </div>
+                    </>
+                ) : (<></>)}
 
-                <div className="my-16">
-                    <a className="text-lg font-bold">Books lended: </a>
-                </div>
-                <div className="grid grid-flow-row grid-cols-3 gap-20">
-                    {lended}
-                </div>
+                {lended.length > 0 ? (
+                    <>
+                        <div className="my-16">
+                            <span className="text-lg font-bold">Books lended: </span>
+                        </div>
+                        <div className="grid grid-flow-row grid-cols-3 gap-20">
+                            {lended}
+                        </div>
+                    </>
+                ) : (<></>)}
+
+                {messages.length > 0 ? (
+                    <>
+                        <div className="my-16">
+                            <span className="text-lg font-bold">Messages from administrators: </span>
+                        </div>
+                        {messages}
+                    </>
+                ) : (<></>)}
+
+                {flags.length > 0 ? (
+                    <>
+                        <div className="my-16">
+                            <span className="text-lg font-bold">Flags from administrators: </span>
+                        </div>
+                        {flags}
+                    </>
+                ) : (<></>)}
+
             </div>
         </div>
     );

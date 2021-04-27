@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import GlassInput from "../components/GlassInput";
-import { Link } from "react-router-dom"
 import { login } from "../Network/NetworkManager";
 
 const LoginAdmin = ({ history }) => {
