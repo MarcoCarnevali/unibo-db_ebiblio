@@ -34,9 +34,8 @@ const DetailAdmin = () => {
             setEBooks(eBooksCards)
 
             const seatsResponse = await getLibrarySeatsBooked(ref);
-            const seatsCards = seatsResponse.result.map(x => (<SeatCard seat={x} />))
-            //setSeats(seatsCards)
-
+            const seatsCards = seatsResponse.result.map(x => (<SeatCard seat={x} showEmail={true} />))
+            setSeats(seatsCards)
             setLoading(false);
         } catch (error) {
             setData({ Nome: "", Lat: 0.0, Lon: 0.0, Indirizzo: "", NoteStoriche: "" })
@@ -68,6 +67,12 @@ const DetailAdmin = () => {
                     <div className="grid mt-5 grid-cols-3 gap-4">
                         {eBooks}
                     </div>
+                </div>
+                <div className="my-16">
+                    <a className="text-lg font-bold">Seats booked: </a>
+                </div>
+                <div className="grid grid-flow-row grid-cols-3 gap-20">
+                    {seats}
                 </div>
             </div>
         </div>

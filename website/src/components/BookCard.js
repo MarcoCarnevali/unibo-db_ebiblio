@@ -78,6 +78,8 @@ export class BookCard extends React.Component {
                                                 <br />
                                                 <span>Genre: {this.props.book.Genere}</span>
                                                 <br />
+                                                <span>Author: {this.props.book.Author || ""}</span>
+                                                <br />
                                                 <span>Pages: {this.props.book.Pagine}</span>
                                                 <br />
                                                 <span>Shelf: {this.props.book.Scaffale}</span>

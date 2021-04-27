@@ -507,14 +507,6 @@ BEGIN
 END $$
 DELIMITER ; 
 
-# Visualizzazione dei posti lettura presenti in ogni biblioteca
-DELIMITER $$
-CREATE PROCEDURE InsertAutori(IN Autori varchar(100))
-BEGIN
-	SELECT * FROM POSTI_LETTURA;
-END $$
-DELIMITER ; 
-
 # Visualizzazione dei libri disponibili in tutte le biblioteche
 DELIMITER $$
 CREATE PROCEDURE VisualLibri()
@@ -948,6 +940,7 @@ CREATE PROCEDURE VisualPrenotazioniPosti(IN BibliotecaG varchar(40))
 BEGIN 
 	SELECT *
 	FROM PRENOTAZIONI_AMM
+    JOIN POSTI_LETTURA AS P ON (NumPosto = P.Num ) AND (Biblioteca = P.NomeBiblioteca)
 	WHERE Biblioteca=BibliotecaG;
 END $$
 DELIMITER ;

@@ -46,6 +46,14 @@ export default class SeatCard extends React.Component {
                         <a className="flex items-center text-black text-sm">
                             End Time: {this.props.seat.OraFine.slice(0, -3)}
                         </a>
+                        {this.props.showEmail ? (
+                            <>
+                                <br />
+                                <a className="flex items-center text-black text-sm">
+                                    Email: {this.props.seat.EmailUtilizzatore}
+                                </a>
+                            </>
+                        ) : (<></>)}
                     </div>
                 ) : (<></>)}
 
