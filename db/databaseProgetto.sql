@@ -831,12 +831,13 @@ DELIMITER $$
 CREATE PROCEDURE InsertLibro(IN Titolo varchar(50), IN Anno smallint, IN Edizione varchar(30), IN Biblioteca varchar(40), Genere varchar(30),
 IN Tipo Bool,
 IN StatoPrestito varchar(11), IN Pagine smallint, IN Scaffale smallint, IN StatoConservazione varchar(9),
-IN Dimensione varchar(10), IN Link varchar(2100) )
+IN Dimensione varchar(10), IN Link varchar(2100), IN Autori varchar(100) )
 # se Tipo=true allora è un cartaceo, se Tipo=false allora è un ebook
 BEGIN
 		INSERT INTO LIBRO(Titolo, Anno, Edizione, Biblioteca, Genere)
         VALUES(Titolo, Anno, Edizione, Biblioteca, Genere);
         SET @UltimoCodice = LAST_INSERT_ID();
+        CALL InsertAutori(@UltimoCodice,Autori);
 	IF Tipo="1" THEN
         INSERT INTO CARTACEO(Codice, StatoPrestito, Pagine, Scaffale, StatoConservazione)
         VALUES (@UltimoCodice,  StatoPrestito, Pagine, Scaffale, StatoConservazione);

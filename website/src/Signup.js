@@ -81,7 +81,7 @@ const Home = ({ history }) => {
                                 <GlassInput type="tel" placeholder="Phone number" onChange={myChangeHandler} />
                                 
                                 {userType !== null && userType === 'user' ? (
-                                    <select className="bg-white text-gray-300 bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg font-medium p-3 outline-none placeholder-white shadow-md" onChange={myChangeHandler}>
+                                    <select className="bg-white text-gray-400 bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg font-medium p-3 outline-none placeholder-white shadow-md" onChange={myChangeHandler}>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
                                     </select>
