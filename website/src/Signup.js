@@ -8,16 +8,16 @@ const Home = ({ history }) => {
     const [error, setError] = useState(null);
     const [userType, setUserType] = useState("user");
     const [gender, setGender] = useState("M");
-    
+
     const myChangeHandler = (event) => {
         let nam = event.target.placeholder || event.target.computedName;
         let val = event.target.value;
-        
+
         if (val === "user" || val === "volunteer")
             setUserType(val);
-        else if (val === "male" || val === "female") 
+        else if (val === "male" || val === "female")
             setGender(val === "male" ? "M" : "F");
-        
+
         if (data == null) {
             setData({ [nam]: val })
             return
@@ -29,8 +29,8 @@ const Home = ({ history }) => {
     }
 
     const signupTapped = async () => {
-        console.log("DATA: ",data)
-        if (data === null || !data["Email"] || !data["Password"] ) {
+        console.log("DATA: ", data)
+        if (data === null || !data["Email"] || !data["Password"]) {
             setError('*Error: please compile all fields')
             return
         }
@@ -79,13 +79,17 @@ const Home = ({ history }) => {
                                 <GlassInput custom="birth" id="birth" type="date" placeholder="Date of birth" onChange={myChangeHandler} />
                                 <GlassInput type="text" placeholder="Place of birth" onChange={myChangeHandler} />
                                 <GlassInput type="tel" placeholder="Phone number" onChange={myChangeHandler} />
-                                <select className="bg-white text-gray-300 bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg font-medium p-3 outline-none placeholder-white shadow-md" onChange={myChangeHandler}>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                </select>
+                                
+                                {userType !== null && userType === 'user' ? (
+                                    <select className="bg-white text-gray-300 bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg font-medium p-3 outline-none placeholder-white shadow-md" onChange={myChangeHandler}>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                ) : (<></>)}
+
                                 {userType !== null && userType === 'volunteer' ? (
                                     <>
-                                         <GlassInput type="text" placeholder="Transportation" onChange={myChangeHandler} />
+                                        <GlassInput type="text" placeholder="Transportation" onChange={myChangeHandler} />
                                     </>
                                 ) : (<>
 
