@@ -121,6 +121,7 @@ export const deleteBook = async (libraryName, bookId) => {
 export const addBook = async (libraryName, title, type, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, author) => {
     const userType = checkUserType();
     if (userType === 'admin') { return null }
+    console.log(libraryName)
     const response = await performPOST(`/library/${libraryName}/books/add`, { title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, type, link, genre });
     return response.data;
 }

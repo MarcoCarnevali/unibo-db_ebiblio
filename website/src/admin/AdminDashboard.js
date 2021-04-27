@@ -16,8 +16,8 @@ const AdminDashboard = () => {
     const [flagTitle, setFlagTitle] = useState(null);
     const [messageTitle, setMessageTitle] = useState(null);
     const [message, setMessage] = useState(null);
+    const [ref, setRef] = useState("");
     const [loading, setLoading] = useState(true);
-    var ref = "";
 
     const handleChange = async (e) => {
         if (e.target.name === 'user-email') {
@@ -72,8 +72,9 @@ const AdminDashboard = () => {
         try {
             setLoading(true);
 
-            const library = await getAdminLibrary();
-            ref = library.result[0].NomeBiblioteca;
+            const libraryResponse = await getAdminLibrary();
+            const ref = libraryResponse.result[0].NomeBiblioteca
+            setRef(libraryResponse.result[0].NomeBiblioteca);
 
             const data = await getBiblio(ref)
             setData(data.result);

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import GlassInput from "./components/GlassInput";
 import { Link } from "react-router-dom";
 import { signup } from "./Network/NetworkManager";
-import "./style/main.css";
 
 const Home = ({ history }) => {
     const [data, setData] = useState(null);
@@ -80,7 +79,7 @@ const Home = ({ history }) => {
                                 <GlassInput custom="birth" id="birth" type="date" placeholder="Date of birth" onChange={myChangeHandler} />
                                 <GlassInput type="text" placeholder="Place of birth" onChange={myChangeHandler} />
                                 <GlassInput type="tel" placeholder="Phone number" onChange={myChangeHandler} />
-                                <select className="bg-white bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md" onChange={myChangeHandler}>
+                                <select className="bg-white text-gray-300 bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg font-medium p-3 outline-none placeholder-white shadow-md" onChange={myChangeHandler}>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
                                 </select>
