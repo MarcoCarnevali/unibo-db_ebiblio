@@ -582,8 +582,8 @@ DELIMITER ;
 
 
 # Visualizzazione propri eventi di consegna
-CREATE VIEW CONSEGNE_UT(Prestito,Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito)
-AS SELECT  CodPrestito, Titolo, Tipo, Note, Giorno, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito
+CREATE VIEW CONSEGNE_UT(Prestito,Titolo, Tipo, Note, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito)
+AS SELECT  CodPrestito, Titolo, Tipo, Note, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito
 	FROM PRESTITO JOIN CARTACEO ON (PRESTITO.CodLibro=CARTACEO.Codice)
 					JOIN CONSEGNA ON (PRESTITO.Cod=CONSEGNA.CodPrestito)
 						JOIN LIBRO ON (PRESTITO.CodLibro=LIBRO.Codice);
@@ -784,6 +784,15 @@ DELIMITER ;
 
 #SOLO AMMINISTRATORI
 
+#Biblioteca amministratore
+DELIMITER $$
+CREATE PROCEDURE BibliotecaAmministratore(IN EmailAmministratore varchar(30))
+BEGIN
+	SELECT Responsabile as NomeBiblioteca
+	FROM AMMINISTRATORE
+    WHERE Email=EmailAmministratore;
+END $$
+DELMITER ;
 
 #Inserimento degli autori di un libro e collegamento con il libro
 DELIMITER $$
