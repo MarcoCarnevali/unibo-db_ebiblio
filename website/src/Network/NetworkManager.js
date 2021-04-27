@@ -187,6 +187,12 @@ export const getBookAuthors = async (bookId) => {
     return response.data;
 }
 
+export const getEbook = async (bookId) => {
+    const response = await performGET(`/ebook/${bookId}`, {});
+    return response.data;
+}
+
+
 
 const performGET = async (path, params) => {
     return axios.get(address + path, {

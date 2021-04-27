@@ -79,10 +79,18 @@ app.get('/library/:id/books', function (req, res) {
 });
 
 app.get('/library/:id/ebooks', function (req, res) {
-    connection.query(`SELECT * FROM LIBRO JOIN EBOOK ON (LIBRO.Codice = EBOOK.Codice) WHERE Biblioteca="${req.params.id}";`, (err, rows) => {
+    connection.query(`CALL VisualEbookBib("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
-        return res.status(200).send({ result: rows });
+        return res.status(200).send({ result: rows[0] });
+    });
+});
+
+app.get('/ebook/:id', function (req, res) {
+    connection.query(`CALL VisualEbook("${req.params.id}");`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err });
+        return res.status(200).send({ result: rows[0] });
     });
 });
 

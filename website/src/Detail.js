@@ -99,11 +99,11 @@ const Detail = () => {
             setData(data.result);
 
             const booksResponse = await getBooks(ref);
-            const booksCards = booksResponse.result.map(x => (<BookCard book={x} />))
+            const booksCards = booksResponse.result.map(x => (<BookCard book={x} isBook={true} />))
             setBooks(booksCards);
 
             const eBooksResponse = await getEBooks(ref);
-            const eBooksCards = eBooksResponse.result.map(x => (<BookCard book={x} />))
+            const eBooksCards = eBooksResponse.result.map(x => (<BookCard book={x} isBook={false} />))
             setEBooks(eBooksCards)
 
             const galleryResponse = await getGallery(ref);

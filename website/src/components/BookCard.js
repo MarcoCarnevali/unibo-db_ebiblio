@@ -1,43 +1,48 @@
 import React from "react";
-import { bookBooking, getBookAuthors } from "../Network/NetworkManager";
+import { bookBooking, getBookAuthors, getEbook } from "../Network/NetworkManager";
 import GlassInput from "../components/GlassInput";
 
 export class BookCard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { showModal: false, isBook: !this.props.book.Dimensione, bookDate: "", authors: "" };
+        this.state = { showModal: false, bookDate: "", authors: "", ebook: {} };
     }
 
     openModal = async () => {
-        this.setState({ showModal: true, isBook: this.state.isBook, bookDate: this.state.bookDate, authors: this.state.authors })
+        console.log(this.props.book)
+        this.setState({ showModal: true, bookDate: this.state.bookDate, authors: this.state.authors, ebook: this.state.ebook })
 
         if (this.state.authors === "") {
             const response = await getBookAuthors(this.props.book.Codice);
             const authorsArray = response.result.map(x => {
                 return `${x.Nome} ${x.Cognome}`
             });
-            this.setState({ showModal: true, isBook: this.state.isBook, bookDate: this.state.bookDate, authors: authorsArray.toString() })
+            this.setState({ showModal: true, bookDate: this.state.bookDate, authors: authorsArray.toString() })
         }
-
+        
+        if (!this.props.isBook) {
+            const response = await getEbook(this.props.book.Codice);
+            this.setState({ showModal: true, bookDate: this.state.bookDate, authors: this.state.authors, ebook: response.result[0] })
+        }
     }
 
     closeModal = () => {
-        this.setState({ showModal: false, isBook: !this.props.book.Dimensione, bookDate: this.state.bookDate, authors: this.state.authors })
+        this.setState({ showModal: false, bookDate: this.state.bookDate, authors: this.state.authors, ebook: this.state.ebook })
     }
 
     ctaAction = async () => {
-        if (this.state.isBook) {
+        if (this.props.isBook) {
             const response = await bookBooking(this.props.book.Codice);
             if (response !== null) {
                 window.location.reload();
             }
         } else {
-            // Redirect to links
+            window.open("http://"+this.state.ebook.Link);
         }
     }
 
     datePickerChanged = (value) => {
-        this.setState({ showModal: this.state.showModal, isBook: !this.props.book.Dimensione, bookDate: value })
+        this.setState({ showModal: this.state.showModal, bookDate: this.state.bookDate, authors: this.state.authors, ebook: this.state.ebook })
     }
 
     render() {
@@ -79,7 +84,7 @@ export class BookCard extends React.Component {
                                     </div>
                                     {/*body*/}
                                     <div className="relative p-6 flex-auto ml-5">
-                                        {this.state.isBook ? (
+                                        {this.props.isBook ? (
                                             <>
                                                 <span>Edition: {this.props.book.Edizione}</span>
                                                 <br />
@@ -99,22 +104,22 @@ export class BookCard extends React.Component {
                                             </>
                                         ) : (
                                             <>
-                                                <span>Edition: {this.props.book.Edizione}</span>
+                                                <span>Edition: {this.state.ebook.Edizione}</span>
                                                 <br />
-                                                <span>Year: {this.props.book.Anno}</span>
+                                                <span>Year: {this.state.ebook.Anno}</span>
                                                 <br />
                                                 <span>Authors: {this.state.authors}</span>
                                                 <br />
-                                                <span>Genre: {this.props.book.Genere}</span>
+                                                <span>Genre: {this.state.ebook.Genere}</span>
                                                 <br />
-                                                <span>Size: {this.props.book.Dimensione}</span>
+                                                <span>Size: {this.state.ebook.Dimensione}</span>
                                                 <br />
-                                                <span>AccessNumber: {this.props.book.NumeroAccessi}</span>
+                                                <span>AccessNumber: {this.state.ebook.NumeroAccessi}</span>
                                             </>
                                         )}
                                     </div>
                                     {/* Book section */}
-                                    {!this.state.isBook ? (<></>) : (
+                                    {!this.props.isBook? (<></>) : (
                                         <div className="relative p-6 flex-auto ml-5">
                                             <span className="block-inline">Select Date and time: </span>
                                             <br />
@@ -133,9 +138,9 @@ export class BookCard extends React.Component {
                                             className="bg-blue-600 text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 disabled:opacity-40"
                                             type="button"
                                             onClick={this.ctaAction}
-                                            disabled={this.state.isBook && (this.props.book.StatoConservazione === 'Scadente' || this.props.book.StatoPrestito !== 'Disponibile' || !this.state.bookDate)}
+                                            disabled={this.props.isBook && (this.props.book.StatoConservazione === 'Scadente' || this.props.book.StatoPrestito !== 'Disponibile' || !this.state.bookDate)}
                                         >
-                                            {this.state.isBook ? "Book" : "Access"}
+                                            {this.props.isBook ? "Book" : "Access"}
                                         </button>
                                     </div>
                                 </div>
