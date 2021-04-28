@@ -412,8 +412,8 @@ VALUES  ("2021-05-01","2021-05-16","2","gino@gmail.com"),
 		("2021-05-01","2021-05-16","6","marco@gmail.com"),
         ("2021-05-02","2021-05-17","1","gino@gmail.com"),
         ("2021-05-02","2021-05-17","10","franco@gmail.com"),
-        ("2021-04-02","2021-04-17","15","tiziano@gmail.com"),
-		("2021-05-02","2021-05-17","13","franco@gmail.com");
+        (NULL,NULL,"15","tiziano@gmail.com"),
+		(NULL,NULL,"13","franco@gmail.com");
 
 INSERT INTO CONSEGNA(CodPrestito, Tipo, Note, Giorno, EmailVol)
 VALUES  ("1","Affidamento","werervrev","2021-01-01","tiziano@me.it"),
