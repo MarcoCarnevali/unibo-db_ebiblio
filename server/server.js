@@ -94,6 +94,14 @@ app.get('/ebook/:id', function (req, res) {
     });
 });
 
+app.get('/ebook/:id/history', function (req, res) {
+    connection.query(`CALL StoricoEbook(${req.params.id}, "${req.query.email}");`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err });
+        return res.status(200).send({ result: "Done"});
+    });
+});
+
 app.get('/book/:id', function (req, res) {
     connection.query(`SELECT * FROM LIBRO JOIN CARTACEO ON (LIBRO.Codice = CARTACEO.Codice) WHERE LIBRO.Codice="${req.params.id}";`, (err, rows) => {
         if (err)

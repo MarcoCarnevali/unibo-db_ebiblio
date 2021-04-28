@@ -206,6 +206,13 @@ export const getUserFlags = async () => {
     return response.data;
 }
 
+export const accessEbook = async (ebookId) => {
+    const email = checkLogged();
+    if (email === 'not-logged') { return null }
+    const response = await performGET(`/ebook/${ebookId}/history`, { email });
+    return response.data;
+}
+
 export const modifyDeliveredBook = async (prestitoId, type, note, date) => {
     const email = checkLogged();
     if (email === 'not-logged') { return null }

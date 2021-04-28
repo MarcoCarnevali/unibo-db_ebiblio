@@ -1,5 +1,5 @@
 import React from "react";
-import { bookBooking, getBookAuthors, getEbook, checkLogged } from "../Network/NetworkManager";
+import { bookBooking, getBookAuthors, getEbook, checkLogged, accessEbook } from "../Network/NetworkManager";
 import GlassInput from "../components/GlassInput";
 
 export class BookCard extends React.Component {
@@ -38,6 +38,7 @@ export class BookCard extends React.Component {
             }
         } else {
             if (checkLogged() !== 'not-logged') {
+                await accessEbook(this.props.book.Codice);
                 window.open("http://"+this.state.ebook.Link);
             }else{
                 window.alert("Please sign-up or log-in in order to access the e-book")
