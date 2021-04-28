@@ -220,6 +220,14 @@ export const modifyDeliveredBook = async (prestitoId, type, note, date) => {
     return response.data;
 }
 
+/* log is an object of what we want to log: e.g. { email:"" }
+    "action" is the type of action where the log is fired e.g. "signup"
+*/
+export const remoteLog = async (action, log) => {
+    const response = await performPOST(`/log`, { action, log });
+    return response.data;
+}
+
 
 const performGET = async (path, params) => {
     return axios.get(address + path, {

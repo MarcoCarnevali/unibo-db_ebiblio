@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import GlassInput from "./components/GlassInput";
 import { Link } from "react-router-dom"
-import { login } from "./Network/NetworkManager";
+import { login, remoteLog } from "./Network/NetworkManager";
 
 const Login = ({ history }) => {
     const [data, setData] = useState(null);
@@ -11,11 +11,11 @@ const Login = ({ history }) => {
     const myChangeHandler = (event) => {
         let nam = event.target.placeholder || event.target.computedName;
         let val = event.target.value;
-        
+
         if (val === "user" || val === "volunteer") {
             setUserType(val);
         }
-        
+
         if (data == null) {
             setData({ [nam]: val })
             return
@@ -34,14 +34,17 @@ const Login = ({ history }) => {
 
         try {
             const response = await login(userType || "user", data["Email"], data["Password"]);
-            if(!response.result) {
+            if (!response.result) {
                 setError("*Error: Wrong Email or Password")
                 return
             } else if (userType === "volunteer") {
+                remoteLog('login', { email: data["Email"], type: 'volunteer' })
                 history.push("/volunteer");
             } else if (response.result.Stato === 'Attivo') {
+                remoteLog('login', { email: data["Email"], type: 'user' })
                 history.push("/");
-            }else{
+            } else {
+                remoteLog('login', { email: data["Email"], type: userType, error: 'account-supended' })
                 setError("*Error: Account suspended")
                 return
             }
@@ -49,9 +52,11 @@ const Login = ({ history }) => {
         } catch (error) {
             console.error(error)
             if (error.response.status === 500) {
+                remoteLog('login', { email: data["Email"], type: userType, error: error.response })
                 setError('*Error: something went wrong')
                 return
-            }else if (error.response.status === 406) {
+            } else if (error.response.status === 406) {
+                remoteLog('login', { email: data["Email"], type: userType, error: 'wrong-account' })
                 setError("*Error: Wrong Email or Password")
                 return
             }
@@ -68,7 +73,7 @@ const Login = ({ history }) => {
                         </div>
                         <div className="divide-y divide-gray-200">
                             <div className="flex flex-col py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                            <span className="text-white">User type: </span>
+                                <span className="text-white">User type: </span>
                                 <div className="inline-block">
                                     <input type="radio" id="user" name="type" value="user" defaultChecked onChange={myChangeHandler} />
                                     <label className="ml-2 text-white" for="user">User</label>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import GlassInput from "./components/GlassInput";
 import { Link } from "react-router-dom";
-import { signup } from "./Network/NetworkManager";
+import { signup, remoteLog } from "./Network/NetworkManager";
 
 const Home = ({ history }) => {
     const [data, setData] = useState(null);
@@ -29,7 +29,6 @@ const Home = ({ history }) => {
     }
 
     const signupTapped = async () => {
-        console.log("DATA: ", data)
         if (data === null || !data["Email"] || !data["Password"]) {
             setError('*Error: please compile all fields')
             return
@@ -40,12 +39,15 @@ const Home = ({ history }) => {
         }
         try {
             await signup(data["Email"], data["Password"], gender, data["First Name"], data["Last Name"], data["Phone number"], data["Date of birth"], data["Place of birth"], data["Job"], data["Transportation"], userType);
+            remoteLog('signup', { email: data["Email"] })
             history.push('/login')
         } catch (error) {
             if (error.response.status === 409) {
+                remoteLog('signup', { email: data["Email"], error: 'email-exists' })
                 setError('*Error: email already exists')
                 return
             } else if (error.response.status === 500) {
+                remoteLog('signup', { email: data["Email"], error: error.response })
                 setError('*Error: something went wrong')
                 return
             }
@@ -79,7 +81,7 @@ const Home = ({ history }) => {
                                 <GlassInput custom="birth" id="birth" type="date" placeholder="Date of birth" onChange={myChangeHandler} />
                                 <GlassInput type="text" placeholder="Place of birth" onChange={myChangeHandler} />
                                 <GlassInput type="tel" placeholder="Phone number" onChange={myChangeHandler} />
-                                
+
                                 {userType !== null && userType === 'user' ? (
                                     <select className="bg-white text-gray-400 bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg font-medium p-3 outline-none placeholder-white shadow-md" onChange={myChangeHandler}>
                                         <option value="male">Male</option>

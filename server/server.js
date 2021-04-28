@@ -1,19 +1,40 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const cors = require('cors')
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
 const mysql = require("mysql");
 
 const app = express();
-const host = 'localhost';
-const port = 8123;
+const configuration = {
+    mysql_host: 'localhost',
+    mysql_user: 'root',
+    mysql_password: 'rootroot',
+    mysql_db: 'db_ebiblio',
+    express_host: 'localhost',
+    express_port: 8123,
+    mongodb_host: 'localhost',
+    mongodb_port: 27017,
+    mongodb_db: 'db_ebiblio'
+}
 
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'rootroot',
-    database: 'db_ebiblio'
+    host: configuration.mysql_host,
+    user: configuration.mysql_user,
+    password: configuration.mysql_password,
+    database: configuration.mysql_db
 });
 
+const mongodbURL = `mongodb://${configuration.mongodb_host}:${configuration.mongodb_port}`;
+const mongodb_client = new MongoClient(mongodbURL, { useUnifiedTopology: true });
+var mongodb_db = undefined;
+
+mongodb_client.connect(function (err) {
+    if (err) {
+        console.error(err);
+        return
+    }
+    mongodb_db = mongodb_client.db(configuration.mongodb_db);
+});
 
 app.use(cookieParser());
 app.use(express.json());
@@ -27,8 +48,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.listen(port, () => {
-    console.log(`Ebiblio app listening at http://${host}:${port}`)
+app.listen(configuration.express_port, () => {
+    console.log(`Ebiblio app listening at http://${configuration.express_host}:${configuration.express_port}`)
 });
 
 app.get('/libraries', (req, res) => {
@@ -98,7 +119,7 @@ app.get('/ebook/:id/history', function (req, res) {
     connection.query(`CALL StoricoEbook(${req.params.id}, "${req.query.email}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
-        return res.status(200).send({ result: "Done"});
+        return res.status(200).send({ result: "Done" });
     });
 });
 
@@ -168,7 +189,7 @@ app.post('/user/booking/book', (req, res) => {
 
 app.post('/bookings/modify/:id', (req, res) => {
     const { type, note, email, date } = req.body;
-    connection.query(`CALL UpdateConsegna(${req.params.id}, "${type}", ${note ? '"'+note+'"' : null}, ${date ? '"'+date+'"' : null}, "${email}");`, (err, rows) => {
+    connection.query(`CALL UpdateConsegna(${req.params.id}, "${type}", ${note ? '"' + note + '"' : null}, ${date ? '"' + date + '"' : null}, "${email}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });
@@ -320,4 +341,16 @@ app.get('/user/:id/getFlags', (req, res) => {
     });
 });
 
+app.post('/log', async (req, res) => {
+    const collection = mongodb_db.collection('log');
+    const payload = req.body;
+    try {
+        payload.timestamp = Date.now();
+        await collection.insertOne(payload);
+        return res.status(200).send({ result: "Done" });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ error: err.message });
+    }
+});
 
