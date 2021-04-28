@@ -408,10 +408,10 @@ VALUES  ("tiziano@me.it","aaaaa","Tiziano","Bruno","32323342","1998-01-01","Pale
         ("pippo@me.it","aaaaa","Pippo","Baudo","322622616","1968-01-02","Milano","auto");
 
 INSERT INTO PRESTITO(DataAvvio, DataFine, CodLibro, EmailUtilizzatore)
-VALUES  ("2021-01-01","2021-05-01","2","gino@gmail.com"),
-		("2021-01-01","2021-03-01","6","marco@gmail.com"),
-        ("2021-01-02","2021-04-01","1","gino@gmail.com"),
-        ("2021-01-02","2021-04-01","10","franco@gmail.com"),
+VALUES  ("2021-05-01","2021-05-16","2","gino@gmail.com"),
+		("2021-05-01","2021-05-16","6","marco@gmail.com"),
+        ("2021-05-02","2021-05-17","1","gino@gmail.com"),
+        ("2021-05-02","2021-05-17","10","franco@gmail.com"),
         ("2021-04-02","2021-04-17","15","tiziano@gmail.com"),
 		("2021-05-02","2021-05-17","13","franco@gmail.com");
 
@@ -561,34 +561,12 @@ BEGIN
 END $$
 DELIMITER ;
 
-#inserimento dati nello storico ebook
-DELIMITER $$
-CREATE PROCEDURE StoricoEbook(IN CodiceEbook int, IN EmailUt varchar(30))
-BEGIN
-SET @GiornoUt = CURDATE();
-SET @OraUt = CURTIME();
-INSERT INTO STORICO_EBOOK(CodEbook, EmailUtente, Giorno, Ora)
-VALUES (CodiceEbook, EmailUt, @GiornoUt, @OraUt);
-END $$
-DELIMITER ;
 
 
-# Visualizzazione propri eventi di consegna
-CREATE VIEW CONSEGNE_UT(Prestito,Titolo, Tipo, Note, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito)
-AS SELECT  CodPrestito, Titolo, Tipo, Note, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito
-	FROM PRESTITO JOIN CARTACEO ON (PRESTITO.CodLibro=CARTACEO.Codice)
-					JOIN CONSEGNA ON (PRESTITO.Cod=CONSEGNA.CodPrestito)
-						JOIN LIBRO ON (PRESTITO.CodLibro=LIBRO.Codice);
 
-DELIMITER $$
-CREATE PROCEDURE VisualConsegne(IN EmailUt varchar(30))
-BEGIN
-	SELECT *
-	FROM CONSEGNE_UT
-	WHERE EmailUtilizzatore = EmailUt;
-END $$
-DELIMITER ;
 
+
+#-------------------------------------------------------------------------------------
 
 
 
@@ -686,6 +664,41 @@ DELIMITER ;
 
 
 
+# Visualizzazione propri eventi di consegna
+CREATE VIEW CONSEGNE_UT(Prestito,Titolo, Tipo, Note, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito)
+AS SELECT  CodPrestito, Titolo, Tipo, Note, EmailVol, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito
+	FROM PRESTITO JOIN CARTACEO ON (PRESTITO.CodLibro=CARTACEO.Codice)
+					JOIN CONSEGNA ON (PRESTITO.Cod=CONSEGNA.CodPrestito)
+						JOIN LIBRO ON (PRESTITO.CodLibro=LIBRO.Codice);
+
+DELIMITER $$
+CREATE PROCEDURE VisualConsegne(IN EmailUt varchar(30))
+BEGIN
+	SELECT *
+	FROM CONSEGNE_UT
+	WHERE EmailUtilizzatore = EmailUt;
+END $$
+DELIMITER ;
+
+
+#inserimento dati nello storico ebook
+DELIMITER $$
+CREATE PROCEDURE StoricoEbook(IN CodiceEbook int, IN EmailUt varchar(30))
+BEGIN
+SET @GiornoUt = CURDATE();
+SET @OraUt = CURTIME();
+INSERT INTO STORICO_EBOOK(CodEbook, EmailUtente, Giorno, Ora)
+VALUES (CodiceEbook, EmailUt, @GiornoUt, @OraUt);
+END $$
+DELIMITER ;
+
+
+
+
+#-------------------------------------------------------------------------------------
+
+
+
 
 
 ##SOLO VOLONTARI
@@ -774,6 +787,12 @@ DELIMITER ;
 
 
 
+#-------------------------------------------------------------------------------------
+
+
+
+
+
 #SOLO AMMINISTRATORI
 
 #Biblioteca amministratore
@@ -822,11 +841,6 @@ DELIMITER ;
 
 
 # Inserimento di un libro presso la biblioteca gestita
-/*  NELLA CALL DI QUESTA PROCUDERE, QUANDO INSERIAMO UN EBOOK,
-	BISOGNA IMMETTERE IL VALORE "0" PER I CAMPI Pagine e Scafale,
-    PER GLI ALTRI CAMPI INERENTI A CARTACEO POSSIAMO LASCIARE UN 
-    CAMPO VUOTO -> "". LO STESSO VALE SE INSERIAMO UN CARTACEO,
-    POSSIAMO INSERIRE I CAMPI Dimensione e Link VUOTI.*/
 DELIMITER $$
 CREATE PROCEDURE InsertLibro(IN Titolo varchar(50), IN Anno smallint, IN Edizione varchar(30), IN Biblioteca varchar(40), Genere varchar(30),
 IN Tipo Bool,
@@ -847,7 +861,6 @@ BEGIN
     END IF;
 END $$
 DELIMITER ;
-
 
 
 #Cancellazione di un libro presso la biblioteca gestita
@@ -985,7 +998,7 @@ END |
 DELIMITER ;
 
 
-# Rimuovere tutte le segnalazioni di un utente, riportandone lo stato ad Attivo
+# Assoluzione: Rimuovere tutte le segnalazioni di un utente, riportandone lo stato ad Attivo
 DELIMITER $$
 CREATE PROCEDURE AssoluzioneUtente(IN EmailUtilizzatore varchar(30))
 BEGIN
@@ -995,6 +1008,15 @@ BEGIN
 	WHERE Email=EmailUtilizzatore;
 END $$
 DELIMITER ; 
+
+
+
+
+#-------------------------------------------------------------------------------------
+
+
+
+#STATISTICHE
 
 # Visualizzare la classifica dei volontari che hanno effettuato più consegne
 DELIMITER $$
@@ -1040,20 +1062,3 @@ BEGIN
 	ORDER BY Percentuale ASC;
 END $$
 DELIMITER ; 
-
-
-#CLUSTERING
-/* Implementare un sistema di clustering basato su algoritmo di K-Means, attraverso
-il quale si segmentano gli utenti utilizzatori, sulla base della loro professione, età, genere e
-numero di richieste di prestiti di libri cartacei effettuati. Visualizzare -tramite apposita
-funzionalità nella piattaforma- l’elenco degli utenti che appartiene a ciascun cluster.*/
-
-SELECT UTILIZZATORE.Email,
-		DATE_FORMAT(FROM_DAYS(DATEDIFF(CURRENT_DATE(),UTILIZZATORE.DataNascita)), '%Y') + 0 AS Eta,
-        Sesso,
-        Count(Cod) AS NumeroPrenotazioni 
-FROM UTILIZZATORE LEFT JOIN PRESTITO ON (Email=EmailUtilizzatore)
-GROUP BY Email
-INTO OUTFILE "/tmp/datiCluster.arff" #lo alloca nella cartella temportanea di un sistema linux
-FIELDS TERMINATED BY ','
-LINES TERMINATED BY '\n';
