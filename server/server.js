@@ -251,7 +251,7 @@ app.post('/library/:id/books/:bookId/delete', (req, res) => {
 
 app.post('/library/:id/books/add', (req, res) => {
     const { title, year, edition, type, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, authors } = req.body;
-    connection.query(`CALL InsertLibro("${title}", ${year}, "${edition}", "${req.params.id}", "${genre}", ${type}, "${lendStatus}", ${pages || 0}, ${shelf}, "${conservationStatus}", "${dimension}", "${link}", "${authors}");`, (err, rows) => {
+    connection.query(`CALL InsertLibro("${title}", ${year}, "${edition}", "${req.params.id}", "${genre}", ${type}, ${lendStatus ? '"' + lendStatus + '"' : null}, ${pages || 0}, ${shelf ? '"' + shelf + '"' : null}, ${conservationStatus ? '"' + conservationStatus + '"' : null}, "${dimension}", "${link}", "${authors}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });
