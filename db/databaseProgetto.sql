@@ -714,7 +714,7 @@ CREATE PROCEDURE VisualPrenotazioniCartei()
 BEGIN
 	SELECT PRESTITI_VOL.*, Note, Giorno AS GiornoConsegna
 	FROM PRESTITI_VOL
-	JOIN CONSEGNA ON (CodPrestito = Prestito);
+	LEFT JOIN CONSEGNA ON (CodPrestito = Prestito);
 END $$
 DELIMITER ;
 
