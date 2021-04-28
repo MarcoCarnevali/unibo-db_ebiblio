@@ -49,7 +49,7 @@ export class BookCard extends React.Component {
     }
 
     datePickerChanged = (value) => {
-        this.setState({ showModal: this.state.showModal, bookDate: this.state.bookDate, authors: this.state.authors, ebook: this.state.ebook })
+        this.setState({ showModal: this.state.showModal, bookDate: value, authors: this.state.authors, ebook: this.state.ebook })
     }
 
     render() {
