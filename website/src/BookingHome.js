@@ -4,7 +4,8 @@ import BookingCard from "./components/BookingCard";
 import { getBookings } from "./Network/NetworkManager";
 
 const BookingHome = ({ history }) => {
-    const [data, setData] = useState(null);
+    const [delivered, setDelivered] = useState(null);
+    const [booked, setBooked] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -13,10 +14,19 @@ const BookingHome = ({ history }) => {
                 setLoading(true);
                 const data = await getBookings()
                 console.log(data);
-                const cards = data.result.map(biblio => {
-                    return (<BookingCard booking={biblio} book={{}} />)
-                })
-                setData(cards);
+                const deliveredCards = data.result
+                    .filter(x => (x.StatoPrestito === 'Consegnato'))
+                    .map(biblio => {
+                        return (<BookingCard booking={biblio} book={{}} />)
+                    })
+                const bookedCards = data.result
+                    .filter(x => (x.StatoPrestito === 'Prenotato'))
+                    .map(biblio => {
+                        return (<BookingCard booking={biblio} book={{}} />)
+                    })
+                    console.log("DELIVERED: ",data)
+                setDelivered(deliveredCards);
+                setBooked(bookedCards);
                 setLoading(false);
             } catch (error) {
                 setLoading(false);
@@ -35,10 +45,17 @@ const BookingHome = ({ history }) => {
             <NavBar />
             <div className="mx-40 my-20">
                 <div className="my-16">
-                    <span className="text-lg font-bold">Bookings: </span>
+                    <span className="text-lg font-bold">Booked: </span>
                 </div>
-                <div className="grid grid-flow-row grid-cols-3 grid-rows-3 gap-40">
-                    {data}
+                <div className="grid grid-flow-row grid-cols-3 gap-20">
+                    {booked}
+                </div>
+
+                <div className="my-16">
+                    <span className="text-lg font-bold">Delivered: </span>
+                </div>
+                <div className="grid grid-flow-row grid-cols-3 gap-20">
+                    {delivered}
                 </div>
             </div>
         </div>

@@ -1,34 +1,46 @@
 import React from "react";
-import { getBook, bookDeliver } from "../Network/NetworkManager";
-import GlassInput from "../components/GlassInput";
+import { getBook, bookDeliver, modifyDeliveredBook } from "../Network/NetworkManager";
 const dateFormat = require('dateformat');
 
 export default class BookingCard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { showModal: false, book: {}, type: "restituzione", note: "" };
+        this.state = { showModal: false, book: {}, note: "", inputs: null };
     }
-span
+
     openModal = async () => {
+        console.log(this.props.booking.Note)
         const response = await getBook(this.props.booking.CodLibro);
-        this.setState({ showModal: true, book: response.result[0], type: "restituzione", note: "" })
+        this.setState({ showModal: true, book: response.result[0], note: "", inputs: this.state.inputs })
+        console.log(dateFormat(this.props.booking.GiornoConsegna, "dd/mm/yyyy"))
     }
 
     closeModal = () => {
-        this.setState({ showModal: false, book: {}, type: "restituzione", note: "" })
+        this.setState({ showModal: false, book: {}, note: "", inputs: null })
     }
 
     ctaAction = async () => {
-        await bookDeliver(this.props.booking.Prestito, this.state.type, this.state.note)
+        const type = this.state.book.StatoPrestito === "Prenotato" ? "Affidamento" : "Restituzione";
+        await bookDeliver(this.props.booking.Prestito, type, this.state.note)
         window.location.reload();
     }
 
-    pickerChanged = (value) => {
-        this.setState({ showModal: true, book: this.state.book, type: value.target.value, note: this.state.note })
+    modifyAction = async () => {
+        console.log(this.state.inputs)
+        const type = this.state.book.StatoPrestito === "Prenotato" ? "Restituzione" : "Affidamento";
+        await modifyDeliveredBook(this.props.booking.Prestito, type, this.state.inputs.note, this.state.inputs.date)
+        window.location.reload();
     }
 
-    noteChanged = (e) => {
-        this.setState({ showModal: true, book: this.state.book, type: this.state.type, note: e.target.value })
+    changeHandler = (e) => {
+        var inputs = this.state.inputs
+        if (inputs === null) {
+            inputs = {}
+        }
+
+        inputs[e.target.name] = e.target.value;
+
+        this.setState({ showModal: true, book: this.state.book, note: e.target.value, inputs })
     }
 
     render() {
@@ -43,9 +55,6 @@ span
 
                     <span className="flex items-center text-black text-sm p-2 md:p-4">
                         Library: {this.props.booking.Biblioteca}
-                    </span>
-                    <span className="flex items-center text-black text-sm p-2 md:p-4">
-                        Status: {this.props.booking.StatoPrestito}
                     </span>
                     <span className="flex items-center text-black text-sm p-2 md:p-4">
                         Start Date: {dateFormat(this.props.booking.DataAvvio, "dd/mm/yyyy")}
@@ -88,19 +97,11 @@ span
                                         <span>Shelf: {this.state.book.Scaffale || ""}</span>
                                         <br />
                                         <span>Book Status: {this.state.book.StatoConservazione || ""}</span>
-                                        <br />
-                                        <span>Booking Status: {this.state.book.StatoPrestito || ""}</span>
                                     </div>
                                     <div className="relative p-6 flex-auto ml-5">
-                                        <select className="bg-blue-900 bg-opacity-20 rounded-full border-2 border-white border-opacity-20 text-lg text-white font-medium p-3 outline-none placeholder-white shadow-md" onChange={this.pickerChanged}>
-                                            <option value="Restituzione" >Restituzione</option>
-                                            <option value="Affidamento" >Affidamento</option>
-                                        </select>
-                                    </div>
-                                    <div className="relative p-6 flex-auto ml-5">
-                                        <span className="block-inline">Note: </span>
+                                        <span>Date: <input className="border rounded" type="date" name="date" defaultValue={dateFormat(this.props.booking.GiornoConsegna, "yyyy-mm-dd")} onChange={this.changeHandler} /></span>
                                         <br />
-                                        <GlassInput className="block-inline text-black ml-3" textColor="text-black" type="text" onChange={this.noteChanged} />
+                                        <span>Note: <input className="border rounded" name="note" defaultValue={this.props.booking.Note} onChange={this.changeHandler} /></span>
                                     </div>
                                     {/*footer*/}
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
@@ -110,13 +111,21 @@ span
                                             onClick={this.closeModal}
                                         >
                                             Close
-                                    </button>
+                                        </button>
+                                        <button
+                                            className="bg-green-600 text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 disabled:opacity-40"
+                                            type="button"
+                                            onClick={this.modifyAction}
+                                            disabled={this.state.inputs === null}
+                                        >
+                                            Modify
+                                        </button>
                                         <button
                                             className="bg-blue-600 text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 disabled:opacity-40"
                                             type="button"
                                             onClick={this.ctaAction}
                                         >
-                                            Deliver
+                                            {this.state.book.StatoPrestito === "Prenotato" ? "Deliver" : "Return"}
                                         </button>
                                     </div>
                                 </div>

@@ -712,8 +712,9 @@ AS SELECT  Cod, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito,
 DELIMITER $$
 CREATE PROCEDURE VisualPrenotazioniCartei()
 BEGIN
-	SELECT *
-	FROM PRESTITI_VOL;
+	SELECT PRESTITI_VOL.*, Note, Giorno AS GiornoConsegna
+	FROM PRESTITI_VOL
+	JOIN CONSEGNA ON (CodPrestito = Prestito);
 END $$
 DELIMITER ;
 

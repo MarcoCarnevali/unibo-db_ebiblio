@@ -96,7 +96,6 @@ app.get('/ebook/:id', function (req, res) {
 
 app.get('/book/:id', function (req, res) {
     connection.query(`SELECT * FROM LIBRO JOIN CARTACEO ON (LIBRO.Codice = CARTACEO.Codice) WHERE LIBRO.Codice="${req.params.id}";`, (err, rows) => {
-        console.error(err)
         if (err)
             return res.status(500).send({ error: err });
         return res.status(200).send({ result: rows });
@@ -138,7 +137,6 @@ app.post('/signup', (req, res) => {
 app.post('/login', (req, res) => {
     const { tipo, mail, psw } = req.body;
     connection.query(`CALL Autenticazione("${tipo}", "${mail}", "${psw}");`, (err, rows) => {
-        console.error(rows)
         if (err)
             return res.status(500).send({ error: err });
         else if (!rows[0][0])
@@ -160,10 +158,18 @@ app.post('/user/booking/book', (req, res) => {
     });
 });
 
+app.post('/bookings/modify/:id', (req, res) => {
+    const { type, note, email, date } = req.body;
+    connection.query(`CALL UpdateConsegna(${req.params.id}, "${type}", ${note ? '"'+note+'"' : null}, ${date ? '"'+date+'"' : null}, "${email}");`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: "Done" });
+    });
+});
+
 app.get('/bookings/deliver/:id', (req, res) => {
     const { type, note, email } = req.query;
     connection.query(`CALL InsertConsegna(${req.params.id}, "${type}", "${note}", "${email}");`, (err, rows) => {
-        console.error("ERR: ", err);
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });
@@ -216,9 +222,7 @@ app.post('/library/:id/books/:bookId/delete', (req, res) => {
 
 app.post('/library/:id/books/add', (req, res) => {
     const { title, year, edition, type, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, authors } = req.body;
-    console.log(req.body);
     connection.query(`CALL InsertLibro("${title}", ${year}, "${edition}", "${req.params.id}", "${genre}", ${type}, "${lendStatus}", ${pages || 0}, ${shelf}, "${conservationStatus}", "${dimension}", "${link}", "${authors}");`, (err, rows) => {
-        console.error(err);
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: "Done" });
@@ -294,7 +298,6 @@ app.get('/book/:id/getAuthors', (req, res) => {
 
 app.get('/user/:id/getMessages', (req, res) => {
     connection.query(`SELECT * FROM MESSAGGIO WHERE EmailUti = "${req.params.id}";`, (err, rows) => {
-        console.error(err)
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: rows });

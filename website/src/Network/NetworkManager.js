@@ -168,7 +168,7 @@ export const getUserDelivered = async () => {
     return response.data;
 }
 
-export const getUserLended= async () => {
+export const getUserLended = async () => {
     const email = checkLogged();
     if (email === 'not-logged') { return null }
     const response = await performGET(`/user/${email}/lended`, {});
@@ -203,6 +203,13 @@ export const getUserFlags = async () => {
     const email = checkLogged();
     if (email === 'not-logged') { return null }
     const response = await performGET(`/user/${email}/getFlags`, {});
+    return response.data;
+}
+
+export const modifyDeliveredBook = async (prestitoId, type, note, date) => {
+    const email = checkLogged();
+    if (email === 'not-logged') { return null }
+    const response = await performPOST(`/bookings/modify/${prestitoId}`, { type, note, date, email });
     return response.data;
 }
 
