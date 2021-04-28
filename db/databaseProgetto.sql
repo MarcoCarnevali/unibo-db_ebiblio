@@ -786,6 +786,33 @@ BEGIN
 END $$
 DELIMITER ;
 
+DELIMITER |
+CREATE TRIGGER UpdateConsegnaCartaceo
+AFTER UPDATE ON CONSEGNA
+FOR EACH ROW 
+BEGIN
+	IF (NEW.Giorno IS NOT NULL AND NEW.Giorno <> 0000-00-00) THEN
+		IF (NEW.Tipo="Affidamento") THEN
+			#INSERISCI DATA INIZIO E FINE SU PRESTITO
+			#La data di fine prestito viene calcolata come 15 giorni dalla data di consegna
+			UPDATE PRESTITO SET DataAvvio = NEW.Giorno WHERE (Cod=NEW.CodPrestito);
+			UPDATE PRESTITI_VOL SET DataAvvio = NEW.Giorno WHERE (PRESTITI_VOL.Prestito=NEW.CodPrestito);
+			UPDATE PRESTITO SET DataFine = DATE_ADD(NEW.Giorno, INTERVAL 15 DAY) WHERE (Cod=NEW.CodPrestito);
+			UPDATE PRESTITI_VOL SET DataFine = DATE_ADD(NEW.Giorno, INTERVAL 15 DAY) WHERE (PRESTITI_VOL.Prestito=NEW.CodPrestito);
+		END IF;
+		#CAMBIO LO STATO IN CONSEGNATO O DISPONIBILE
+		SET @CodiceLibro = 0;
+		SELECT CodLibro INTO @CodiceLibro
+		FROM PRESTITO
+		WHERE Cod=NEW.CodPrestito;
+		IF (NEW.Tipo="Affidamento") THEN
+			UPDATE CARTACEO SET StatoPrestito="Consegnato" WHERE (Codice=@CodiceLibro);
+			UPDATE PRESTITI_VOL SET StatoPrestito="Consegnato" WHERE (PRESTITI_VOL.Prestito=NEW.CodPrestito);
+		END IF;
+	END IF;
+END |
+DELIMITER ;
+
 
 
 #-------------------------------------------------------------------------------------
