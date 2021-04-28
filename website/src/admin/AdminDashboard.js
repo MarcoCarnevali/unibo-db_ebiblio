@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import NavBar from "../components/NavBar";
 import BookCardAdmin from "../components/BookCardAdmin";
 import AddBookButton from "../components/AddBookButton";
+import Table from "../components/Table";
 import "../style/main.css";
 import { getBiblio, getBooks, getEBooks, getLibrarySeatsBooked, getAdminLibrary, sendMessageToUser, flagUser, approveUser, remoteLog } from "../Network/NetworkManager";
 import SeatCard from "../components/SeatCard";

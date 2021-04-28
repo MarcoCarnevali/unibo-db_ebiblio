@@ -220,6 +220,26 @@ export const modifyDeliveredBook = async (prestitoId, type, note, date) => {
     return response.data;
 }
 
+export const getBookLeaderboard = async () => {
+    const response = await performGET(`/leaderboard/books`, {});
+    return response.data;
+}
+
+export const getEBookLeaderboard = async () => {
+    const response = await performGET(`/leaderboard/ebooks`, {});
+    return response.data;
+}
+
+export const getVolunteerLeaderboard = async () => {
+    const response = await performGET(`/leaderboard/volunteers`, {});
+    return response.data;
+}
+
+export const getLibrariesLeaderboard = async () => {
+    const response = await performGET(`/leaderboard/libraries`, {});
+    return response.data;
+}
+
 /* log is an object of what we want to log: e.g. { email:"" }
     "action" is the type of action where the log is fired e.g. "signup"
 */

@@ -341,6 +341,39 @@ app.get('/user/:id/getFlags', (req, res) => {
     });
 });
 
+app.get('/leaderboard/books', (req, res) => {
+    connection.query(`CALL ClassificaCartacei();`, (err, rows) => {
+        console.error(err);
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: rows[0] });
+    });
+});
+
+app.get('/leaderboard/ebooks', (req, res) => {
+    connection.query(`CALL ClassificaEbook();`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: rows[0] });
+    });
+});
+
+app.get('/leaderboard/volunteers', (req, res) => {
+    connection.query(`CALL ClassificaVol();`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: rows[0] });
+    });
+});
+
+app.get('/leaderboard/libraries', (req, res) => {
+    connection.query(`CALL ClassificaBibliotecheMenoUsate();`, (err, rows) => {
+        if (err)
+            return res.status(500).send({ error: err.message });
+        return res.status(200).send({ result: rows[0] });
+    });
+});
+
 app.post('/log', async (req, res) => {
     const collection = mongodb_db.collection('log');
     const payload = req.body;
