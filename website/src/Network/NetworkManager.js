@@ -224,6 +224,9 @@ export const modifyDeliveredBook = async (prestitoId, type, note, date) => {
     "action" is the type of action where the log is fired e.g. "signup"
 */
 export const remoteLog = async (action, log) => {
+    if (!log.email) {
+        log.email = checkLogged();
+    }
     const response = await performPOST(`/log`, { action, log });
     return response.data;
 }

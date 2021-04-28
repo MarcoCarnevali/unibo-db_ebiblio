@@ -24,7 +24,7 @@ const BookingHome = ({ history }) => {
                     .map(biblio => {
                         return (<BookingCard booking={biblio} book={{}} />)
                     })
-                    console.log("DELIVERED: ",data)
+
                 setDelivered(deliveredCards);
                 setBooked(bookedCards);
                 setLoading(false);

@@ -1,5 +1,5 @@
 import React from "react";
-import { getBook, bookDeliver, modifyDeliveredBook } from "../Network/NetworkManager";
+import { getBook, bookDeliver, modifyDeliveredBook, remoteLog } from "../Network/NetworkManager";
 const dateFormat = require('dateformat');
 
 export default class BookingCard extends React.Component {
@@ -22,6 +22,7 @@ export default class BookingCard extends React.Component {
     ctaAction = async () => {
         const type = this.state.book.StatoPrestito === "Prenotato" ? "Affidamento" : "Restituzione";
         await bookDeliver(this.props.booking.Prestito, type, this.state.note)
+        await remoteLog('volunteer-delivery', { id: this.props.booking.Prestito, type })
         window.location.reload();
     }
 
@@ -29,6 +30,7 @@ export default class BookingCard extends React.Component {
         console.log(this.state.inputs)
         const type = this.state.book.StatoPrestito === "Prenotato" ? "Restituzione" : "Affidamento";
         await modifyDeliveredBook(this.props.booking.Prestito, type, this.state.inputs.note, this.state.inputs.date)
+        await remoteLog('volunteer-modifyDelivery', { id: this.props.booking.Prestito, type })
         window.location.reload();
     }
 

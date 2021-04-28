@@ -7,7 +7,7 @@ import Map from "./components/Map";
 import GlassInput from "./components/GlassInput";
 import "./style/main.css";
 import { useLocation } from "react-router-dom";
-import { getBiblio, getBooks, getEBooks, getGallery, getPhones, checkSeatAvailability, bookSeat, checkLogged } from "./Network/NetworkManager";
+import { getBiblio, getBooks, getEBooks, getGallery, getPhones, checkSeatAvailability, bookSeat, checkLogged, remoteLog } from "./Network/NetworkManager";
 
 const informations = (data, phones) => {
     return (
@@ -87,8 +87,8 @@ const Detail = () => {
             window.alert('please log-in to book a seat');
             return
         }
-        const response = await bookSeat(ref, bookingDates.startTime, bookingDates.endTime, bookingDates.date, seatId);
-        console.log(response);
+        await bookSeat(ref, bookingDates.startTime, bookingDates.endTime, bookingDates.date, seatId);
+        await remoteLog('book-seat', { library: ref, startTime: bookingDates.startTime, endTime: bookingDates.endTime, date: bookingDates.date, id: seatId })
         window.location.reload();
     }
 

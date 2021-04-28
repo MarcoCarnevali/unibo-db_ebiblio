@@ -3,7 +3,7 @@ import NavBar from "../components/NavBar";
 import BookCardAdmin from "../components/BookCardAdmin";
 import AddBookButton from "../components/AddBookButton";
 import "../style/main.css";
-import { getBiblio, getBooks, getEBooks, getLibrarySeatsBooked, getAdminLibrary, sendMessageToUser, flagUser, approveUser } from "../Network/NetworkManager";
+import { getBiblio, getBooks, getEBooks, getLibrarySeatsBooked, getAdminLibrary, sendMessageToUser, flagUser, approveUser, remoteLog } from "../Network/NetworkManager";
 import SeatCard from "../components/SeatCard";
 
 const AdminDashboard = () => {
@@ -34,6 +34,7 @@ const AdminDashboard = () => {
     const flagUserAction = async () => {
         if (manageStatus === 'flag') {
             await flagUser(flagTitle, user)
+            await remoteLog('admin-flag', { flagTitle, user })
             window.location.reload();
         } else {
             setManageStatus('flag')
@@ -46,6 +47,7 @@ const AdminDashboard = () => {
     const approveUserAction = async () => {
         if (manageStatus === 'approve') {
             await approveUser(user);
+            await remoteLog('admin-approve', { user})
             window.location.reload();
         } else {
             setManageStatus('approve')
@@ -59,6 +61,7 @@ const AdminDashboard = () => {
         if (manageStatus === 'message') {
             console.log(message)
             await sendMessageToUser(messageTitle, message, user);
+            await remoteLog('admin-sendMessage', { messageTitle, message, user })
             window.location.reload();
         } else {
             setManageStatus('message')

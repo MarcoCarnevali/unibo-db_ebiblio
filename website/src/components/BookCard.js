@@ -1,5 +1,5 @@
 import React from "react";
-import { bookBooking, getBookAuthors, getEbook, checkLogged, accessEbook } from "../Network/NetworkManager";
+import { bookBooking, getBookAuthors, getEbook, checkLogged, accessEbook, remoteLog } from "../Network/NetworkManager";
 import GlassInput from "../components/GlassInput";
 
 export class BookCard extends React.Component {
@@ -34,11 +34,13 @@ export class BookCard extends React.Component {
         if (this.props.isBook) {
             const response = await bookBooking(this.props.book.Codice);
             if (response !== null) {
+                await remoteLog('book-booked', { id: this.props.book.Codice })
                 window.location.reload();
             }
         } else {
             if (checkLogged() !== 'not-logged') {
                 await accessEbook(this.props.book.Codice);
+                await remoteLog('ebook-access', { id: this.props.book.Codice })
                 window.open("http://"+this.state.ebook.Link);
             }else{
                 window.alert("Please sign-up or log-in in order to access the e-book")

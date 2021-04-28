@@ -1,5 +1,5 @@
 import React from "react";
-import { addBook } from "../Network/NetworkManager";
+import { addBook, remoteLog } from "../Network/NetworkManager";
 import GlassInput from "../components/GlassInput";
 
 export default class AddBookButton extends React.Component {
@@ -25,6 +25,7 @@ export default class AddBookButton extends React.Component {
     addAction = async () => {
         const { title, edition, year, pages, shelf, conservationStatus, lendStatus, dimension, link, genre, authors } = this.state.inputs;
         await addBook(this.props.library, title, this.props.isBook, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, link, genre, authors)
+        await remoteLog('addBook', { library: this.props.library, title, isBook: this.props.isBook })
         window.location.reload();
     }
 

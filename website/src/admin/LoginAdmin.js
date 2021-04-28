@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import GlassInput from "../components/GlassInput";
-import { login } from "../Network/NetworkManager";
+import { login, remoteLog } from "../Network/NetworkManager";
 
 const LoginAdmin = ({ history }) => {
     const [data, setData] = useState(null);
@@ -30,18 +30,22 @@ const LoginAdmin = ({ history }) => {
             const response = await login('admin', data["Email"], data["Password"]);
 
             if(!response.result) {
+                remoteLog('login', { email: data["Email"], type: 'admin', error: 'wrong-account' })
                 setError("*Error: Wrong Email or Password")
                 return
             }
 
+            remoteLog('login', { email: data["Email"], type: 'admin' })
             history.push("/adminDashboard");
 
         } catch (error) {
             console.error(error)
             if (error.response.status === 500) {
+                remoteLog('login', { email: data["Email"], type: 'admin', error: error.response })
                 setError('*Error: something went wrong')
                 return
             }else if (error.response.status === 406) {
+                remoteLog('login', { email: data["Email"], type: 'admin', error: 'wrong-account' })
                 setError("*Error: Wrong Email or Password")
                 return
             }

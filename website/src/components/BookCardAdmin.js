@@ -1,5 +1,5 @@
 import React from "react";
-import { modifyBook, deleteBook, getBookAuthors } from "../Network/NetworkManager";
+import { modifyBook, deleteBook, getBookAuthors, remoteLog } from "../Network/NetworkManager";
 import GlassInput from "../components/GlassInput";
 
 export default class BookCardAdmin extends React.Component {
@@ -33,11 +33,13 @@ export default class BookCardAdmin extends React.Component {
     modifyAction = async () => {
         const {title, edition, year, pages, shelf, conservationStatus, lendStatus, dimension, link, genre, authors } = this.state.inputs;
         await modifyBook(this.props.library, this.props.book.Codice, title, year, edition, lendStatus, pages, shelf, conservationStatus, dimension, null, link, genre, authors )
+        await remoteLog('modifyBook', { library: this.props.library, title, id: this.props.book.Codice })
         window.location.reload();
     }
 
     deleteAction = async () => {
         await deleteBook(this.props.library, this.props.book.Codice);
+        await remoteLog('deleteBook', { library: this.props.library, id: this.props.book.Codice })
         window.location.reload();
     }
 
