@@ -101,9 +101,15 @@ export default class BookingCard extends React.Component {
                                         <span>Book Status: {this.state.book.StatoConservazione || ""}</span>
                                     </div>
                                     <div className="relative p-6 flex-auto ml-5">
-                                        <span>Date: <input className="border rounded" type="date" name="date" defaultValue={dateFormat(this.props.booking.GiornoConsegna, "yyyy-mm-dd")} onChange={this.changeHandler} /></span>
-                                        <br />
-                                        <span>Note: <input className="border rounded" name="note" defaultValue={this.props.booking.Note} onChange={this.changeHandler} /></span>
+                                        {this.state.book.StatoPrestito !== "Prenotato" ? (
+                                            <>
+                                                <span>Date: <input className="border rounded" type="date" name="date" defaultValue={dateFormat(this.props.booking.GiornoConsegna, "yyyy-mm-dd")} onChange={this.changeHandler} /></span>
+                                                <br />
+                                                <span>Note: <input className="border rounded" name="note" defaultValue={this.props.booking.Note} onChange={this.changeHandler} /></span>
+                                            </>
+                                        ):(
+                                            <span>Date: {dateFormat(this.props.booking.GiornoConsegna, "yyyy-mm-dd")} </span>
+                                        )}
                                     </div>
                                     {/*footer*/}
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
@@ -114,14 +120,17 @@ export default class BookingCard extends React.Component {
                                         >
                                             Close
                                         </button>
-                                        <button
-                                            className="bg-green-600 text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 disabled:opacity-40"
-                                            type="button"
-                                            onClick={this.modifyAction}
-                                            disabled={this.state.inputs === null}
-                                        >
-                                            Modify
-                                        </button>
+                                        {this.state.book.StatoPrestito !== "Prenotato" ? (
+                                            <button
+                                                className="bg-green-600 text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 disabled:opacity-40"
+                                                type="button"
+                                                onClick={this.modifyAction}
+                                                disabled={this.state.inputs === null}
+                                            >
+                                                Modify
+                                            </button>
+                                        ) : (<></>)}
+
                                         <button
                                             className="bg-blue-600 text-white font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 disabled:opacity-40"
                                             type="button"

@@ -5,29 +5,30 @@ import GlassInput from "../components/GlassInput";
 export default class BookCardAdmin extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { showModal: false, isBook: !this.props.book.Dimensione, inputs: {}, authors: ""};
+        console.log("BOOK: ", this.props.book)
+        this.state = { showModal: false, inputs: {}, authors: ""};
     }
 
     handleChange = (e) => {
         var inputs = this.state.inputs
         inputs[e.target.name] = e.target.value
-        this.setState({ showModal: true, isBook: this.state.isBook, inputs: inputs, authors: this.state.authors })
+        this.setState({ showModal: true, inputs: inputs, authors: this.state.authors })
     }
 
     openModal = async () => {
-        this.setState({ showModal: true, isBook: !this.props.book.Dimensione, inputs: {}, authors: this.state.authors })
+        this.setState({ showModal: true, inputs: {}, authors: this.state.authors })
         if (this.state.authors === "") {
             const response = await getBookAuthors(this.props.book.Codice);
             console.log(response)
             const authorsArray = response.result.map(x => {
                 return `${x.Nome} ${x.Cognome}`
             });
-            this.setState({ showModal: true, isBook: !this.props.book.Dimensione, inputs: {}, authors: authorsArray.toString() })
+            this.setState({ showModal: true, inputs: {}, authors: authorsArray.toString() })
         }
     }
 
     closeModal = () => {
-        this.setState({ showModal: false, isBook: !this.props.book.Dimensione, inputs: {}, authors: this.state.authors })
+        this.setState({ showModal: false, inputs: {}, authors: this.state.authors })
     }
 
     modifyAction = async () => {
@@ -82,7 +83,7 @@ export default class BookCardAdmin extends React.Component {
                                     </div>
                                     {/*body*/}
                                     <div className="relative p-6 flex-auto ml-5">
-                                        {this.state.isBook ? (
+                                        {this.props.isBook ? (
                                             <>
                                                 <span>Edition: <input className="border rounded" name="edition" defaultValue={this.props.book.Edizione} onChange={this.handleChange} /></span>
                                                 <br />

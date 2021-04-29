@@ -530,7 +530,7 @@ DELIMITER;
 DELIMITER $$
 CREATE PROCEDURE VisualEbookBib(in BibliotecaScelta varchar(40))
 BEGIN
-	SELECT EBOOK.Codice, Titolo, Edizione
+	SELECT EBOOK.*, Titolo, Edizione, Anno, Genere
 	FROM EBOOK JOIN LIBRO ON (EBOOK.Codice=LIBRO.Codice)
 	WHERE Biblioteca = BibliotecaScelta;
 END $$

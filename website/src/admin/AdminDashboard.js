@@ -84,11 +84,11 @@ const AdminDashboard = () => {
             setData(data.result);
 
             const booksResponse = await getBooks(ref);
-            const booksCards = booksResponse.result.map(x => (<BookCardAdmin book={x} library={ref} />))
+            const booksCards = booksResponse.result.map(x => (<BookCardAdmin book={x} isBook={true} library={ref} />))
             setBooks(booksCards);
 
             const eBooksResponse = await getEBooks(ref);
-            const eBooksCards = eBooksResponse.result.map(x => (<BookCardAdmin book={x} library={ref} />))
+            const eBooksCards = eBooksResponse.result.map(x => (<BookCardAdmin book={x} isBook={false} library={ref} />))
             setEBooks(eBooksCards)
 
             const seatsResponse = await getLibrarySeatsBooked(ref);
