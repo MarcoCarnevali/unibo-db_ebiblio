@@ -73,7 +73,7 @@ app.get('/library/gallery/:id', (req, res) => {
     connection.query(`CALL FotoBib("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
-        return res.status(200).send({ result: rows });
+        return res.status(200).send({ result: rows[0] });
     });
 })
 
@@ -81,7 +81,7 @@ app.get('/library/phones/:id', (req, res) => {
     connection.query(`CALL NumeriTelefono("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
-        return res.status(200).send({ result: rows });
+        return res.status(200).send({ result: rows[0] });
     });
 })
 
@@ -95,7 +95,7 @@ app.get('/library/:id/books', function (req, res) {
     connection.query(`CALL VisualCartaceiBib("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
-        return res.status(200).send({ result: rows });
+        return res.status(200).send({ result: rows[0] });
     });
 });
 
