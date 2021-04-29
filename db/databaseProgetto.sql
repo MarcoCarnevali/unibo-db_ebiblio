@@ -408,7 +408,8 @@ VALUES  ("tiziano@me.it","aaaaa","Tiziano","Bruno","32323342","1998-01-01","Pale
         ("pippo@me.it","aaaaa","Pippo","Baudo","322622616","1968-01-02","Milano","auto");
 
 INSERT INTO PRESTITO(DataAvvio, DataFine, CodLibro, EmailUtilizzatore)
-VALUES  ("2021-05-01","2021-05-16","2","gino@gmail.com"),
+VALUES  ("2021-01-02","2021-01-17","1","gino@gmail.com"),
+		("2021-05-01","2021-05-16","2","gino@gmail.com"),
 		("2021-05-01","2021-05-16","6","marco@gmail.com"),
         ("2021-05-02","2021-05-17","1","gino@gmail.com"),
         ("2021-05-02","2021-05-17","10","franco@gmail.com"),
@@ -416,10 +417,12 @@ VALUES  ("2021-05-01","2021-05-16","2","gino@gmail.com"),
 		(NULL,NULL,"13","franco@gmail.com");
 
 INSERT INTO CONSEGNA(CodPrestito, Tipo, Note, Giorno, EmailVol)
-VALUES  ("1","Affidamento","werervrev","2021-01-01","tiziano@me.it"),
-		("2","Affidamento","verervre","2021-02-01","fabio@me.it"),
-        ("3","Affidamento","xxxxxxxxxxxxxxxx","2021-02-25","pippo@me.it"),
-        ("4","Affidamento","xxxxxxxxxxxxxxxx","2021-03-08","pippo@me.it");
+VALUES  ("1","Affidamento", "consegna riuscita", "2021-01-02", "fabio@me.it"),
+		("1","Restituzione", "restituzione riuscita", "2021-01-17", "fabio@me.it"),
+		("2","Affidamento","werervrev","2021-05-01","tiziano@me.it"),
+		("3","Affidamento","verervre","2021-05-01","fabio@me.it"),
+        ("4","Affidamento","xxxxxxxxxxxxxxxx","2021-05-02","pippo@me.it"),
+        ("5","Affidamento","xxxxxxxxxxxxxxxx","2021-05-02","pippo@me.it");
 
 INSERT INTO PRENOTAZIONE(Giorno, OraInizio, OraFine, NumPosto, Biblioteca, EmailUtilizzatore) 
 VALUES  ("2021-03-09","09:00","11:00","1","Biblioteca Universitaria","gino@gmail.com"),
@@ -651,7 +654,7 @@ UPDATE CARTACEO SET StatoPrestito="Prenotato" WHERE (Codice=NEW.CodLibro);
 # Visualizzazione delle proprie prenotazioni
 CREATE VIEW PRESTITI_UT(Prestito, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, Titolo)
 AS SELECT  Cod, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, Titolo 
-		FROM PRESTITO JOIN LIBRO ON Cod=Codice;
+		FROM PRESTITO JOIN LIBRO ON CodLibro=Codice;
 
 DELIMITER $$
 CREATE PROCEDURE PrestitiUtente(IN EmailUti varchar(30)) 
@@ -1050,7 +1053,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ClassificaVol()
 BEGIN
-	SELECT Count(EmailVol), EmailVol 
+	SELECT Count(EmailVol) AS "Numero Consegne", EmailVol as "Email Volontario"
 	FROM CONSEGNA 
 	GROUP BY EmailVol
 	ORDER BY Count(EmailVol) DESC;
@@ -1061,9 +1064,9 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ClassificaCartacei()
 BEGIN
-	SELECT Count(CodLibro) as NumPrestiti, CodLibro, Titolo
+	SELECT Count(CodLibro) as "Numero Prestiti", CodLibro AS "Codice Libro", Titolo
 	FROM PRESTITI_UT
-    GROUP BY CodLibro, Titolo
+    GROUP BY "Codice Libro", Titolo
 	ORDER BY Count(CodLibro) DESC;   
 END $$
 DELIMITER ;
@@ -1073,7 +1076,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ClassificaEbook()
 BEGIN  
-	SELECT Titolo, EBOOK.Codice, NumeroAccessi, Anno, Edizione, Biblioteca
+	SELECT Titolo, EBOOK.Codice, NumeroAccessi AS "Numero Accessi", Anno, Edizione, Biblioteca
 	FROM EBOOK JOIN LIBRO ON (EBOOK.Codice=LIBRO.Codice)
 	ORDER BY NumeroAccessi DESC;   
 END $$
@@ -1083,10 +1086,10 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ClassificaBibliotecheMenoUsate()
 BEGIN
-	 SELECT Biblioteca, Count(Distinct(IdPren)) as NumeroPrenotazioni, Count(Distinct(Num)) as NumeroPosti, 
-			CONCAT( TRUNCATE(((Count(Distinct(IdPren))/Count(Distinct(Num)))*100) ,2), "%") as Percentuale  
+	 SELECT Biblioteca, Count(Distinct(IdPren)) as "Numero Prenotazioni", Count(Distinct(Num)) as "Numero Posti", 
+			CONCAT( TRUNCATE(((Count(Distinct(IdPren))/Count(Distinct(Num)))*100) ,2), "%") as "Percentuale di Occupazione "
 	FROM PRENOTAZIONE JOIN POSTI_LETTURA ON (Biblioteca=NomeBiblioteca)
 	GROUP BY Biblioteca
-	ORDER BY Percentuale ASC;
+	ORDER BY (Count(Distinct(IdPren)))/(Count(Distinct(Num))) ASC;
 END $$
 DELIMITER ; 
