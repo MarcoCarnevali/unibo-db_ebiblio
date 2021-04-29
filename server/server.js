@@ -70,7 +70,7 @@ app.get('/library/:id', (req, res) => {
 })
 
 app.get('/library/gallery/:id', (req, res) => {
-    connection.query(`SELECT * FROM FOTO WHERE (NomeBib="${req.params.id}");`, (err, rows) => {
+    connection.query(`CALL FotoBib("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
         return res.status(200).send({ result: rows });
@@ -78,7 +78,7 @@ app.get('/library/gallery/:id', (req, res) => {
 })
 
 app.get('/library/phones/:id', (req, res) => {
-    connection.query(`SELECT NumTel FROM TELEFONO WHERE (NomeBiblioteca="${req.params.id}");`, (err, rows) => {
+    connection.query(`CALL NumeriTelefono("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
         return res.status(200).send({ result: rows });
@@ -92,7 +92,7 @@ app.get('/logout', function (req, res) {
 });
 
 app.get('/library/:id/books', function (req, res) {
-    connection.query(`SELECT * FROM LIBRO JOIN CARTACEO ON (LIBRO.Codice = CARTACEO.Codice) WHERE Biblioteca="${req.params.id}";`, (err, rows) => {
+    connection.query(`CALL VisualCartaceiBib("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
         return res.status(200).send({ result: rows });
@@ -125,14 +125,6 @@ app.get('/ebook/:id/history', function (req, res) {
 
 app.get('/book/:id', function (req, res) {
     connection.query(`SELECT * FROM LIBRO JOIN CARTACEO ON (LIBRO.Codice = CARTACEO.Codice) WHERE LIBRO.Codice="${req.params.id}";`, (err, rows) => {
-        if (err)
-            return res.status(500).send({ error: err });
-        return res.status(200).send({ result: rows });
-    });
-});
-
-app.get('/library/perks/:id', (req, res) => {
-    connection.query(`SELECT * FROM POSTI_LETTURA WHERE NomeBiblioteca="${req.params.id}";`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
         return res.status(200).send({ result: rows });
