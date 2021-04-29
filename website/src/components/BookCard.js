@@ -128,9 +128,9 @@ export class BookCard extends React.Component {
                                     {/* Book section */}
                                     {!this.props.isBook? (<></>) : (
                                         <div className="relative p-6 flex-auto ml-5">
-                                            <span className="block-inline">Select Date and time: </span>
+                                            <span className="block-inline">Select Date: </span>
                                             <br />
-                                            <GlassInput className="block-inline text-black ml-3" textColor="text-black" type="datetime-local" onChange={e => this.datePickerChanged(e.target.value)} />
+                                            <GlassInput className="block-inline text-black ml-3" textColor="text-black" type="date" onChange={e => this.datePickerChanged(e.target.value)} />
                                         </div>)}
                                     {/*footer*/}
                                     <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
