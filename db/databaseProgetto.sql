@@ -485,7 +485,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE FotoBib(IN BibliotecaScelta varchar(40))
 BEGIN
-	SELECT NomeFoto
+	SELECT *
 	FROM FOTO
 	WHERE NomeBib = BibliotecaScelta;
 END $$
@@ -522,8 +522,8 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE VisualCartaceiBib(in BibliotecaScelta varchar(40))
 BEGIN
-	SELECT CARTACEO.Codice, Titolo, Anno, Edizione, Genere,StatoPrestito, Pagine, Scaffale, StatoConservazione
-	FROM CARTACEO JOIN LIBRO ON (CARTACEO.Codice=LIBRO.Codice)
+	SELECT *
+    FROM CARTACEO JOIN LIBRO ON (CARTACEO.Codice=LIBRO.Codice)
 	WHERE Biblioteca = BibliotecaScelta;
 END $$
 DELIMITER;
@@ -563,6 +563,19 @@ BEGIN
     (SELECT CodiceAutore FROM LISTA_AUTORI WHERE CodiceLibro=CodiceEbook);
 END $$
 DELIMITER ;
+
+
+#Visualizzazione numeri di telefono biblioteche
+DELIMITER $$
+CREATE PROCEDURE NumeriTelefono (IN BibliotecaScelta varchar(40))
+BEGIN
+	SELECT NumTel
+    FROM TELEFONO
+    WHERE NomeBiblioteca=BibliotecaScelta;
+END $$
+DELIMITER;
+
+
 
 
 
