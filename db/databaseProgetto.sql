@@ -576,7 +576,15 @@ END $$
 DELIMITER;
 
 
-
+#Visualizzazione informazioni libri cartacei
+DELIMITER $$
+CREATE PROCEDURE CartaceoScelto (IN CartaceoS varchar(40))
+BEGIN
+	SELECT *
+    FROM LIBRO JOIN CARTACEO ON (LIBRO.Codice=CARTACEO.Codice)
+    WHERE LIBRO.Codice=CartaceoS;
+END $$
+DELIMITER;
 
 
 
@@ -702,6 +710,25 @@ DELIMITER ;
 
 
 
+#Visualizzazione messaggi ricevuti
+DELIMITER $$
+CREATE PROCEDURE VisualMessaggi(IN EmailUt varchar(30))
+BEGIN
+	SELECT * 
+    FROM MESSAGGIO 
+    WHERE EmailUti = EmailUt;
+END $$
+DELIMITER ;
+
+#Visualizzazioni segnalazioni ricevute
+DELIMITER $$
+CREATE PROCEDURE VisualSegnalazioni(IN EmailUt varchar(30))
+BEGIN
+	SELECT * 
+    FROM SEGNALAZIONE 
+    WHERE EmailUti = EmailUt;
+END $$
+DELIMITER ;
 
 #-------------------------------------------------------------------------------------
 

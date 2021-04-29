@@ -7,8 +7,8 @@ const mysql = require("mysql");
 const app = express();
 const configuration = {
     mysql_host: 'localhost',
-    mysql_user: 'root',
-    mysql_password: 'rootroot',
+    mysql_user: 'tiziano',
+    mysql_password: 'passwordtiziano',
     mysql_db: 'db_ebiblio',
     express_host: 'localhost',
     express_port: 8123,
@@ -124,7 +124,7 @@ app.get('/ebook/:id/history', function (req, res) {
 });
 
 app.get('/book/:id', function (req, res) {
-    connection.query(`SELECT * FROM LIBRO JOIN CARTACEO ON (LIBRO.Codice = CARTACEO.Codice) WHERE LIBRO.Codice="${req.params.id}";`, (err, rows) => {
+    connection.query(`CALL CartaceoScelto("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
         return res.status(200).send({ result: rows });
@@ -318,7 +318,7 @@ app.get('/book/:id/getAuthors', (req, res) => {
 });
 
 app.get('/user/:id/getMessages', (req, res) => {
-    connection.query(`SELECT * FROM MESSAGGIO WHERE EmailUti = "${req.params.id}";`, (err, rows) => {
+    connection.query(`CALL VisualMessaggi("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: rows });
@@ -326,7 +326,7 @@ app.get('/user/:id/getMessages', (req, res) => {
 });
 
 app.get('/user/:id/getFlags', (req, res) => {
-    connection.query(`SELECT * FROM SEGNALAZIONE WHERE EmailUti = "${req.params.id}";`, (err, rows) => {
+    connection.query(`CALL VisualSegnalazioni("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: rows });
