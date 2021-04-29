@@ -1084,7 +1084,7 @@ DELIMITER $$
 CREATE PROCEDURE ClassificaBibliotecheMenoUsate()
 BEGIN
 	 SELECT Biblioteca, Count(Distinct(IdPren)) as NumeroPrenotazioni, Count(Distinct(Num)) as NumeroPosti, 
-			TRUNCATE(((Count(Distinct(IdPren))/Count(Distinct(Num)))*100) ,2) as Percentuale  
+			CONCAT( TRUNCATE(((Count(Distinct(IdPren))/Count(Distinct(Num)))*100) ,2), "%") as Percentuale  
 	FROM PRENOTAZIONE JOIN POSTI_LETTURA ON (Biblioteca=NomeBiblioteca)
 	GROUP BY Biblioteca
 	ORDER BY Percentuale ASC;
