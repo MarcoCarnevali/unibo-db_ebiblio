@@ -599,14 +599,6 @@ BEGIN
 END $$
 DELIMITER ;
 
-#Registrazione volontario alla piattaforma
-DELIMITER $$
-CREATE PROCEDURE RegistrazioneVolontario( IN mail varchar(30), IN psw varchar(20), IN NomeVol varchar(20), IN CognomeVol varchar(30), IN TelVol varchar(15), IN DataNascitaVol date, IN LuogoNascitaVol varchar(20), IN TrasportoVol varchar(20))
-BEGIN
-	INSERT INTO VOLONTARIO(Email, Pass, Nome, Cognome, Tel, DataNascita, LuogoNascita, Trasporto)
-    VALUES(mail, psw, NomeVol, CognomeVol, TelVol, DataNascitaVol, LuogoNascitaVol, TrasportoVol);
-END $$
-DELIMITER ;
 
 # Posti lettura disponibli
 DELIMITER $$
@@ -718,6 +710,17 @@ DELIMITER ;
 
 
 ##SOLO VOLONTARI
+
+#Registrazione volontario alla piattaforma
+DELIMITER $$
+CREATE PROCEDURE RegistrazioneVolontario( IN mail varchar(30), IN psw varchar(20), IN NomeVol varchar(20), IN CognomeVol varchar(30), IN TelVol varchar(15), IN DataNascitaVol date, IN LuogoNascitaVol varchar(20), IN TrasportoVol varchar(20))
+BEGIN
+	INSERT INTO VOLONTARIO(Email, Pass, Nome, Cognome, Tel, DataNascita, LuogoNascita, Trasporto)
+    VALUES(mail, psw, NomeVol, CognomeVol, TelVol, DataNascitaVol, LuogoNascitaVol, TrasportoVol);
+END $$
+DELIMITER ;
+
+
 # Visualizzazione di tutte le prenotazioni inserite sulla piattaforma
 CREATE VIEW PRESTITI_VOL(Prestito, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito, Biblioteca)
 AS SELECT  Cod, DataAvvio, DataFine, CodLibro, EmailUtilizzatore, StatoPrestito, Biblioteca
