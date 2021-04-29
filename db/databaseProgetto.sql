@@ -717,7 +717,8 @@ CREATE PROCEDURE VisualPrenotazioniCartei()
 BEGIN
 	SELECT PRESTITI_VOL.*, Note, Giorno AS GiornoConsegna
 	FROM PRESTITI_VOL
-	LEFT JOIN CONSEGNA ON (CodPrestito = Prestito);
+	LEFT JOIN CONSEGNA ON (CodPrestito = Prestito)
+	WHERE CONSEGNA.Tipo="Affidamento" or  CONSEGNA.Tipo IS NULL;
 END $$
 DELIMITER ;
 
