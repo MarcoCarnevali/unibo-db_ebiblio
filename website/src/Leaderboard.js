@@ -16,16 +16,16 @@ const Leaderboard = ({ history }) => {
             const libraries = await getLibrariesLeaderboard()//.result.map(x => (<span>{x}</span>))
             setLibraries(libraries.result)
 
-            //  const books = await getBookLeaderboard()
-            //  console.log(books)
-            //  setBooks(books.result)
+            const books = await getBookLeaderboard()
+            console.log(books)
+            setBooks(books.result)
 
-             const ebooks = await getEBookLeaderboard()
-             console.log(ebooks)
-             setEBooks(ebooks.result)
+            const ebooks = await getEBookLeaderboard()
+            console.log(ebooks)
+            setEBooks(ebooks.result)
 
-             const volunteers = await getVolunteerLeaderboard()
-             setVolunteers(volunteers.result)
+            const volunteers = await getVolunteerLeaderboard()
+            setVolunteers(volunteers.result)
 
             setLoading(false)
         }
@@ -42,17 +42,22 @@ const Leaderboard = ({ history }) => {
                 <div className="my-16">
                     <span className="text-lg font-bold">Libraries: </span>
                 </div>
-                <Table data={libraries}/>
+                <Table data={libraries} />
+
+                <div className="my-16">
+                    <span className="text-lg font-bold">Books: </span>
+                </div>
+                <Table data={books} />
 
                 <div className="my-16">
                     <span className="text-lg font-bold">Ebooks: </span>
                 </div>
-                <Table data={ebooks}/>
+                <Table data={ebooks} />
 
                 <div className="my-16">
                     <span className="text-lg font-bold">Volunteers: </span>
                 </div>
-                <Table data={volunteers}/>
+                <Table data={volunteers} />
             </div>
         </div>
     );
