@@ -388,18 +388,18 @@ VALUES	("1","Consegnato","1500","15","Non Buono"),
 		("24","Disponibile","600","7","Ottimo");
 
 INSERT INTO EBOOK(Codice, Dimensione, NumeroAccessi ,Link)
-VALUES  ("3","54MB","0","WWW.GOOGLESCHOLAR.IT"),
-		("4","5MB","23","www.librionline.it"),
-        ("5","10MB","4","www.librionline.it"),
-        ("7","300MB","4","www.librionline.it"),
-        ("11","200MB","2","www.onlinebooks.com"),
-        ("12","500MB","1","WWW.GOOGLESCHOLAR.IT"),
-        ("14","50KB","0","www.onlinebooks.com"),
-        ("17","25MB","0","www.librionline.it"),
-        ("18","700MB","0","WWW.GOOGLESCHOLAR.IT"),
-        ("20","100MB","43","WWW.GOOGLESCHOLAR.IT"),
-        ("21","2MB","27","www.librionline.it"),
-		("25","540MB","0","www.onlinebooks.com");
+VALUES  ("3","54MB","0","pdf_ebook/3.pdf"),
+		("4","5MB","23","pdf_ebook/4.pdf"),
+        ("5","10MB","4","pdf_ebook/5.pdf"),
+        ("7","300MB","4","pdf_ebook/7.pdf"),
+        ("11","200MB","2","pdf_ebook/11.pdf"),
+        ("12","500MB","1","pdf_ebook/12.pdf"),
+        ("14","50KB","0","pdf_ebook/14.pdf"),
+        ("17","25MB","0","pdf_ebook/17.pdf"),
+        ("18","700MB","0","pdf_ebook/18.pdf"),
+        ("20","100MB","43","pdf_ebook/20.pdf"),
+        ("21","2MB","27","pdf_ebook/21.pdf"),
+		("25","540MB","0","pdf_ebook/25.pdf");
 		
         
 INSERT INTO VOLONTARIO(Email, Pass, Nome, Cognome, Tel, DataNascita, LuogoNascita, Trasporto)

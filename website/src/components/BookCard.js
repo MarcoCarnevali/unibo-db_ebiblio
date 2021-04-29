@@ -41,7 +41,7 @@ export class BookCard extends React.Component {
             if (checkLogged() !== 'not-logged') {
                 await accessEbook(this.props.book.Codice);
                 await remoteLog('ebook-access', { id: this.props.book.Codice })
-                window.open("pdf_ebook/"+this.state.ebook.Codice+".pdf");
+                window.open(`${this.props.book.Link}`);
             }else{
                 window.alert("Please sign-up or log-in in order to access the e-book")
             }
