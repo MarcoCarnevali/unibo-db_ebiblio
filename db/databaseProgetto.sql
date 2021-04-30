@@ -417,12 +417,12 @@ VALUES  ("2021-01-02","2021-01-17","1","gino@gmail.com"),
 		(NULL,NULL,"13","franco@gmail.com");
 
 INSERT INTO CONSEGNA(CodPrestito, Tipo, Note, Giorno, EmailVol)
-VALUES  ("1","Affidamento", "consegna riuscita", "2021-01-02", "fabio@me.it"),
+VALUES  ("1","Affidamento", "consegna festivi", "2021-01-02", "fabio@me.it"),
 		("1","Restituzione", "restituzione riuscita", "2021-01-17", "fabio@me.it"),
-		("2","Affidamento","werervrev","2021-05-01","tiziano@me.it"),
-		("3","Affidamento","verervre","2021-05-01","fabio@me.it"),
-        ("4","Affidamento","xxxxxxxxxxxxxxxx","2021-05-02","pippo@me.it"),
-        ("5","Affidamento","xxxxxxxxxxxxxxxx","2021-05-02","pippo@me.it");
+		("2","Affidamento","Consegna in orario","2021-05-01","tiziano@me.it"),
+		("3","Affidamento","consegna riuscita","2021-05-01","fabio@me.it"),
+        ("4","Affidamento","libro mancante di compertina","2021-05-02","pippo@me.it"),
+        ("5","Affidamento","danno durante la consegna","2021-05-02","pippo@me.it");
 
 INSERT INTO PRENOTAZIONE(Giorno, OraInizio, OraFine, NumPosto, Biblioteca, EmailUtilizzatore) 
 VALUES  ("2021-03-09","09:00","11:00","1","Biblioteca Universitaria","gino@gmail.com"),
@@ -446,6 +446,13 @@ VALUES  ("alice@gmail.com","pass123","Alice","Fumagalli","3334541216","1960-03-0
 		("luca@gmail.com","password","Luca","Bruno","3904567589","1995-08-03","Carpi","Direttore","Biblioteca Giurica Antonio Cicu"),
 		("mario@gmail.com","03081998","Mario","Rossi","3293842987","1997-05-30","Roma","Sistemisa","Biblioteca economica Walter Bigiavi"),
         ("elvira@gmail.com","123456789","Elvira","Morello","1978-10-26","1966-03-05","Palermo","Sistemista","Biblioteca di discipline umanistiche");
+
+INSERT INTO MESSAGGIO(Giorno, Testo, Titolo, EmailAmm, EmailUti)
+VALUES  ("2020-08-03", "Domani riceverai il libro", "Ricezione Libro", "francesca@gmail.com", "gino@gmail.com"),
+		("2020-08-05", "Ci scusiamo per il ritardo riceverà il libro settimana prossima", "Ritardo", "luca@gmail.com", "gino@gmail.com");
+        
+INSERT INTO SEGNALAZIONE(Giorno, Testo, EmailAmm, EmailUti)
+VALUES ("2021-03-04", "Segnalato per danno ad un libro", "alice@gmail.com","gino@gmail.com");
 
 
 #OPERAZIONI SUI DATI (da implementare attraverso stored procedure)
@@ -692,7 +699,7 @@ CREATE PROCEDURE VisualConsegne(IN EmailUt varchar(30))
 BEGIN
 	SELECT *
 	FROM CONSEGNE_UT
-	WHERE EmailUtilizzatore = EmailUt;
+	WHERE EmailUtilizzatore = EmailUt and Tipo="Affidamento";
 END $$
 DELIMITER ;
 
@@ -1097,7 +1104,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ClassificaVol()
 BEGIN
-	SELECT Count(EmailVol) AS "Numero Consegne", EmailVol as "Email Volontario"
+	SELECT Count(EmailVol) AS "Number of deliveries", EmailVol as "Email Volunteer"
 	FROM CONSEGNA 
 	GROUP BY EmailVol
 	ORDER BY Count(EmailVol) DESC;
@@ -1108,9 +1115,9 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ClassificaCartacei()
 BEGIN
-	SELECT Count(CodLibro) as "Numero Prestiti", CodLibro AS "Codice Libro", Titolo
+	SELECT Count(CodLibro) as "Number of lending", CodLibro AS "Book code", Titolo as "Title"
 	FROM PRESTITI_UT
-    GROUP BY "Codice Libro", Titolo
+    GROUP BY CodLibro, Titolo
 	ORDER BY Count(CodLibro) DESC;   
 END $$
 DELIMITER ;
@@ -1120,7 +1127,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ClassificaEbook()
 BEGIN  
-	SELECT Titolo, EBOOK.Codice, NumeroAccessi AS "Numero Accessi", Anno, Edizione, Biblioteca
+	SELECT Titolo as "Title", EBOOK.Codice as "E-book code", NumeroAccessi AS "Number of accesses", Anno as "Year", Edizione as "Edition", Biblioteca as "Library"
 	FROM EBOOK JOIN LIBRO ON (EBOOK.Codice=LIBRO.Codice)
 	ORDER BY NumeroAccessi DESC;   
 END $$
@@ -1130,8 +1137,8 @@ DELIMITER ;
 DELIMITER $$
 CREATE PROCEDURE ClassificaBibliotecheMenoUsate()
 BEGIN
-	 SELECT Biblioteca, Count(Distinct(IdPren)) as "Numero Prenotazioni", Count(Distinct(Num)) as "Numero Posti", 
-			CONCAT( TRUNCATE(((Count(Distinct(IdPren))/Count(Distinct(Num)))*100) ,2), "%") as "Percentuale di Occupazione "
+	 SELECT Biblioteca as "Library" , Count(Distinct(IdPren)) as "Total number of bookings", Count(Distinct(Num)) as "Number of seats", 
+			CONCAT( TRUNCATE(((Count(Distinct(IdPren))/Count(Distinct(Num)))*100) ,2), "%") as "Percentage of occupation"
 	FROM PRENOTAZIONE JOIN POSTI_LETTURA ON (Biblioteca=NomeBiblioteca)
 	GROUP BY Biblioteca
 	ORDER BY (Count(Distinct(IdPren)))/(Count(Distinct(Num))) ASC;

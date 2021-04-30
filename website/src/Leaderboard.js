@@ -40,22 +40,22 @@ const Leaderboard = ({ history }) => {
             <NavBar />
             <div className="mx-40 my-10">
                 <div className="my-16">
-                    <span className="text-lg font-bold">Libraries: </span>
+                    <span className="text-lg font-bold"> Libraries with less used seats: </span>
                 </div>
                 <Table data={libraries} />
 
                 <div className="my-16">
-                    <span className="text-lg font-bold">Books: </span>
+                    <span className="text-lg font-bold">Most booked books: </span>
                 </div>
                 <Table data={books} />
 
                 <div className="my-16">
-                    <span className="text-lg font-bold">Ebooks: </span>
+                    <span className="text-lg font-bold">Most accessed e-books: </span>
                 </div>
                 <Table data={ebooks} />
 
                 <div className="my-16">
-                    <span className="text-lg font-bold">Volunteers: </span>
+                    <span className="text-lg font-bold">Volunteers with the highest number of deliveries: </span>
                 </div>
                 <Table data={volunteers} />
             </div>
