@@ -321,7 +321,7 @@ app.get('/user/:id/getMessages', (req, res) => {
     connection.query(`CALL VisualMessaggi("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err.message });
-        return res.status(200).send({ result: rows });
+        return res.status(200).send({ result: rows[0] });
     });
 });
 
@@ -329,7 +329,7 @@ app.get('/user/:id/getFlags', (req, res) => {
     connection.query(`CALL VisualSegnalazioni("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err.message });
-        return res.status(200).send({ result: rows });
+        return res.status(200).send({ result: rows[0] });
     });
 });
 
