@@ -1,7 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
 const mysql = require("mysql");
 
 const app = express();
@@ -335,7 +334,6 @@ app.get('/user/:id/getFlags', (req, res) => {
 
 app.get('/leaderboard/books', (req, res) => {
     connection.query(`CALL ClassificaCartacei();`, (err, rows) => {
-        console.error(err);
         if (err)
             return res.status(500).send({ error: err.message });
         return res.status(200).send({ result: rows[0] });

@@ -24,7 +24,7 @@ const Home = ({ history }) => {
                 setLoading(false);
             } catch (error) {
                 setLoading(false);
-                console.log(error);
+                console.error(error);
             }
         }
         loadData();

@@ -40,7 +40,7 @@ const Profile = ({ history }) => {
                 setLoading(false);
             } catch (error) {
                 setLoading(false);
-                console.log(error);
+                console.error(error);
             }
         }
         loadData();
@@ -78,7 +78,7 @@ const Profile = ({ history }) => {
                 {lended.length > 0 ? (
                     <>
                         <div className="my-16">
-                            <span className="text-lg font-bold">Books lended: </span>
+                            <span className="text-lg font-bold">Books booked: </span>
                         </div>
                         <div className="grid grid-flow-row grid-cols-3 gap-20">
                             {lended}
