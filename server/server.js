@@ -7,8 +7,8 @@ const mysql = require("mysql");
 const app = express();
 const configuration = {
     mysql_host: 'localhost',
-    mysql_user: 'tiziano',
-    mysql_password: 'passwordtiziano',
+    mysql_user: 'root',
+    mysql_password: 'rootroot',
     mysql_db: 'db_ebiblio',
     express_host: 'localhost',
     express_port: 8123,
@@ -127,7 +127,7 @@ app.get('/book/:id', function (req, res) {
     connection.query(`CALL CartaceoScelto("${req.params.id}");`, (err, rows) => {
         if (err)
             return res.status(500).send({ error: err });
-        return res.status(200).send({ result: rows });
+        return res.status(200).send({ result: rows[0] });
     });
 });
 
